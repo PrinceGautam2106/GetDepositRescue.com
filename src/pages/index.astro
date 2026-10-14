@@ -1,11 +1,51 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<BaseLayout
+  title="DepositRescue — Recover Your Unlawfully Withheld Security Deposit"
+  description="Calculate your security deposit penalty, generate a legal demand letter, and recover what your landlord owes you. Free legal calculation engine for US tenants."
+>
+  <section class="mx-auto flex max-w-3xl flex-col items-center px-4 py-24 text-center sm:py-32">
+    <!-- Eyebrow -->
+    <span class="mb-4 inline-flex items-center rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-text-secondary">
+      <span class="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-success"></span>
+      50-State Coverage
+    </span>
+
+    <!-- Headline -->
+    <h1 class="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+      Recover Your Unlawfully Withheld Security Deposit.
+      <span class="block text-text-muted">In minutes.</span>
+    </h1>
+
+    <!-- Subhead -->
+    <p class="mt-6 max-w-xl text-base leading-relaxed text-text-secondary sm:text-lg">
+      Calculate statutory penalties your landlord owes, generate a demand letter, and file in small claims court — all powered by your state's actual deposit return laws.
+    </p>
+
+    <!-- CTA -->
+    <div class="mt-10 flex flex-col gap-3 sm:flex-row">
+      <a
+        href="/calculator"
+        class="inline-flex items-center justify-center rounded-lg bg-cta-bg px-5 py-2.5 text-sm font-semibold text-cta-text transition-all duration-150 ease-out hover:bg-cta-hover"
+      >
+        Calculate My Penalty
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="ml-1.5 h-4 w-4">
+          <path fill-rule="evenodd" d="M5 10a.75.75 0 01.75-.75h6.638L10.23 7.29a.75.75 0 111.04-1.08l3.5 3.25a.75.75 0 010 1.08l-3.5 3.25a.75.75 0 11-1.04-1.08l2.158-1.96H5.75A.75.75 0 015 10z" clip-rule="evenodd" />
+        </svg>
+      </a>
+      <a
+        href="#how-it-works"
+        class="inline-flex items-center justify-center rounded-lg border border-border bg-cta-secondary-bg px-5 py-2.5 text-sm font-semibold text-text-primary transition-all duration-150 ease-out hover:bg-cta-secondary-hover"
+      >
+        How It Works
+      </a>
+    </div>
+
+    <!-- Trust signal -->
+    <p class="mt-12 text-xs text-text-muted">
+      Free to use · No account required · Based on actual state statutes
+    </p>
+  </section>
+</BaseLayout>

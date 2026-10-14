@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens mapped from DESIGN.md
+ * Vercel-inspired dark monochrome legal-tech aesthetic
+ */
+@theme {
+  /* ── Typography ────────────────────────────────────── */
+  --font-sans: "Inter", "Geist Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Geist Mono", ui-monospace, SFMono-Regular,
+    Menlo, Monaco, Consolas, monospace;
+
+  /* ── Semantic surface colors ───────────────────────── */
+  --color-canvas: #000000;
+  --color-canvas-alt: #09090b;
+  --color-card: #121215;
+  --color-border: #27272a;
+  --color-border-hover: #3f3f46;
+
+  /* ── Semantic text colors ──────────────────────────── */
+  --color-text-primary: #fafafa;
+  --color-text-secondary: #a1a1aa;
+  --color-text-muted: #71717a;
+
+  /* ── Intent / accent colors ────────────────────────── */
+  --color-success: #10b981;
+  --color-danger: #f43f5e;
+
+  /* ── Interactive / CTA ─────────────────────────────── */
+  --color-cta-bg: #ffffff;
+  --color-cta-text: #000000;
+  --color-cta-hover: #e4e4e7;
+  --color-cta-secondary-bg: #18181b;
+  --color-cta-secondary-hover: #27272a;
+}
