@@ -3,89 +3,138 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout
-  title="Order Confirmed — DepositRescue"
-  description="Your security deposit legal demand letter order has been processed."
+  title="Order Confirmed & Legal Package — DepositRescue"
+  description="Your security deposit legal demand letter package has been processed and is ready for download."
   path="/success"
   noindex={true}
 >
-  <div class="relative mx-auto max-w-2xl px-4 py-12 sm:py-16">
+  <div class="relative mx-auto max-w-3xl px-4 py-12 sm:py-16">
     <!-- Success Badge -->
     <div class="text-center">
-      <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-success/40 bg-success/10 text-success shadow-lg">
+      <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-blue-500/40 bg-blue-950/30 text-sky-400 shadow-lg shadow-blue-500/20">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" viewBox="0 0 20 20" fill="currentColor">
           <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
         </svg>
       </div>
 
-      <div class="mt-4 inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs font-mono font-medium text-text-secondary">
-        <span class="h-1.5 w-1.5 rounded-full bg-success"></span>
-        <span id="order-status-badge">PAYMENT VERIFIED &bull; ORDER ACTIVE</span>
+      <div class="mt-4 inline-flex items-center gap-1.5 rounded-full border border-blue-500/30 bg-blue-500/10 px-3 py-1 text-xs font-mono font-medium text-sky-300">
+        <span class="h-1.5 w-1.5 rounded-full bg-sky-400 animate-pulse"></span>
+        <span id="order-status-badge">PAYMENT VERIFIED &bull; FULFILLMENT ACTIVE</span>
       </div>
 
       <h1 id="success-title" class="mt-4 text-2xl font-extrabold tracking-tight text-text-primary sm:text-3xl">
         Your Demand Package is Ready
       </h1>
-      <p id="success-desc" class="mt-2 text-sm text-text-secondary">
-        Thank you for choosing DepositRescue. Your documentation is prepared below.
+      <p id="success-desc" class="mt-2 text-sm text-text-secondary max-w-lg mx-auto">
+        Your formal legal demand letter and statutory civil code citation have been generated and prepared for court compliance.
       </p>
     </div>
 
+    <!-- Claim Summary Card (Dynamic from localStorage) -->
+    <div id="claim-summary-card" class="mt-8 rounded-xl border border-blue-500/30 bg-gradient-to-b from-[#0f172a] via-[#091124] to-[#020617] p-5 shadow-inner">
+      <div class="flex flex-wrap items-center justify-between gap-2 border-b border-border/60 pb-3">
+        <div class="text-xs font-mono text-text-muted">
+          <span>CIVIL STATUTE: </span>
+          <span id="sum-citation" class="font-bold text-sky-400">State Civil Code</span>
+        </div>
+        <div class="text-xs font-mono text-text-muted">
+          <span>DATE: </span>
+          <span id="sum-date" class="text-text-primary">Today</span>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-4">
+        <div>
+          <span class="block text-[11px] font-mono text-text-muted uppercase">Unreturned Balance</span>
+          <span id="sum-unreturned" class="text-base font-bold text-text-primary font-mono">$0</span>
+        </div>
+        <div>
+          <span class="block text-[11px] font-mono text-text-muted uppercase">Statutory Penalty</span>
+          <span id="sum-penalty" class="text-base font-bold text-sky-400 font-mono">+$0</span>
+        </div>
+        <div class="col-span-2 sm:col-span-1">
+          <span class="block text-[11px] font-mono text-sky-300 uppercase font-semibold">Total Recovery Target</span>
+          <span id="sum-total" class="text-lg font-extrabold text-sky-400 font-mono">$0</span>
+        </div>
+      </div>
+    </div>
+
     <!-- ─── TIER A: PDF PACKAGE CONTAINER ─────────────────────────────────── -->
-    <div id="tier-pdf-container" class="mt-8 rounded-xl border border-border bg-card p-6 shadow-sm space-y-6">
+    <div id="tier-pdf-container" class="mt-6 rounded-xl border border-border bg-card p-6 shadow-sm space-y-6">
       <div class="flex items-center justify-between border-b border-border pb-4">
         <div>
-          <span class="text-xs font-mono uppercase tracking-wider text-text-muted">Tier Selected</span>
+          <span class="text-xs font-mono uppercase tracking-wider text-text-muted">Order Tier</span>
           <h2 class="text-lg font-bold text-text-primary">Official Legal PDF Package ($14.99)</h2>
         </div>
-        <span class="rounded bg-success/10 px-2.5 py-1 text-xs font-mono font-semibold text-success">
+        <span class="rounded border border-blue-500/30 bg-blue-500/10 px-2.5 py-1 text-xs font-mono font-semibold text-sky-300">
           Ready for Download
         </span>
       </div>
 
-      <!-- Features Checklist -->
-      <ul class="space-y-2.5 text-xs text-text-secondary">
-        <li class="flex items-center gap-2">
-          <svg class="h-4 w-4 text-success shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+      <!-- Action Buttons -->
+      <div class="flex flex-col sm:flex-row gap-3">
+        <button
+          type="button"
+          id="btn-trigger-pdf"
+          class="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-400 hover:to-indigo-500 px-6 py-3 text-sm font-bold text-white transition-all shadow-md active:scale-[0.99]"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
           </svg>
-          <span>Official statutory citation clause under your state's civil code</span>
-        </li>
-        <li class="flex items-center gap-2">
-          <svg class="h-4 w-4 text-success shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-          </svg>
-          <span>Small Claims Court pre-filing evidentiary checklist</span>
-        </li>
-        <li class="flex items-center gap-2">
-          <svg class="h-4 w-4 text-success shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-          </svg>
-          <span>Itemized deduction dispute ledger with bad-faith statutory penalty</span>
-        </li>
-      </ul>
+          <span>Download / Print Legal PDF Package</span>
+        </button>
 
-      <!-- Action Button -->
-      <button
-        type="button"
-        id="btn-trigger-pdf"
-        class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-cta-bg px-6 py-3 text-sm font-semibold text-cta-text transition-all duration-150 ease-out hover:bg-cta-hover active:scale-[0.99] shadow-md"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-        </svg>
-        Download / Print PDF Package ($14.99)
-      </button>
+        <button
+          type="button"
+          id="btn-copy-letter"
+          class="inline-flex items-center justify-center gap-1.5 rounded-lg border border-border bg-canvas-alt px-4 py-3 text-xs font-semibold text-text-secondary hover:text-text-primary hover:border-border-hover transition-colors"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+          </svg>
+          <span id="copy-btn-text">Copy Letter Text</span>
+        </button>
+      </div>
+
+      <!-- In-Page Live Demand Letter Preview -->
+      <div class="rounded-lg border border-border bg-canvas-alt p-5 sm:p-6 text-xs font-mono leading-relaxed text-text-secondary select-text space-y-3">
+        <div class="flex items-center justify-between border-b border-border/60 pb-2 text-text-muted">
+          <span>OFFICIAL DEMAND LETTER PREVIEW</span>
+          <span>USPS LEGAL COMPLIANT</span>
+        </div>
+        <div id="demand-letter-content" class="space-y-3 pt-2">
+          <!-- Populated from localStorage -->
+        </div>
+      </div>
+
+      <!-- Court Filing Checklist -->
+      <div class="rounded-lg border border-border bg-card p-4 space-y-3">
+        <h3 class="text-xs font-bold text-text-primary uppercase tracking-wider">Small Claims Court Pre-Filing Checklist</h3>
+        <ul class="space-y-2 text-xs text-text-secondary">
+          <li class="flex items-start gap-2">
+            <span class="text-sky-400 font-bold font-mono">01.</span>
+            <span><strong>Send via USPS Certified Mail:</strong> Send a printed copy to your landlord using USPS Certified Mail with Return Receipt requested to establish proof of delivery.</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-sky-400 font-bold font-mono">02.</span>
+            <span><strong>10-Day Cure Window:</strong> Give your landlord 10 business days from postal delivery to remit the full statutory recovery target.</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-sky-400 font-bold font-mono">03.</span>
+            <span><strong>File Claim if Unpaid:</strong> If unpaid after 10 days, attach this demand letter and your postal tracking receipt to your small claims petition.</span>
+          </li>
+        </ul>
+      </div>
     </div>
 
     <!-- ─── TIER B: USPS CERTIFIED MAIL CONTAINER ─────────────────────────── -->
-    <div id="tier-mail-container" class="mt-8 rounded-xl border border-success/40 bg-card p-6 shadow-sm space-y-6">
+    <div id="tier-mail-container" class="mt-6 rounded-xl border border-blue-500/40 bg-card p-6 shadow-sm space-y-6 hidden">
       <div class="flex items-center justify-between border-b border-border pb-4">
         <div>
-          <span class="text-xs font-mono uppercase tracking-wider text-text-muted">Tier Selected</span>
+          <span class="text-xs font-mono uppercase tracking-wider text-text-muted">Order Tier</span>
           <h2 class="text-lg font-bold text-text-primary">USPS Certified Mail Delivery ($29.99)</h2>
         </div>
-        <span class="rounded bg-success/10 px-2.5 py-1 text-xs font-mono font-semibold text-success">
-          Dispatched to USPS
+        <span class="rounded border border-blue-500/30 bg-blue-500/10 px-2.5 py-1 text-xs font-mono font-semibold text-sky-300">
+          Enqueued for USPS Dispatch
         </span>
       </div>
 
@@ -93,10 +142,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       <div class="rounded-lg border border-border bg-canvas-alt p-4 font-mono text-left space-y-2">
         <div class="flex items-center justify-between text-xs text-text-muted">
           <span>USPS CERTIFIED TRACKING #</span>
-          <span class="text-success font-semibold">ELECTRONIC RETURN RECEIPT</span>
+          <span class="text-sky-400 font-semibold">ELECTRONIC RETURN RECEIPT</span>
         </div>
         <div class="flex items-center justify-between pt-1">
-          <span id="usps-tracking-code" class="text-base sm:text-lg font-bold text-text-primary tracking-wider">
+          <span id="usps-tracking-code" class="text-base sm:text-lg font-bold text-sky-400 tracking-wider">
             7023 8912 4491 0023 9182
           </span>
           <button
@@ -106,6 +155,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           >
             Copy
           </button>
+        </div>
+
+        <div class="my-2 h-7 w-full bg-text-primary/20 flex items-center justify-center text-[11px] text-text-muted tracking-[0.35em] select-none">
+          ||||| | |||| || |||||| | ||||| ||| ||||
         </div>
       </div>
 
@@ -121,7 +174,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         </div>
         <div class="flex justify-between">
           <span class="text-text-muted">Estimated Delivery:</span>
-          <span id="usps-est-delivery" class="font-medium text-success">3 Business Days</span>
+          <span id="usps-est-delivery" class="font-medium text-sky-300">3–5 Business Days</span>
         </div>
       </div>
 
@@ -131,7 +184,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         href="https://tools.usps.com/go/TrackConfirmAction"
         target="_blank"
         rel="noopener noreferrer"
-        class="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-canvas-alt px-6 py-2.5 text-xs font-semibold text-text-primary hover:border-border-hover hover:bg-card transition-all"
+        class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-400 hover:to-indigo-500 px-6 py-3 text-xs font-bold text-white transition-all shadow-md"
       >
         Track on USPS.com &rarr;
       </a>
@@ -141,22 +194,42 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     <div class="mt-8 flex justify-center gap-4">
       <a
         href="/"
-        class="inline-flex items-center justify-center rounded-lg border border-border bg-card px-6 py-2 text-xs font-medium text-text-secondary hover:text-text-primary hover:border-border-hover transition-colors"
+        class="inline-flex items-center justify-center rounded-lg border border-border bg-card px-6 py-2.5 text-xs font-medium text-text-secondary hover:text-text-primary hover:border-border-hover transition-colors"
       >
         Return to Home
       </a>
       <a
         href="/calculator"
-        class="inline-flex items-center justify-center rounded-lg border border-border bg-card px-6 py-2 text-xs font-medium text-text-secondary hover:text-text-primary hover:border-border-hover transition-colors"
+        class="inline-flex items-center justify-center rounded-lg border border-border bg-card px-6 py-2.5 text-xs font-medium text-text-secondary hover:text-text-primary hover:border-border-hover transition-colors"
       >
         Start Another Calculation
       </a>
     </div>
   </div>
+
+  <!-- Dedicated Printable PDF Document (Hidden on screen, full printable page on print) -->
+  <div id="dr-printable-package" class="hidden print:block print:p-8 font-serif text-black bg-white leading-relaxed text-sm">
+    <div id="print-letter-target"></div>
+  </div>
 </BaseLayout>
 
+<style>
+  @media print {
+    body {
+      background: white !important;
+      color: black !important;
+    }
+    header, footer, nav, button, a {
+      display: none !important;
+    }
+    #dr-printable-package {
+      display: block !important;
+    }
+  }
+</style>
+
 <script>
-  // Parse query params to toggle the tier display
+  // Parse query params to toggle tier display
   const params = new URLSearchParams(window.location.search);
   const tier = params.get("tier") || "pdf";
   const tracking = params.get("tracking") || "7023 8912 4491 0023 9182";
@@ -165,6 +238,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   const mailContainer = document.getElementById("tier-mail-container");
   const trackingEl = document.getElementById("usps-tracking-code");
   const trackLink = document.getElementById("link-usps-track") as HTMLAnchorElement;
+  const demandLetterContent = document.getElementById("demand-letter-content");
+  const printTarget = document.getElementById("print-letter-target");
 
   if (trackingEl) trackingEl.textContent = tracking;
   if (trackLink) {
@@ -179,6 +254,38 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     if (mailContainer) mailContainer.classList.add("hidden");
   }
 
+  // Populate Claim Data and Letter from localStorage
+  try {
+    const rawData = localStorage.getItem("dr_claim_data");
+    const rawHtml = localStorage.getItem("dr_letter_html");
+
+    if (rawData) {
+      const data = JSON.parse(rawData);
+      const sumCitation = document.getElementById("sum-citation");
+      const sumDate = document.getElementById("sum-date");
+      const sumUnreturned = document.getElementById("sum-unreturned");
+      const sumPenalty = document.getElementById("sum-penalty");
+      const sumTotal = document.getElementById("sum-total");
+
+      if (sumCitation) sumCitation.textContent = data.citation || `${data.state} Law`;
+      if (sumDate) sumDate.textContent = data.date || "Today";
+      if (sumUnreturned) sumUnreturned.textContent = `$${Number(data.unreturnedAmount || 0).toLocaleString()}`;
+      if (sumPenalty) sumPenalty.textContent = `+$${Number(data.penaltyAmount || 0).toLocaleString()}`;
+      if (sumTotal) sumTotal.textContent = `$${Number(data.totalRecovery || 0).toLocaleString()}`;
+    }
+
+    if (rawHtml) {
+      if (demandLetterContent) demandLetterContent.innerHTML = rawHtml;
+      if (printTarget) printTarget.innerHTML = rawHtml;
+    } else {
+      if (demandLetterContent) {
+        demandLetterContent.innerHTML = "<p>Formal demand letter prepared under state statute. Click Download to print your court filing package.</p>";
+      }
+    }
+  } catch (e) {
+    console.error("Failed to load claim data:", e);
+  }
+
   // Copy tracking number
   const copyBtn = document.getElementById("btn-copy-tracking");
   if (copyBtn && trackingEl) {
@@ -186,6 +293,19 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       navigator.clipboard.writeText(trackingEl.textContent?.trim() || "");
       copyBtn.textContent = "Copied!";
       setTimeout(() => (copyBtn.textContent = "Copy"), 2000);
+    });
+  }
+
+  // Copy letter text
+  const copyLetterBtn = document.getElementById("btn-copy-letter");
+  const copyBtnText = document.getElementById("copy-btn-text");
+  if (copyLetterBtn && demandLetterContent) {
+    copyLetterBtn.addEventListener("click", () => {
+      navigator.clipboard.writeText(demandLetterContent.innerText || "");
+      if (copyBtnText) copyBtnText.textContent = "Letter Copied!";
+      setTimeout(() => {
+        if (copyBtnText) copyBtnText.textContent = "Copy Letter Text";
+      }, 2000);
     });
   }
 

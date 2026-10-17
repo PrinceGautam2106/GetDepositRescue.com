@@ -1507,6 +1507,27 @@ const stateOptions = SUPPORTED_STATE_CODES
     if (printableLetter) {
       printableLetter.innerHTML = letterHtml;
     }
+
+    try {
+      localStorage.setItem("dr_letter_html", letterHtml);
+      localStorage.setItem("dr_claim_data", JSON.stringify({
+        state: statute.stateName,
+        stateCode: statute.stateCode,
+        citation: statute.legalCodeCitation,
+        deadlineDays: statute.deadlineDays,
+        penaltyMultiplier: statute.penaltyMultiplier,
+        smallClaimsLimit: statute.smallClaimsLimit,
+        unreturnedAmount: r.unreturnedAmount,
+        penaltyAmount: penaltyOnly,
+        totalRecovery: r.statutoryPenaltyAmount,
+        tenantName,
+        landlordName,
+        propertyAddr,
+        date: today,
+      }));
+    } catch {
+      // ignore storage quota error
+    }
   }
 
   // ── Lead Capture Gate Handlers ───────────────────────────────────────────
