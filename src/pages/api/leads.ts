@@ -8,12 +8,107 @@ export interface LeadPayload {
   statutoryPenalty?: number;
 }
 
+export async function sendLeadEmail(lead: LeadPayload) {
+  const resendApiKey = typeof process !== "undefined" ? process.env?.RESEND_API_KEY : undefined;
+  if (!resendApiKey) return { sent: false, reason: "No RESEND_API_KEY" };
+
+  const fromEmail = (typeof process !== "undefined" ? process.env?.RESEND_FROM_EMAIL : undefined) || "support@scantranslater.com";
+  const state = lead.stateCode || "your state";
+  const claimFormatted = lead.totalClaimAmount ? `$${Number(lead.totalClaimAmount).toLocaleString()}` : "$0";
+  const penaltyFormatted = lead.statutoryPenalty ? `+$${Number(lead.statutoryPenalty).toLocaleString()}` : "$0";
+
+  const emailHtml = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Your Deposit Recovery Breakdown</title>
+      </head>
+      <body style="margin: 0; padding: 24px; background-color: #09090b; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #fafafa;">
+        <div style="max-width: 580px; margin: 0 auto; background-color: #121215; border: 1px solid #27272a; border-radius: 12px; padding: 32px; box-shadow: 0 4px 24px rgba(0,0,0,0.4);">
+          
+          <div style="border-b: 1px solid #27272a; padding-bottom: 20px; margin-bottom: 24px;">
+            <span style="font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: #38bdf8; text-transform: uppercase;">DepositRescue Legal Engine</span>
+            <h1 style="margin: 8px 0 0 0; font-size: 22px; font-weight: 700; color: #ffffff;">Your Security Deposit Recovery Breakdown</h1>
+          </div>
+
+          <p style="font-size: 14px; line-height: 1.6; color: #a1a1aa;">
+            Hi <strong style="color: #ffffff;">${lead.name}</strong>,
+          </p>
+
+          <p style="font-size: 14px; line-height: 1.6; color: #a1a1aa;">
+            Based on statutory landlord-tenant laws for <strong style="color: #ffffff;">${state}</strong>, your formal demand breakdown has been calculated. If your landlord withheld your deposit past the statutory return deadline without proper itemized receipts, they have forfeited deduction rights and may owe statutory bad-faith penalties.
+          </p>
+
+          <div style="background: linear-gradient(180deg, #0f172a 0%, #020617 100%); border: 1px solid rgba(59, 130, 246, 0.4); border-radius: 8px; padding: 20px; margin: 24px 0;">
+            <div style="font-size: 11px; font-family: monospace; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px;">Total Court Recovery Target</div>
+            <div style="font-size: 32px; font-weight: 800; font-family: monospace; color: #38bdf8; margin-bottom: 12px;">${claimFormatted}</div>
+            
+            <div style="border-top: 1px solid rgba(59, 130, 246, 0.2); padding-top: 12px; font-size: 12px; font-family: monospace; color: #94a3b8;">
+              <span>Statutory Bad-Faith Damages Included: </span>
+              <strong style="color: #60a5fa;">${penaltyFormatted}</strong>
+            </div>
+          </div>
+
+          <h3 style="font-size: 14px; font-weight: 600; color: #ffffff; margin-top: 24px; margin-bottom: 12px;">Recommended Legal Next Steps:</h3>
+          
+          <ol style="font-size: 13px; line-height: 1.8; color: #a1a1aa; padding-left: 20px; margin: 0 0 24px 0;">
+            <li><strong>Review Demand Letter:</strong> Ensure all lease details and move-out surrender dates are accurate.</li>
+            <li><strong>Send via USPS Certified Mail:</strong> Small claims courts require verified signature proof of delivery before awarding statutory damages.</li>
+            <li><strong>10-Day Cure Period:</strong> Give your landlord 10 business days from postal receipt to remit full funds.</li>
+          </ol>
+
+          <div style="text-align: center; margin: 32px 0 20px 0;">
+            <a href="https://getdepositrescue.com/calculator" style="display: inline-block; background: linear-gradient(90deg, #3b82f6, #4f46e5); color: #ffffff; font-size: 14px; font-weight: 600; text-decoration: none; padding: 12px 28px; border-radius: 8px; box-shadow: 0 2px 10px rgba(59, 130, 246, 0.3);">
+              View & Download Your Demand Letter →
+            </a>
+          </div>
+
+          <div style="border-top: 1px solid #27272a; padding-top: 20px; margin-top: 28px; font-size: 11px; line-height: 1.6; color: #71717a; text-align: center;">
+            DepositRescue is a self-help calculation tool, not a law firm, and does not provide formal legal representation.<br>
+            © 2026 DepositRescue. All rights reserved.
+          </div>
+
+        </div>
+      </body>
+    </html>
+  `;
+
+  try {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${resendApiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: `DepositRescue <${fromEmail}>`,
+        to: [lead.email],
+        bcc: ["princegautam2106@gmail.com"],
+        subject: `Your Security Deposit Penalty Breakdown (${claimFormatted}) - DepositRescue`,
+        html: emailHtml,
+      }),
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      return { sent: false, error: err };
+    }
+    const data = (await res.json()) as any;
+    return { sent: true, id: data.id };
+  } catch (err) {
+    return { sent: false, error: err instanceof Error ? err.message : "Network error" };
+  }
+}
+
 export const GET: APIRoute = async () => {
   return new Response(
     JSON.stringify({
       status: "operational",
-      service: "DepositRescue Lead Capture Service",
-      version: "1.0.0",
+      service: "DepositRescue Lead Capture & Email Dispatch Engine",
+      provider: "Resend",
+      version: "2.0.0",
     }),
     {
       status: 200,
@@ -40,15 +135,19 @@ export const POST: APIRoute = async ({ request }) => {
       );
     }
 
-    // Lead is successfully verified. In production, this syncs with your CRM / Email engine.
+    // Trigger Resend email delivery
+    const emailResult = await sendLeadEmail(data);
+
     return new Response(
       JSON.stringify({
         success: true,
-        message: "Lead successfully recorded.",
+        message: "Lead successfully recorded and breakdown email dispatched.",
         lead: {
           name: data.name.trim(),
           email: data.email.trim().toLowerCase(),
           timestamp: new Date().toISOString(),
+          emailDispatched: emailResult.sent,
+          emailId: (emailResult as any).id,
         },
       }),
       { status: 200, headers: { "Content-Type": "application/json" } },

@@ -43,9 +43,7 @@ export const onRequestPost = async (context: { request: Request; env: Env }) => 
     const origin = payload.origin || "https://getdepositrescue.com";
     const isEs = payload.locale === "es";
 
-    const lemonApiKey =
-      env.LEMON_SQUEEZY_API_KEY ||
-      "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI5NGQ1OWNlZi1kYmI4LTRlYTUtYjE3OC1kMjU0MGZjZDY5MTkiLCJqdGkiOiI1YmY2YmEzMTg1OTE0NjAyOTBkZTU0MGE1MzYzYTJiMTk2MmFkOGE5ZjVhYmVlYzg0MDJkYjg4ODEzODljZGJjZTllOTk3NjQ0ZGIyMjJiMyIsImlhdCI6MTc5MjI1Njg0Ni4xNDY0MzgsIm5iZiI6MTc5MjI1Njg0Ni4xNDY0NCwiZXhwIjoxODA3OTIwMDAwLjAxOTQzMSwic3ViIjoiNzk5MjU0NCIsInNjb3BlcyI6W119.b4nskHWvQVHzhpmOLHQY46h_Rqjh7680lWYHmQ1HTTiKXGq0M9LVSgHQ9vHL38q_9qnAUFF48mPLsz5M4xgFY6Nu3wqQQbL6YKHQK95GvaQJF27S7NZzrxggVFaO0FuHi-rmBrvv-1YunZufON2Sjyt48XjQ7msgk1MmbFMtaEDgTwOlsaL4TTzfNiPheoPX6SvxJG5BzYom_19D68Mi0IPjixXqjCg8pChDLY3XAbedCQzO9znV4ypckXcGHmTImfV-3svSNesQIT3CuSEjtUlgxOM2DN4-WDabXdbmHqbQuHxvcs92gpjqAnK2vVG3FyWTYhiGFbFkHbWvCGalA5NIo92aR4xWqtWEk5uO-JHMy7MYTbzzIH7bXko3p26z2n-K1mW-WOlq8v2T7PxM85OJoLBuQCWlwP_BLj9bvurp15UcaXyCvlXj_dAvTnAXHu2DSn9k_ot2vwOyPQfFSPyCsTR-b54_4WftZhq2ORwMj87RB7L3sazXMWaNc5cQUUL2Gk2bLj0jRW2M5sFRa_3gN0pPaKbYkElyiYjm1FH2CjqaTNIk9asDVYpgIV-JmAmp2bo8oR20tAnEVMmXpna-zkZT1omVaTQIKtgAoCz8DnHxYhcNwBdPfFGiXXlPqw_jLcS_HIo2RmmPx6W00OBnCL0Y1fRxjvNnVl-GgWw";
+    const lemonApiKey = env.LEMON_SQUEEZY_API_KEY;
     const storeId = env.LEMON_SQUEEZY_STORE_ID || "500290";
     const variantId =
       tier === "pdf"

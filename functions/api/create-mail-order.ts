@@ -27,7 +27,7 @@ export const onRequestPost = async (context: { request: Request; env: Env }) => 
     const { request, env } = context;
     const payload = (await request.json()) as any;
 
-    const postgridKey = env.POSTGRID_API_KEY || "live_sk_iadUmUYL8xD5UFLK4UTb9d";
+    const postgridKey = env.POSTGRID_API_KEY;
 
     const formattedHtml = `
       <!DOCTYPE html>
