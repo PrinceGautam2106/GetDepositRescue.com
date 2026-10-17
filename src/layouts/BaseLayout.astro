@@ -1,50 +1,102 @@
 ---
 import "../styles/global.css";
+import {
+  getCanonicalUrl,
+  getOgImageUrl,
+  getSiteUrl,
+  generateBreadcrumbSchema,
+  generateWebApplicationSchema,
+  type BreadcrumbItem,
+} from "../utils/seo";
 
 interface Props {
   title: string;
   description: string;
   /** Current page path without locale prefix, e.g. "/" or "/calculator" */
   path?: string;
+  image?: string;
+  noindex?: boolean;
+  breadcrumbs?: BreadcrumbItem[];
 }
 
-const { title, description, path = "/" } = Astro.props;
-const site = Astro.site?.origin ?? "https://getdepositrescue.com";
+const {
+  title,
+  description,
+  path = "/",
+  image = "/og-image.png",
+  noindex = false,
+  breadcrumbs,
+} = Astro.props;
+
+const site = getSiteUrl();
 const currentLocale = Astro.currentLocale ?? "en";
-const canonicalURL = new URL(Astro.url.pathname, site).href;
+const canonicalURL = getCanonicalUrl(Astro.url.pathname);
+const ogImageURL = getOgImageUrl(image);
 
 // Build hreflang alternates
 const enPath = path === "/" ? "/" : path;
 const esPath = path === "/" ? "/es" : `/es${path}`;
+const enAlternate = getCanonicalUrl(enPath);
+const esAlternate = getCanonicalUrl(esPath);
+
+// Generate structured data
+const webAppSchema = generateWebApplicationSchema(canonicalURL, description, currentLocale);
+const breadcrumbSchema = generateBreadcrumbSchema(Astro.url.pathname, currentLocale, breadcrumbs);
 ---
 
 <!doctype html>
 <html lang={currentLocale} class="dark">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#09090b" />
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="DepositRescue" />
+    <link rel="manifest" href="/site.webmanifest" />
     <link rel="sitemap" href="/sitemap-index.xml" />
 
-    <!-- SEO -->
+    <!-- Primary Meta Tags -->
     <title>{title}</title>
+    <meta name="title" content={title} />
     <meta name="description" content={description} />
+    <meta name="robots" content={noindex ? "noindex, nofollow" : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"} />
     <link rel="canonical" href={canonicalURL} />
 
-    <!-- i18n alternates -->
-    <link rel="alternate" hreflang="en" href={`${site}${enPath}`} />
-    <link rel="alternate" hreflang="es" href={`${site}${esPath}`} />
-    <link rel="alternate" hreflang="x-default" href={`${site}${enPath}`} />
+    <!-- Language Alternates -->
+    <link rel="alternate" hreflang="en" href={enAlternate} />
+    <link rel="alternate" hreflang="es" href={esAlternate} />
+    <link rel="alternate" hreflang="x-default" href={enAlternate} />
 
-    <!-- OpenGraph -->
+    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonicalURL} />
-    <meta property="og:locale" content={currentLocale === "es" ? "es_US" : "en_US"} />
+    <meta property="og:image" content={ogImageURL} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta property="og:site_name" content="DepositRescue" />
+    <meta property="og:locale" content={currentLocale === "es" ? "es_US" : "en_US"} />
+    <meta property="og:locale:alternate" content={currentLocale === "es" ? "en_US" : "es_US"} />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalURL} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={ogImageURL} />
+
+    <!-- Schema.org JSON-LD (WebApplication & BreadcrumbList) -->
+    <script type="application/ld+json" set:html={JSON.stringify(webAppSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
 
     <meta name="generator" content={Astro.generator} />
+
+    <!-- Additional head elements / Schema JSON-LD slot -->
+    <slot name="head" />
   </head>
 
   <body class="min-h-dvh bg-canvas text-text-primary font-sans antialiased flex flex-col">
@@ -72,6 +124,18 @@ const esPath = path === "/" ? "/es" : `/es${path}`;
             class="text-sm text-text-secondary transition-colors duration-150 hover:text-text-primary"
           >
             {currentLocale === "es" ? "Calculadora" : "Deposit Calculator"}
+          </a>
+          <a
+            href={currentLocale === "es" ? "/es/about" : "/about"}
+            class="text-sm text-text-secondary transition-colors duration-150 hover:text-text-primary"
+          >
+            {currentLocale === "es" ? "Sobre Nosotros" : "About Us"}
+          </a>
+          <a
+            href={currentLocale === "es" ? "/es/contact" : "/contact"}
+            class="text-sm text-text-secondary transition-colors duration-150 hover:text-text-primary"
+          >
+            {currentLocale === "es" ? "Contacto" : "Contact"}
           </a>
         </div>
 
@@ -122,13 +186,21 @@ const esPath = path === "/" ? "/es" : `/es${path}`;
 
         <!-- Secondary links -->
         <div class="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-xs text-text-muted">
-          <a href="#" class="transition-colors duration-150 hover:text-text-secondary">Privacy</a>
-          <a href="#" class="transition-colors duration-150 hover:text-text-secondary">Terms</a>
-          <a href="#" class="transition-colors duration-150 hover:text-text-secondary">Affiliate Disclosure</a>
-          <a href="#" class="transition-colors duration-150 hover:text-text-secondary">Contact</a>
+          <a href={currentLocale === "es" ? "/es/about" : "/about"} class="transition-colors duration-150 hover:text-text-secondary">
+            {currentLocale === "es" ? "Sobre Nosotros" : "About Us"}
+          </a>
+          <a href={currentLocale === "es" ? "/es/privacy" : "/privacy"} class="transition-colors duration-150 hover:text-text-secondary">
+            {currentLocale === "es" ? "Política de Privacidad" : "Privacy Policy"}
+          </a>
+          <a href={currentLocale === "es" ? "/es/terms" : "/terms"} class="transition-colors duration-150 hover:text-text-secondary">
+            {currentLocale === "es" ? "Términos y Condiciones" : "Terms & Conditions"}
+          </a>
+          <a href={currentLocale === "es" ? "/es/contact" : "/contact"} class="transition-colors duration-150 hover:text-text-secondary">
+            {currentLocale === "es" ? "Contacto" : "Contact Us"}
+          </a>
         </div>
 
-        <p class="mt-6 text-xs text-text-muted/60">
+        <p class="mt-6 text-xs text-text-muted">
           &copy; {new Date().getFullYear()} DepositRescue. All rights reserved.
         </p>
       </div>

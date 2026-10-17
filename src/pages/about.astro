@@ -1,0 +1,111 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const aboutSchema = {
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  name: "About DepositRescue — Tenant Advocacy & Legal Self-Help Automation",
+  description:
+    "Learn about DepositRescue's mission to level the playing field between tenants and landlords through automated 50-state statutory calculations and court-admissible USPS certified demand letters.",
+  url: "https://getdepositrescue.com/about",
+  mainEntity: {
+    "@type": "Organization",
+    name: "DepositRescue",
+    url: "https://getdepositrescue.com",
+    logo: "https://getdepositrescue.com/favicon.svg",
+    foundingDate: "2024",
+    description: "Self-help legal automation platform helping US tenants recover withheld security deposits.",
+  },
+};
+---
+
+<BaseLayout
+  title="About Us — DepositRescue | Self-Help Legal Technology for Tenants"
+  description="Learn about DepositRescue's mission to protect renters, enforce statutory deposit deadlines, and eliminate illegal deductions without expensive attorneys."
+  path="/about"
+>
+  <slot name="head" slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(aboutSchema)} />
+  </slot>
+
+  <article class="mx-auto max-w-3xl px-4 py-12 sm:py-16 space-y-12">
+    <!-- Header -->
+    <header class="border-b border-border pb-8 text-center sm:text-left">
+      <span class="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs font-mono font-medium text-text-secondary">
+        <span class="h-1.5 w-1.5 rounded-full bg-success"></span>
+        Our Mission &amp; Methodology
+      </span>
+      <h1 class="mt-4 text-3xl font-bold tracking-tight text-text-primary sm:text-4xl">
+        Empowering Renters with Open Legal Technology
+      </h1>
+      <p class="mt-3 text-base text-text-secondary leading-relaxed">
+        DepositRescue was created to fix a fundamentally broken power dynamic in American rental housing: landlords withholding hard-earned tenant deposits because they assume renters won't fight back.
+      </p>
+    </header>
+
+    <!-- The Problem & Solution -->
+    <section class="space-y-6">
+      <h2 class="text-xl font-semibold text-text-primary">The $4.5 Billion Problem</h2>
+      <p class="text-sm leading-relaxed text-text-secondary">
+        Every year, millions of US renters surrender tens of millions of dollars in wrongfully withheld deposits. Landlords routinely charge for routine repainting, vacuuming, and normal wear and tear—expenses that state laws explicitly forbid property owners from deducting.
+      </p>
+      <p class="text-sm leading-relaxed text-text-secondary">
+        Retaining a private attorney to recover a $1,500 to $3,000 security deposit is economically irrational when legal retainers start at $2,500. Without accessible self-representation tools, tenants are forced to walk away from funds that rightfully belong to them.
+      </p>
+
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-3 pt-2">
+        <div class="rounded-lg border border-border bg-card p-4">
+          <div class="font-mono text-2xl font-bold text-success">50+</div>
+          <div class="mt-1 text-xs text-text-secondary">US States &amp; DC Codified Statutes</div>
+        </div>
+        <div class="rounded-lg border border-border bg-card p-4">
+          <div class="font-mono text-2xl font-bold text-text-primary">Up to 3&#215;</div>
+          <div class="mt-1 text-xs text-text-secondary">Statutory Bad-Faith Penalties</div>
+        </div>
+        <div class="rounded-lg border border-border bg-card p-4">
+          <div class="font-mono text-2xl font-bold text-emerald-400">100%</div>
+          <div class="mt-1 text-xs text-text-secondary">Free Instant Calculations</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How We Operate -->
+    <section class="space-y-6 border-t border-border pt-8">
+      <h2 class="text-xl font-semibold text-text-primary">How DepositRescue Works</h2>
+      <div class="space-y-4">
+        <div class="rounded-lg border border-border bg-canvas-alt p-5">
+          <h3 class="text-sm font-semibold text-text-primary">1. Codified Statutory Auditing</h3>
+          <p class="mt-1 text-xs leading-relaxed text-text-secondary">
+            Our legal calculation engine maintains a verified registry of landlord-tenant codes across all 50 states plus the District of Columbia. We instantly evaluate move-out timelines against statutory deadlines (ranging from 14 to 60 days) and small claims court filing caps.
+          </p>
+        </div>
+
+        <div class="rounded-lg border border-border bg-canvas-alt p-5">
+          <h3 class="text-sm font-semibold text-text-primary">2. Attorney-Grade Demand Notices</h3>
+          <p class="mt-1 text-xs leading-relaxed text-text-secondary">
+            Informal text messages are routinely dismissed by property managers. DepositRescue generates formal, citation-specific demand letters that clearly articulate the civil penalties and court costs landlords risk by failing to settle within 10 business days.
+          </p>
+        </div>
+
+        <div class="rounded-lg border border-border bg-canvas-alt p-5">
+          <h3 class="text-sm font-semibold text-text-primary">3. Court-Admissible USPS Certified Mail</h3>
+          <p class="mt-1 text-xs leading-relaxed text-text-secondary">
+            Small claims court judges require verifiable proof of delivery before awarding statutory damages. Our optional one-click fulfillment prints, inserts, and dispatches your letter via USPS Certified Mail with Electronic Return Receipt.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Editorial & Independence Standards -->
+    <section class="rounded-lg border border-border bg-card p-6 space-y-4">
+      <h2 class="text-base font-semibold text-text-primary">Legal Disclaimer &amp; Independence</h2>
+      <p class="text-xs leading-relaxed text-text-secondary">
+        DepositRescue is an independent technology platform. We are not an attorney, law firm, or legal referral service, and we do not provide legal representation or tailored legal advice. Our automated calculations and generated demand letters provide informative self-help resources under applicable state public statutes.
+      </p>
+      <div class="pt-2 flex flex-wrap gap-4 text-xs font-medium">
+        <a href="/calculator" class="text-text-primary underline hover:text-emerald-400">Launch Free Calculator &rarr;</a>
+        <a href="/contact" class="text-text-secondary hover:text-text-primary">Contact the Team &rarr;</a>
+      </div>
+    </section>
+  </article>
+</BaseLayout>

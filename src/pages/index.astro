@@ -1,51 +1,492 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import DepositWizard from "../components/calculator/DepositWizard.astro";
+import AdSlot from "../components/ads/AdSlot.astro";
+import TrustSignals from "../components/TrustSignals.astro";
+import { STATE_STATUTES, SUPPORTED_STATE_CODES } from "../data/stateStatutes";
+
+const allStates = SUPPORTED_STATE_CODES.map((code) => STATE_STATUTES[code]).sort((a, b) =>
+  a.stateName.en.localeCompare(b.stateName.en),
+);
+
+// High-ranking Schema.org JSON-LD Structured Data
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "How long does my landlord have to return my security deposit?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Statutory deadlines depend entirely on state law. New York requires full return with an itemized accounting within 14 days. California mandates 21 days, while Texas and Washington provide 30 days. Florida requires 15 days if returning the full deposit or 30 days if making deduction claims. Missing these deadlines often forfeits the landlord's right to keep any portion of your money.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Can my landlord deduct money for painting and basic carpet cleaning?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "In most US states, no. Minor paint scuffs, picture nail holes, and regular carpet traffic constitute normal wear and tear that property owners must absorb as operational costs. Deductions are only lawful for genuine property damage, unapproved structural alterations, or excessive filth beyond reasonable turnover cleaning, and must be documented with actual itemized receipts.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "What happens if a landlord acts in bad faith and ignores my inquiries?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Under state codes like California Civil Code § 1950.5 and Texas Property Code § 92.109, landlords who intentionally or dishonestly withhold security deposits face statutory bad-faith penalties. In Texas, tenants can recover up to $100 plus three times (3x) the withheld amount. In California, judges may award statutory damages of up to twice (2x) the disputed deposit on top of the original refund.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Why is sending a demand letter via USPS Certified Mail required?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Sending an official demand letter via USPS Certified Mail with Return Receipt provides definitive, court-admissible evidence that the landlord received notice of the statutory violation and your formal intent to sue. Unlike emails or text messages, a physical postal signature prevents landlords from claiming non-receipt in small claims court hearings.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Do I need an attorney to recover my security deposit in Small Claims Court?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "No. US small claims courts are structured specifically for everyday tenants to resolve financial disputes without expensive attorneys. Court filing fees are modest (typically $30 to $75), and judges evaluate straightforward evidence: your lease agreement, move-out condition photos, the statutory timeline, and the certified mail demand notice.",
+      },
+    },
+  ],
+};
+
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "DepositRescue",
+  url: "https://getdepositrescue.com/",
+  logo: "https://getdepositrescue.com/favicon.svg",
+  sameAs: ["https://getdepositrescue.com/"],
+  description:
+    "Self-help legal technology platform empowering tenants across all 50 states to enforce security deposit return laws and recover statutory penalties.",
+};
 ---
 
 <BaseLayout
-  title="DepositRescue — Recover Your Unlawfully Withheld Security Deposit"
-  description="Calculate your security deposit penalty, generate a legal demand letter, and recover what your landlord owes you. Free legal calculation engine for US tenants."
+  title="DepositRescue™ | Security Deposit Recovery & Statutory Penalty Calculator"
+  description="Calculate statutory penalties (up to 3x) and generate attorney-grade demand letters citing your state's tenant laws. Recover your unreturned security deposit in minutes."
+  path="/"
 >
-  <section class="mx-auto flex max-w-3xl flex-col items-center px-4 py-24 text-center sm:py-32">
-    <!-- Eyebrow -->
-    <span class="mb-4 inline-flex items-center rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-text-secondary">
-      <span class="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-success"></span>
-      50-State Coverage
-    </span>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
+  </Fragment>
 
-    <!-- Headline -->
-    <h1 class="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
-      Recover Your Unlawfully Withheld Security Deposit.
-      <span class="block text-text-muted">In minutes.</span>
-    </h1>
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- Above-the-Fold Ad Slot (CLS-Safe)                                       -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <div class="mx-auto max-w-5xl px-4 pt-4">
+    <AdSlot slotId="dr-home-top-leaderboard" format="leaderboard" />
+  </div>
 
-    <!-- Subhead -->
-    <p class="mt-6 max-w-xl text-base leading-relaxed text-text-secondary sm:text-lg">
-      Calculate statutory penalties your landlord owes, generate a demand letter, and file in small claims court — all powered by your state's actual deposit return laws.
-    </p>
-
-    <!-- CTA -->
-    <div class="mt-10 flex flex-col gap-3 sm:flex-row">
-      <a
-        href="/calculator"
-        class="inline-flex items-center justify-center rounded-lg bg-cta-bg px-5 py-2.5 text-sm font-semibold text-cta-text transition-all duration-150 ease-out hover:bg-cta-hover"
-      >
-        Calculate My Penalty
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="ml-1.5 h-4 w-4">
-          <path fill-rule="evenodd" d="M5 10a.75.75 0 01.75-.75h6.638L10.23 7.29a.75.75 0 111.04-1.08l3.5 3.25a.75.75 0 010 1.08l-3.5 3.25a.75.75 0 11-1.04-1.08l2.158-1.96H5.75A.75.75 0 015 10z" clip-rule="evenodd" />
-        </svg>
-      </a>
-      <a
-        href="#how-it-works"
-        class="inline-flex items-center justify-center rounded-lg border border-border bg-cta-secondary-bg px-5 py-2.5 text-sm font-semibold text-text-primary transition-all duration-150 ease-out hover:bg-cta-secondary-hover"
-      >
-        How It Works
-      </a>
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- Hero Section & Embedded Interactive Calculator Island                  -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <header class="mx-auto max-w-4xl px-4 pt-8 pb-6 text-center sm:pt-12 sm:pb-8">
+    <div class="mb-4 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3.5 py-1 text-xs font-medium text-text-secondary shadow-xs">
+      <span class="inline-block h-2 w-2 rounded-full bg-success animate-pulse"></span>
+      <span>50-State Statutory Coverage · Court-Admissible Demand Letters</span>
     </div>
 
-    <!-- Trust signal -->
-    <p class="mt-12 text-xs text-text-muted">
-      Free to use · No account required · Based on actual state statutes
+    <h1 class="text-3xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl text-text-primary">
+      Reclaim Your Security Deposit with Law-Backed Precision
+    </h1>
+
+    <p class="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-text-secondary sm:text-lg">
+      Calculate statutory penalties up to 3x, audit illegal landlord deductions, and dispatch legally binding demand letters under your state's civil code in under 3 minutes.
     </p>
+  </header>
+
+  <!-- Interactive 4-Step Calculator Component Island -->
+  <main class="mx-auto max-w-3xl px-4 pb-16">
+    <DepositWizard locale="en" />
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- Comprehensive 600-Word SEO Topical Authority Copy                      -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <section class="border-t border-border bg-canvas-alt/40 py-16 sm:py-20">
+    <article class="mx-auto max-w-3xl px-4 space-y-12">
+      <!-- Intro Section -->
+      <div>
+        <h2 class="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl">
+          Leveling the Playing Field for American Renters
+        </h2>
+        <div class="mt-4 space-y-4 text-sm sm:text-base leading-relaxed text-text-secondary">
+          <p>
+            Every year, millions of American tenants surrender hard-earned cash because landlords exploit the intimidation gap. When you move out, return your keys, and leave an apartment in broom-clean condition, you are legally entitled to your full security deposit. Yet property managers routinely withhold hundreds—or thousands—of dollars for routine repainting, minor rug indentations, or phantom cleaning charges.
+          </p>
+          <p>
+            Worse still, landlords frequently ghost former tenants past mandatory state return deadlines, assuming you lack the time, budget, or legal leverage to fight back. DepositRescue levels the playing field. Built as a specialized legal-tech engine for US renters, DepositRescue translates complex state landlord-tenant statutes into actionable leverage, giving you the tools to audit deductions, calculate statutory bad-faith penalties, and dispatch legally binding demand letters in under three minutes.
+          </p>
+        </div>
+      </div>
+
+      <!-- Section: Normal Wear and Tear vs. Damage -->
+      <div>
+        <h2 class="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl">
+          The Difference Between Normal Wear and Tear vs. Damage
+        </h2>
+        <p class="mt-3 text-sm sm:text-base leading-relaxed text-text-secondary">
+          The most common tactic landlords use to intercept deposit refunds is categorizing normal wear and tear as property damage. State laws across all 50 jurisdictions strictly prohibit landlords from deducting costs for ordinary deterioration caused by everyday living.
+        </p>
+
+        <!-- Visual Comparison Grid -->
+        <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div class="rounded-lg border border-border bg-card p-5">
+            <div class="flex items-center gap-2 text-success font-semibold text-sm">
+              <svg class="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
+              <span>Non-Deductible Wear & Tear</span>
+            </div>
+            <ul class="mt-3 space-y-2 text-xs sm:text-sm text-text-secondary">
+              <li>• Faded wall paint from natural sunlight</li>
+              <li>• Light scuffs on high-traffic hardwood floors</li>
+              <li>• Minor nail holes from hanging picture frames</li>
+              <li>• Loose door hinges and cabinet handles</li>
+              <li>• Naturally worn or aged carpet fibers</li>
+            </ul>
+          </div>
+
+          <div class="rounded-lg border border-border bg-card p-5">
+            <div class="flex items-center gap-2 text-danger font-semibold text-sm">
+              <svg class="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+              </svg>
+              <span>Actionable Property Damage</span>
+            </div>
+            <ul class="mt-3 space-y-2 text-xs sm:text-sm text-text-secondary">
+              <li>• Large burns or cigarette burns in carpet</li>
+              <li>• Unapproved wall murals or structural drywall holes</li>
+              <li>• Broken ceramic tiles or cracked windows</li>
+              <li>• Pet-stained subflooring and deep odors</li>
+              <li>• Missing appliances or fixtures listed on move-in</li>
+            </ul>
+          </div>
+        </div>
+
+        <p class="mt-4 text-xs sm:text-sm leading-relaxed text-text-secondary">
+          Under statutes like <a href="/ca-security-deposit-law" class="text-text-primary underline hover:text-white">California Civil Code § 1950.5</a>, <a href="/tx-security-deposit-law" class="text-text-primary underline hover:text-white">Texas Property Code § 92.109</a>, and <a href="/ny-security-deposit-law" class="text-text-primary underline hover:text-white">New York General Obligations Law § 7-108</a>, landlords cannot charge you to renovate their investment property for the next tenant. If an itemized deduction receipt was never provided, or if the landlord billed you for standard turnover maintenance, those funds belong back in your bank account.
+        </p>
+      </div>
+
+      <!-- Section: State Statutory Deadlines & Penalties -->
+      <div>
+        <h2 class="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl">
+          State Statutory Deadlines: How Landlord Delay Triggers 2x to 3x Penalties
+        </h2>
+        <div class="mt-4 space-y-4 text-sm sm:text-base leading-relaxed text-text-secondary">
+          <p>
+            State legislatures establish strict timelines for deposit accounting—typically ranging from 14 to 30 days after tenant surrender. If a landlord fails to return the deposit or supply an itemized written statement of deductions with supporting receipts within this statutory window, they often forfeit the right to retain any portion of the funds.
+          </p>
+          <p>
+            Even more critical: most US states punish bad-faith retention with mandatory statutory damages:
+          </p>
+        </div>
+
+        <!-- State statute highlights -->
+        <div class="mt-4 space-y-3">
+          <div class="rounded-lg border border-border bg-card p-4">
+            <div class="flex items-center justify-between">
+              <a href="/ca-security-deposit-law" class="text-sm font-bold text-text-primary hover:underline">
+                California (Cal. Civ. Code § 1950.5)
+              </a>
+              <span class="rounded bg-success/10 px-2 py-0.5 text-xs font-mono font-semibold text-success">21-Day Deadline</span>
+            </div>
+            <p class="mt-2 text-xs sm:text-sm text-text-secondary">
+              Bad-faith retention can trigger up to two times (2x) the deposit amount in statutory damages, in addition to the return of the original balance.
+            </p>
+          </div>
+
+          <div class="rounded-lg border border-border bg-card p-4">
+            <div class="flex items-center justify-between">
+              <a href="/tx-security-deposit-law" class="text-sm font-bold text-text-primary hover:underline">
+                Texas (Tex. Prop. Code § 92.109)
+              </a>
+              <span class="rounded bg-success/10 px-2 py-0.5 text-xs font-mono font-semibold text-success">30-Day Deadline</span>
+            </div>
+            <p class="mt-2 text-xs sm:text-sm text-text-secondary">
+              Landlords who fail to deliver an itemized list or return the balance within 30 days face penalties of $100 plus three times (3x) the improperly withheld amount, plus reasonable attorney fees.
+            </p>
+          </div>
+
+          <div class="rounded-lg border border-border bg-card p-4">
+            <div class="flex items-center justify-between">
+              <a href="/ny-security-deposit-law" class="text-sm font-bold text-text-primary hover:underline">
+                New York (NY Gen. Oblig. Law § 7-108)
+              </a>
+              <span class="rounded bg-success/10 px-2 py-0.5 text-xs font-mono font-semibold text-success">14-Day Deadline</span>
+            </div>
+            <p class="mt-2 text-xs sm:text-sm text-text-secondary">
+              Landlords who fail to provide itemized deductions within 14 days forfeit all rights to retain the deposit and risk punitive damages up to double the deposit value.
+            </p>
+          </div>
+        </div>
+
+        <p class="mt-4 text-xs sm:text-sm leading-relaxed text-text-secondary">
+          DepositRescue's automated calculation engine evaluates your move-out date against your state's strict civil codes to determine your exact statutory penalty entitlement.
+        </p>
+      </div>
+
+      <!-- Section: From Calculation to Certified Mail -->
+      <div>
+        <h2 class="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl">
+          From Calculation to Certified Mail: Enforce Your Rights
+        </h2>
+        <div class="mt-4 space-y-4 text-sm sm:text-base leading-relaxed text-text-secondary">
+          <p>
+            Winning your deposit back requires creating an incontrovertible paper trail for small claims court. Informal text messages and polite phone calls are routinely ignored.
+          </p>
+          <p>
+            DepositRescue generates an attorney-grade Demand Letter citing the specific civil codes, itemizing the illegal deductions, and articulating the exact statutory multipliers your landlord faces in court if they do not settle within 10 business days.
+          </p>
+          <p>
+            With one click, DepositRescue prints, packages, and dispatches your official demand notice via USPS Certified Mail with Return Receipt and Electronic Tracking. When a landlord signs for an official notice citing civil penalties, settlement rates skyrocket—delivering resolution without the expense of a lawyer.
+          </p>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- In-Content Ad Slot (CLS-Safe)                                           -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <div class="mx-auto max-w-5xl px-4 py-8">
+    <AdSlot slotId="dr-home-incontent" format="in-content" />
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- 50-State Statutory Hub (Flat Architecture for Crawlability)             -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <section class="border-t border-border bg-canvas py-16">
+    <div class="mx-auto max-w-5xl px-4">
+      <div class="text-center max-w-2xl mx-auto">
+        <h2 class="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl">
+          State-by-State Security Deposit Laws & Deadlines
+        </h2>
+        <p class="mt-2 text-xs sm:text-sm text-text-secondary">
+          Explore codified statutory deadlines, small claims limits, and bad-faith penalty multipliers across all 50 states and Washington D.C.
+        </p>
+      </div>
+
+      <div class="mt-10 grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 text-xs">
+        {allStates.map((st) => (
+          <a
+            href={`/${st.stateCode.toLowerCase()}-security-deposit-law`}
+            class="group flex flex-col justify-between rounded-md border border-border bg-canvas-alt p-2.5 transition-all duration-150 hover:border-border-hover hover:bg-card"
+          >
+            <span class="font-semibold text-text-primary group-hover:text-white">
+              {st.stateName.en}
+            </span>
+            <div class="mt-1.5 flex items-center justify-between font-mono text-[11px] text-text-muted">
+              <span>{st.deadlineDays}d deadline</span>
+              {st.penaltyMultiplier > 0 && (
+                <span class="text-emerald-400 font-semibold">{st.penaltyMultiplier}x</span>
+              )}
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- Interactive FAQ Section (UI Component Accordion)                        -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <section class="border-t border-border bg-canvas-alt/30 py-16 sm:py-20">
+    <div class="mx-auto max-w-3xl px-4">
+      <div class="text-center">
+        <h2 class="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl">
+          Frequently Asked Questions
+        </h2>
+        <p class="mt-2 text-xs sm:text-sm text-text-secondary">
+          Essential legal knowledge for recovering your rental deposit without an expensive attorney.
+        </p>
+      </div>
+
+      <div class="mt-8 space-y-3">
+        <!-- Q1 -->
+        <details class="group rounded-lg border border-border bg-card transition-all">
+          <summary class="flex cursor-pointer items-center justify-between p-4 text-sm font-semibold text-text-primary hover:text-white">
+            <span>How long does my landlord have to return my security deposit?</span>
+            <svg class="h-4 w-4 shrink-0 transition-transform group-open:rotate-180 text-text-muted" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+            </svg>
+          </summary>
+          <div class="border-t border-border p-4 text-xs sm:text-sm leading-relaxed text-text-secondary">
+            Statutory deadlines vary strictly by state. For example, New York landlords must return deposits with itemized statements within 14 days. California allows 21 days, Washington allows 30 days, and Texas mandates 30 days. Florida requires 15 days if no damage is claimed, or 30 days if deductions are made. If your landlord exceeds these deadlines without sending certified accounting, they have likely violated state law.
+          </div>
+        </details>
+
+        <!-- Q2 -->
+        <details class="group rounded-lg border border-border bg-card transition-all">
+          <summary class="flex cursor-pointer items-center justify-between p-4 text-sm font-semibold text-text-primary hover:text-white">
+            <span>Can my landlord deduct money for painting and basic carpet cleaning?</span>
+            <svg class="h-4 w-4 shrink-0 transition-transform group-open:rotate-180 text-text-muted" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+            </svg>
+          </summary>
+          <div class="border-t border-border p-4 text-xs sm:text-sm leading-relaxed text-text-secondary">
+            Generally, no. Basic cleaning to return an apartment to move-in cleanliness and normal paint wear from furniture placement or minor picture-hanging nails are classified as non-deductible "normal wear and tear." Landlords can only deduct for excessive negligence—such as deep wall gouges, cigarette smoke burns, or severe pet stains—and must provide legitimate third-party repair receipts in most jurisdictions.
+          </div>
+        </details>
+
+        <!-- Q3 -->
+        <details class="group rounded-lg border border-border bg-card transition-all">
+          <summary class="flex cursor-pointer items-center justify-between p-4 text-sm font-semibold text-text-primary hover:text-white">
+            <span>What happens if a landlord acts in "bad faith" and ignores my inquiries?</span>
+            <svg class="h-4 w-4 shrink-0 transition-transform group-open:rotate-180 text-text-muted" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+            </svg>
+          </summary>
+          <div class="border-t border-border p-4 text-xs sm:text-sm leading-relaxed text-text-secondary">
+            Most state statutes penalize bad-faith withholding with statutory damages. In Texas, you can sue for $100 plus 3x the withheld amount. In California, courts can award up to 2x the deposit in statutory penalties. These penalties exist specifically to discourage landlords from using your money as an unauthorized interest-free loan.
+          </div>
+        </details>
+
+        <!-- Q4 -->
+        <details class="group rounded-lg border border-border bg-card transition-all">
+          <summary class="flex cursor-pointer items-center justify-between p-4 text-sm font-semibold text-text-primary hover:text-white">
+            <span>Why is sending a demand letter via USPS Certified Mail required?</span>
+            <svg class="h-4 w-4 shrink-0 transition-transform group-open:rotate-180 text-text-muted" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+            </svg>
+          </summary>
+          <div class="border-t border-border p-4 text-xs sm:text-sm leading-relaxed text-text-secondary">
+            Small Claims Court judges require verified proof that the landlord received notice of the dispute and had a reasonable opportunity (typically 10 to 14 days) to rectify the balance. A standard email or SMS can be disputed as "sent to spam" or "unreceived." A USPS Certified Mail tracking receipt proves legal delivery to the landlord's registered business address.
+          </div>
+        </details>
+
+        <!-- Q5 -->
+        <details class="group rounded-lg border border-border bg-card transition-all">
+          <summary class="flex cursor-pointer items-center justify-between p-4 text-sm font-semibold text-text-primary hover:text-white">
+            <span>Do I need an attorney to recover my security deposit in Small Claims Court?</span>
+            <svg class="h-4 w-4 shrink-0 transition-transform group-open:rotate-180 text-text-muted" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+            </svg>
+          </summary>
+          <div class="border-t border-border p-4 text-xs sm:text-sm leading-relaxed text-text-secondary">
+            No. Small claims courts in the United States were deliberately designed for self-represented individuals without legal counsel. Filing fees are low (usually $30 to $75), and in states like California and Texas, lawyers are restricted or prohibited from speaking for parties in basic small claims hearings. A clear timeline, photos from move-out, and our Certified Mail delivery receipt provide all the documentation necessary to present your case.
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- Trust, Transparency & Tenant Protection (MPA Hub Links)                 -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <section class="border-t border-border bg-canvas py-16">
+    <div class="mx-auto max-w-5xl px-4">
+      <!-- E-E-A-T Trust & Methodology Grid -->
+      <TrustSignals locale="en" class="mb-16" />
+
+      <div class="text-center max-w-2xl mx-auto">
+        <span class="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs font-mono font-medium text-text-secondary">
+          <span class="h-1.5 w-1.5 rounded-full bg-success"></span>
+          Transparency &amp; Trust
+        </span>
+        <h2 class="mt-3 text-2xl font-bold tracking-tight text-text-primary sm:text-3xl">
+          Built for Renters, Backed by Open Law
+        </h2>
+        <p class="mt-2 text-xs sm:text-sm text-text-secondary">
+          Explore our organization, legal self-help disclaimers, data confidentiality standards, and direct tenant support.
+        </p>
+      </div>
+
+      <div class="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <!-- 1. About Us -->
+        <a
+          href="/about"
+          class="group flex flex-col justify-between rounded-lg border border-border bg-card p-5 transition-all duration-150 hover:border-border-hover hover:bg-canvas-alt"
+        >
+          <div>
+            <div class="flex h-9 w-9 items-center justify-center rounded-md border border-border bg-canvas text-text-primary group-hover:border-border-hover">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4.5 w-4.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
+              </svg>
+            </div>
+            <h3 class="mt-4 text-sm font-semibold text-text-primary group-hover:text-emerald-400 transition-colors">
+              About Us
+            </h3>
+            <p class="mt-1 text-xs text-text-secondary leading-relaxed">
+              Our mission to eliminate illegal deposit withholding through automated legal technology.
+            </p>
+          </div>
+          <span class="mt-4 text-xs font-medium text-text-primary group-hover:underline">Learn more &rarr;</span>
+        </a>
+
+        <!-- 2. Contact Us -->
+        <a
+          href="/contact"
+          class="group flex flex-col justify-between rounded-lg border border-border bg-card p-5 transition-all duration-150 hover:border-border-hover hover:bg-canvas-alt"
+        >
+          <div>
+            <div class="flex h-9 w-9 items-center justify-center rounded-md border border-border bg-canvas text-text-primary group-hover:border-border-hover">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4.5 w-4.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+              </svg>
+            </div>
+            <h3 class="mt-4 text-sm font-semibold text-text-primary group-hover:text-emerald-400 transition-colors">
+              Contact Us
+            </h3>
+            <p class="mt-1 text-xs text-text-secondary leading-relaxed">
+              Need tracking support or have questions about a statute? Reach our support team.
+            </p>
+          </div>
+          <span class="mt-4 text-xs font-medium text-text-primary group-hover:underline">Get in touch &rarr;</span>
+        </a>
+
+        <!-- 3. Terms & Conditions -->
+        <a
+          href="/terms"
+          class="group flex flex-col justify-between rounded-lg border border-border bg-card p-5 transition-all duration-150 hover:border-border-hover hover:bg-canvas-alt"
+        >
+          <div>
+            <div class="flex h-9 w-9 items-center justify-center rounded-md border border-border bg-canvas text-text-primary group-hover:border-border-hover">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4.5 w-4.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+              </svg>
+            </div>
+            <h3 class="mt-4 text-sm font-semibold text-text-primary group-hover:text-emerald-400 transition-colors">
+              Terms &amp; Conditions
+            </h3>
+            <p class="mt-1 text-xs text-text-secondary leading-relaxed">
+              Review our self-help legal software disclaimers and certified postal delivery policies.
+            </p>
+          </div>
+          <span class="mt-4 text-xs font-medium text-text-primary group-hover:underline">View terms &rarr;</span>
+        </a>
+
+        <!-- 4. Privacy Policy -->
+        <a
+          href="/privacy"
+          class="group flex flex-col justify-between rounded-lg border border-border bg-card p-5 transition-all duration-150 hover:border-border-hover hover:bg-canvas-alt"
+        >
+          <div>
+            <div class="flex h-9 w-9 items-center justify-center rounded-md border border-border bg-canvas text-text-primary group-hover:border-border-hover">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4.5 w-4.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+              </svg>
+            </div>
+            <h3 class="mt-4 text-sm font-semibold text-text-primary group-hover:text-emerald-400 transition-colors">
+              Privacy Policy
+            </h3>
+            <p class="mt-1 text-xs text-text-secondary leading-relaxed">
+              Strict data encryption, zero data brokering, and tenant confidentiality guarantees.
+            </p>
+          </div>
+          <span class="mt-4 text-xs font-medium text-text-primary group-hover:underline">Read policy &rarr;</span>
+        </a>
+      </div>
+    </div>
   </section>
 </BaseLayout>

@@ -1,51 +1,457 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import DepositWizard from "../../components/calculator/DepositWizard.astro";
+import AdSlot from "../../components/ads/AdSlot.astro";
+import TrustSignals from "../../components/TrustSignals.astro";
+import { STATE_STATUTES, SUPPORTED_STATE_CODES } from "../../data/stateStatutes";
+
+const allStates = SUPPORTED_STATE_CODES.map((code) => STATE_STATUTES[code]).sort((a, b) =>
+  a.stateName.es.localeCompare(b.stateName.es),
+);
+
+// High-ranking Schema.org JSON-LD Structured Data in Spanish
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "¿Cuánto tiempo tiene mi arrendador para devolver mi depósito de seguridad?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Los plazos legales dependen exclusivamente de las leyes de cada estado. Por ejemplo, en Nueva York el plazo es de 14 días con estado de cuenta detallado. En California son 21 días, mientras que en Texas y Washington son 30 días. En Florida son 15 días si devuelven el monto completo o 30 días si realizan deducciones. Superar estos plazos sin notificación oficial anula generalmente el derecho del propietario a retener su dinero.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "¿Puede mi arrendador deducir dinero por pintura básica o limpieza de alfombras?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "En la mayoría de los estados, no. El desgaste de pintura por radiación solar, agujeros menores de clavos para cuadros y el desgaste normal de alfombras se consideran 'desgaste por uso razonable' y deben ser asumidos por el arrendador. Las deducciones solo son legales por daños reales, modificaciones no autorizadas o suciedad excesiva, debidamente justificadas con facturas detalladas.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "¿Qué sucede si el arrendador actúa de 'mala fe' y no responde a mis reclamos?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Los códigos estatales castigan la retención de mala fe con multas punitivas. En Texas, puede demandar por $100 más tres veces (3x) el monto retenido indebidamente. En California, los jueces pueden ordenar una indemnización legal de hasta el doble (2x) del depósito disputado además del reembolso completo.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "¿Por qué es obligatorio enviar una carta de demanda por Correo Certificado USPS?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Los tribunales de reclamos menores exigen prueba fehaciente e incontrovertible de entrega para otorgar sanciones legales. Un correo electrónico o mensaje de texto puede ser objetado como no recibido o enviado a spam. El número de rastreo y acuse de recibo de USPS Certified Mail prueba legalmente que el arrendador recibió la notificación formal.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "¿Necesito un abogado para recuperar mi depósito en la Corte de Reclamos Menores?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "No. Los juzgados de reclamos menores (Small Claims Court) en Estados Unidos están creados específicamente para que los inquilinos se representen a sí mismos sin abogados. Las tasas de radicación son bajas ($30 a $75) y la evidencia principal se basa en el contrato de arrendamiento, fotos de mudanza y el comprobante de entrega postal.",
+      },
+    },
+  ],
+};
 ---
 
 <BaseLayout
-  title="DepositRescue — Recupere Su Depósito de Seguridad Retenido Ilegalmente"
-  description="Calcule la multa de su depósito de seguridad, genere una carta de demanda legal y recupere lo que su arrendador le debe. Motor de cálculo legal gratuito para inquilinos en EE.UU."
+  title="DepositRescue™ | Recuperación de Depósito de Renta y Calculadora de Multas"
+  description="Calcule sanciones estatutarias (hasta 3x) y genere cartas de demanda legal citando las leyes de inquilinos de su estado. Recupere su depósito en minutos."
+  path="/"
 >
-  <section class="mx-auto flex max-w-3xl flex-col items-center px-4 py-24 text-center sm:py-32">
-    <!-- Eyebrow -->
-    <span class="mb-4 inline-flex items-center rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-text-secondary">
-      <span class="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-success"></span>
-      Cobertura en 50 Estados
-    </span>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  </Fragment>
 
-    <!-- Headline -->
-    <h1 class="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
-      Recupere Su Depósito de Seguridad Retenido Ilegalmente.
-      <span class="block text-text-muted">En minutos.</span>
-    </h1>
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- Above-the-Fold Ad Slot (CLS-Safe)                                       -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <div class="mx-auto max-w-5xl px-4 pt-4">
+    <AdSlot slotId="dr-es-home-top-leaderboard" format="leaderboard" />
+  </div>
 
-    <!-- Subhead -->
-    <p class="mt-6 max-w-xl text-base leading-relaxed text-text-secondary sm:text-lg">
-      Calcule las multas legales que su arrendador le debe, genere una carta de demanda y presente una reclamación en la corte de reclamos menores — todo basado en las leyes reales de devolución de depósitos de su estado.
-    </p>
-
-    <!-- CTA -->
-    <div class="mt-10 flex flex-col gap-3 sm:flex-row">
-      <a
-        href="/es/calculator"
-        class="inline-flex items-center justify-center rounded-lg bg-cta-bg px-5 py-2.5 text-sm font-semibold text-cta-text transition-all duration-150 ease-out hover:bg-cta-hover"
-      >
-        Calcular Mi Multa
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="ml-1.5 h-4 w-4">
-          <path fill-rule="evenodd" d="M5 10a.75.75 0 01.75-.75h6.638L10.23 7.29a.75.75 0 111.04-1.08l3.5 3.25a.75.75 0 010 1.08l-3.5 3.25a.75.75 0 11-1.04-1.08l2.158-1.96H5.75A.75.75 0 015 10z" clip-rule="evenodd" />
-        </svg>
-      </a>
-      <a
-        href="#como-funciona"
-        class="inline-flex items-center justify-center rounded-lg border border-border bg-cta-secondary-bg px-5 py-2.5 text-sm font-semibold text-text-primary transition-all duration-150 ease-out hover:bg-cta-secondary-hover"
-      >
-        Cómo Funciona
-      </a>
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- Hero Section & Embedded Interactive Calculator Island                  -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <header class="mx-auto max-w-4xl px-4 pt-8 pb-6 text-center sm:pt-12 sm:pb-8">
+    <div class="mb-4 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3.5 py-1 text-xs font-medium text-text-secondary shadow-xs">
+      <span class="inline-block h-2 w-2 rounded-full bg-success animate-pulse"></span>
+      <span>Cobertura en los 50 Estados de EE.UU. · Cartas Legales con Citación Formal</span>
     </div>
 
-    <!-- Trust signal -->
-    <p class="mt-12 text-xs text-text-muted">
-      Gratis · Sin cuenta requerida · Basado en estatutos estatales reales
+    <h1 class="text-3xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl text-text-primary">
+      Recupere Su Depósito de Alquiler con Respaldo Legal
+    </h1>
+
+    <p class="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-text-secondary sm:text-lg">
+      Calcule sanciones estatutarias de hasta 3x, detecte deducciones indebidas y despache cartas de reclamo formal vinculantes bajo el código civil de su estado en menos de 3 minutos.
     </p>
+  </header>
+
+  <!-- Interactive 4-Step Calculator Component Island in Spanish -->
+  <main class="mx-auto max-w-3xl px-4 pb-16">
+    <DepositWizard locale="es" />
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- Comprehensive SEO Topical Authority Copy (Spanish)                    -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <section class="border-t border-border bg-canvas-alt/40 py-16 sm:py-20">
+    <article class="mx-auto max-w-3xl px-4 space-y-12">
+      <!-- Intro Section -->
+      <div>
+        <h2 class="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl">
+          Protegiendo los Derechos de los Inquilinos en Estados Unidos
+        </h2>
+        <div class="mt-4 space-y-4 text-sm sm:text-base leading-relaxed text-text-secondary">
+          <p>
+            Cada año, millones de inquilinos pierden su dinero porque los propietarios aprovechan el desconocimiento legal. Cuando usted entrega las llaves y desocupa la vivienda en condiciones adecuadas, la ley exige la devolución íntegra de su depósito de seguridad. Sin embargo, administradores inmobiliarios aplican deducciones injustificadas por pintura normal o limpieza de rutina.
+          </p>
+          <p>
+            Muchos propietarios ignoran deliberadamente los plazos legales, asumiendo que el inquilino no tiene tiempo o recursos para demandar. DepositRescue transforma las leyes estatales en una herramienta directa para calcular sanciones por mala fe y despachar notificaciones formales de inmediato.
+          </p>
+        </div>
+      </div>
+
+      <!-- Section: Normal Wear and Tear vs. Damage -->
+      <div>
+        <h2 class="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl">
+          Diferencia Entre Uso Razonable (Desgaste Normal) y Daño Real
+        </h2>
+        <p class="mt-3 text-sm sm:text-base leading-relaxed text-text-secondary">
+          La táctica más frecuente de los arrendadores es cobrar por el deterioro natural del inmueble. Las leyes de los 50 estados prohíben deducir costos de mantenimiento rutinario derivado del uso cotidiano.
+        </p>
+
+        <!-- Visual Comparison Grid -->
+        <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div class="rounded-lg border border-border bg-card p-5">
+            <div class="flex items-center gap-2 text-success font-semibold text-sm">
+              <svg class="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
+              <span>Desgaste por Uso Razonable (No Deducible)</span>
+            </div>
+            <ul class="mt-3 space-y-2 text-xs sm:text-sm text-text-secondary">
+              <li>• Pintura desgastada por luz natural del sol</li>
+              <li>• Rozaduras leves en pisos de madera de alto tráfico</li>
+              <li>• Pequeños orificios de clavos para cuadros</li>
+              <li>• Bisagras y manijas de gabinetes flojas</li>
+              <li>• Alfombra desgastada por tránsito regular</li>
+            </ul>
+          </div>
+
+          <div class="rounded-lg border border-border bg-card p-5">
+            <div class="flex items-center gap-2 text-danger font-semibold text-sm">
+              <svg class="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+              </svg>
+              <span>Daño Real a la Propiedad (Deducible)</span>
+            </div>
+            <ul class="mt-3 space-y-2 text-xs sm:text-sm text-text-secondary">
+              <li>• Quemaduras grandes o por cigarrillo en alfombras</li>
+              <li>• Agujeros profundos o perforaciones en paredes</li>
+              <li>• Azulejos rotos o vidrios de ventanas quebrados</li>
+              <li>• Manchas profundas de orina de mascotas</li>
+              <li>• Electrodomésticos rotos o accesorios faltantes</li>
+            </ul>
+          </div>
+        </div>
+
+        <p class="mt-4 text-xs sm:text-sm leading-relaxed text-text-secondary">
+          Bajo normas como el <a href="/es/ca-security-deposit-law" class="text-text-primary underline hover:text-white">Código Civil de California § 1950.5</a>, el <a href="/es/tx-security-deposit-law" class="text-text-primary underline hover:text-white">Código de Propiedad de Texas § 92.109</a> y la ley de <a href="/es/ny-security-deposit-law" class="text-text-primary underline hover:text-white">Nueva York (GOL § 7-108)</a>, el arrendador no puede obligarle a pagar la renovación del inmueble para el siguiente inquilino.
+        </p>
+      </div>
+
+      <!-- Section: State Statutory Deadlines & Penalties -->
+      <div>
+        <h2 class="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl">
+          Plazos Estatales: Cómo la Demora Activa Multas de 2x a 3x
+        </h2>
+        <div class="mt-4 space-y-4 text-sm sm:text-base leading-relaxed text-text-secondary">
+          <p>
+            Las leyes estatales fijan un calendario riguroso para la devolución del depósito (generalmente entre 14 y 30 días tras la entrega del inmueble). Si el propietario no remite el dinero o la lista detallada de deducciones en dicho período, pierde el derecho legal a retener cualquier saldo.
+          </p>
+        </div>
+
+        <div class="mt-4 space-y-3">
+          <div class="rounded-lg border border-border bg-card p-4">
+            <div class="flex items-center justify-between">
+              <a href="/es/ca-security-deposit-law" class="text-sm font-bold text-text-primary hover:underline">
+                California (Cal. Civ. Code § 1950.5)
+              </a>
+              <span class="rounded bg-success/10 px-2 py-0.5 text-xs font-mono font-semibold text-success">Plazo de 21 Días</span>
+            </div>
+            <p class="mt-2 text-xs sm:text-sm text-text-secondary">
+              La retención de mala fe faculta a reclamar hasta dos veces (2x) el importe del depósito en concepto de daños legales adicionales.
+            </p>
+          </div>
+
+          <div class="rounded-lg border border-border bg-card p-4">
+            <div class="flex items-center justify-between">
+              <a href="/es/tx-security-deposit-law" class="text-sm font-bold text-text-primary hover:underline">
+                Texas (Tex. Prop. Code § 92.109)
+              </a>
+              <span class="rounded bg-success/10 px-2 py-0.5 text-xs font-mono font-semibold text-success">Plazo de 30 Días</span>
+            </div>
+            <p class="mt-2 text-xs sm:text-sm text-text-secondary">
+              Los propietarios que no entreguen la contabilidad en 30 días enfrentan una multa de $100 más el triple (3x) del monto retenido indebidamente.
+            </p>
+          </div>
+
+          <div class="rounded-lg border border-border bg-card p-4">
+            <div class="flex items-center justify-between">
+              <a href="/es/ny-security-deposit-law" class="text-sm font-bold text-text-primary hover:underline">
+                Nueva York (NY Gen. Oblig. Law § 7-108)
+              </a>
+              <span class="rounded bg-success/10 px-2 py-0.5 text-xs font-mono font-semibold text-success">Plazo de 14 Días</span>
+            </div>
+            <p class="mt-2 text-xs sm:text-sm text-text-secondary">
+              Si el propietario no entrega los recibos en 14 días, pierde todo derecho a retención y arriesga sanciones de hasta el doble del depósito.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section: From Calculation to Certified Mail -->
+      <div>
+        <h2 class="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl">
+          De la Calculadora al Correo Certificado: Haga Cumplir la Ley
+        </h2>
+        <div class="mt-4 space-y-4 text-sm sm:text-base leading-relaxed text-text-secondary">
+          <p>
+            Para recuperar su dinero se requiere un expediente documental impecable. Las llamadas y mensajes informales suelen ser ignorados.
+          </p>
+          <p>
+            DepositRescue genera una carta formal citando los artículos legales precisos y otorga un plazo formal de 10 días antes de radicar la demanda judicial. Con un clic, despachamos la notificación vía USPS Certified Mail con acuse de recibo electrónico para máxima validez judicial.
+          </p>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- 50-State Statutory Hub in Spanish                                       -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <section class="border-t border-border bg-canvas py-16">
+    <div class="mx-auto max-w-5xl px-4">
+      <div class="text-center max-w-2xl mx-auto">
+        <h2 class="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl">
+          Leyes de Depósito de Renta por Estado (EE.UU.)
+        </h2>
+        <p class="mt-2 text-xs sm:text-sm text-text-secondary">
+          Consulte los plazos legales de devolución, límites en cortes de reclamos menores y multas estatutarias en los 50 estados.
+        </p>
+      </div>
+
+      <div class="mt-10 grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 text-xs">
+        {allStates.map((st) => (
+          <a
+            href={`/es/${st.stateCode.toLowerCase()}-security-deposit-law`}
+            class="group flex flex-col justify-between rounded-md border border-border bg-canvas-alt p-2.5 transition-all duration-150 hover:border-border-hover hover:bg-card"
+          >
+            <span class="font-semibold text-text-primary group-hover:text-white">
+              {st.stateName.es}
+            </span>
+            <div class="mt-1.5 flex items-center justify-between font-mono text-[11px] text-text-muted">
+              <span>{st.deadlineDays} días</span>
+              {st.penaltyMultiplier > 0 && (
+                <span class="text-emerald-400 font-semibold">{st.penaltyMultiplier}x</span>
+              )}
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- Interactive FAQ Section in Spanish                                      -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <section class="border-t border-border bg-canvas-alt/30 py-16 sm:py-20">
+    <div class="mx-auto max-w-3xl px-4">
+      <div class="text-center">
+        <h2 class="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl">
+          Preguntas Frecuentes
+        </h2>
+        <p class="mt-2 text-xs sm:text-sm text-text-secondary">
+          Guía legal esencial para recuperar su depósito de alquiler sin abogados costosos.
+        </p>
+      </div>
+
+      <div class="mt-8 space-y-3">
+        <details class="group rounded-lg border border-border bg-card transition-all">
+          <summary class="flex cursor-pointer items-center justify-between p-4 text-sm font-semibold text-text-primary hover:text-white">
+            <span>¿Cuánto tiempo tiene mi arrendador para devolver mi depósito de seguridad?</span>
+            <svg class="h-4 w-4 shrink-0 transition-transform group-open:rotate-180 text-text-muted" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+            </svg>
+          </summary>
+          <div class="border-t border-border p-4 text-xs sm:text-sm leading-relaxed text-text-secondary">
+            Los plazos legales dependen exclusivamente de las leyes de cada estado. Por ejemplo, en Nueva York el plazo es de 14 días con estado de cuenta detallado. En California son 21 días, mientras que en Texas y Washington son 30 días. En Florida son 15 días si devuelven el monto completo o 30 días si realizan deducciones. Superar estos plazos sin notificación oficial anula generalmente el derecho del propietario a retener su dinero.
+          </div>
+        </details>
+
+        <details class="group rounded-lg border border-border bg-card transition-all">
+          <summary class="flex cursor-pointer items-center justify-between p-4 text-sm font-semibold text-text-primary hover:text-white">
+            <span>¿Puede mi arrendador deducir dinero por pintura básica o limpieza de alfombras?</span>
+            <svg class="h-4 w-4 shrink-0 transition-transform group-open:rotate-180 text-text-muted" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+            </svg>
+          </summary>
+          <div class="border-t border-border p-4 text-xs sm:text-sm leading-relaxed text-text-secondary">
+            En la mayoría de los estados, no. El desgaste de pintura por radiación solar, agujeros menores de clavos para cuadros y el desgaste normal de alfombras se consideran "desgaste por uso razonable" y deben ser asumidos por el arrendador. Las deducciones solo son legales por daños reales, modificaciones no autorizadas o suciedad excesiva, debidamente justificadas con facturas detalladas.
+          </div>
+        </details>
+
+        <details class="group rounded-lg border border-border bg-card transition-all">
+          <summary class="flex cursor-pointer items-center justify-between p-4 text-sm font-semibold text-text-primary hover:text-white">
+            <span>¿Qué sucede si el arrendador actúa de "mala fe" y no responde a mis reclamos?</span>
+            <svg class="h-4 w-4 shrink-0 transition-transform group-open:rotate-180 text-text-muted" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+            </svg>
+          </summary>
+          <div class="border-t border-border p-4 text-xs sm:text-sm leading-relaxed text-text-secondary">
+            Los códigos estatales castigan la retención de mala fe con multas punitivas. En Texas, puede demandar por $100 más tres veces (3x) el monto retenido indebidamente. En California, los jueces pueden ordenar una indemnización legal de hasta el doble (2x) del depósito disputado además del reembolso completo.
+          </div>
+        </details>
+
+        <details class="group rounded-lg border border-border bg-card transition-all">
+          <summary class="flex cursor-pointer items-center justify-between p-4 text-sm font-semibold text-text-primary hover:text-white">
+            <span>¿Por qué es obligatorio enviar una carta de demanda por Correo Certificado USPS?</span>
+            <svg class="h-4 w-4 shrink-0 transition-transform group-open:rotate-180 text-text-muted" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+            </svg>
+          </summary>
+          <div class="border-t border-border p-4 text-xs sm:text-sm leading-relaxed text-text-secondary">
+            Los tribunales de reclamos menores exigen prueba fehaciente e incontrovertible de entrega para otorgar sanciones legales. Un correo electrónico o mensaje de texto puede ser objetado como no recibido o enviado a spam. El número de rastreo y acuse de recibo de USPS Certified Mail prueba legalmente que el arrendador recibió la notificación formal.
+          </div>
+        </details>
+
+        <details class="group rounded-lg border border-border bg-card transition-all">
+          <summary class="flex cursor-pointer items-center justify-between p-4 text-sm font-semibold text-text-primary hover:text-white">
+            <span>¿Necesito un abogado para recuperar mi depósito en la Corte de Reclamos Menores?</span>
+            <svg class="h-4 w-4 shrink-0 transition-transform group-open:rotate-180 text-text-muted" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+            </svg>
+          </summary>
+          <div class="border-t border-border p-4 text-xs sm:text-sm leading-relaxed text-text-secondary">
+            No. Los juzgados de reclamos menores (Small Claims Court) en Estados Unidos están creados específicamente para que los inquilinos se representen a sí mismos sin abogados. Las tasas de radicación son bajas ($30 a $75) y la evidencia principal se basa en el contrato de arrendamiento, fotos de mudanza y el comprobante de entrega postal.
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- Confianza, Transparencia y Protección al Inquilino (Enlaces MPA)        -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <section class="border-t border-border bg-canvas py-16">
+    <div class="mx-auto max-w-5xl px-4">
+      <!-- E-E-A-T Trust & Methodology Grid -->
+      <TrustSignals locale="es" class="mb-16" />
+
+      <div class="text-center max-w-2xl mx-auto">
+        <span class="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs font-mono font-medium text-text-secondary">
+          <span class="h-1.5 w-1.5 rounded-full bg-success"></span>
+          Transparencia y Confianza
+        </span>
+        <h2 class="mt-3 text-2xl font-bold tracking-tight text-text-primary sm:text-3xl">
+          Creado para Inquilinos, Respaldado por la Ley Abierta
+        </h2>
+        <p class="mt-2 text-xs sm:text-sm text-text-secondary">
+          Conozca nuestra organización, descargos de autoayuda jurídica, políticas de confidencialidad y atención directa.
+        </p>
+      </div>
+
+      <div class="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <!-- 1. Sobre Nosotros -->
+        <a
+          href="/es/about"
+          class="group flex flex-col justify-between rounded-lg border border-border bg-card p-5 transition-all duration-150 hover:border-border-hover hover:bg-canvas-alt"
+        >
+          <div>
+            <div class="flex h-9 w-9 items-center justify-center rounded-md border border-border bg-canvas text-text-primary group-hover:border-border-hover">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4.5 w-4.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
+              </svg>
+            </div>
+            <h3 class="mt-4 text-sm font-semibold text-text-primary group-hover:text-emerald-400 transition-colors">
+              Sobre Nosotros
+            </h3>
+            <p class="mt-1 text-xs text-text-secondary leading-relaxed">
+              Nuestra misión para erradicar las retenciones ilegales de depósitos mediante software legal.
+            </p>
+          </div>
+          <span class="mt-4 text-xs font-medium text-text-primary group-hover:underline">Conocer más &rarr;</span>
+        </a>
+
+        <!-- 2. Contacto -->
+        <a
+          href="/es/contact"
+          class="group flex flex-col justify-between rounded-lg border border-border bg-card p-5 transition-all duration-150 hover:border-border-hover hover:bg-canvas-alt"
+        >
+          <div>
+            <div class="flex h-9 w-9 items-center justify-center rounded-md border border-border bg-canvas text-text-primary group-hover:border-border-hover">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4.5 w-4.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+              </svg>
+            </div>
+            <h3 class="mt-4 text-sm font-semibold text-text-primary group-hover:text-emerald-400 transition-colors">
+              Contacto
+            </h3>
+            <p class="mt-1 text-xs text-text-secondary leading-relaxed">
+              ¿Dudas sobre su orden o cálculo? Comuníquese con nuestro equipo de atención.
+            </p>
+          </div>
+          <span class="mt-4 text-xs font-medium text-text-primary group-hover:underline">Escríbanos &rarr;</span>
+        </a>
+
+        <!-- 3. Términos y Condiciones -->
+        <a
+          href="/es/terms"
+          class="group flex flex-col justify-between rounded-lg border border-border bg-card p-5 transition-all duration-150 hover:border-border-hover hover:bg-canvas-alt"
+        >
+          <div>
+            <div class="flex h-9 w-9 items-center justify-center rounded-md border border-border bg-canvas text-text-primary group-hover:border-border-hover">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4.5 w-4.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+              </svg>
+            </div>
+            <h3 class="mt-4 text-sm font-semibold text-text-primary group-hover:text-emerald-400 transition-colors">
+              Términos y Condiciones
+            </h3>
+            <p class="mt-1 text-xs text-text-secondary leading-relaxed">
+              Consulte nuestros descargos de autoayuda legal y políticas de entrega postal certificada.
+            </p>
+          </div>
+          <span class="mt-4 text-xs font-medium text-text-primary group-hover:underline">Ver términos &rarr;</span>
+        </a>
+
+        <!-- 4. Política de Privacidad -->
+        <a
+          href="/es/privacy"
+          class="group flex flex-col justify-between rounded-lg border border-border bg-card p-5 transition-all duration-150 hover:border-border-hover hover:bg-canvas-alt"
+        >
+          <div>
+            <div class="flex h-9 w-9 items-center justify-center rounded-md border border-border bg-canvas text-text-primary group-hover:border-border-hover">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4.5 w-4.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+              </svg>
+            </div>
+            <h3 class="mt-4 text-sm font-semibold text-text-primary group-hover:text-emerald-400 transition-colors">
+              Política de Privacidad
+            </h3>
+            <p class="mt-1 text-xs text-text-secondary leading-relaxed">
+              Encriptación estricta, cero venta de datos y máxima reserva de su información de arrendamiento.
+            </p>
+          </div>
+          <span class="mt-4 text-xs font-medium text-text-primary group-hover:underline">Leer política &rarr;</span>
+        </a>
+      </div>
+    </div>
   </section>
 </BaseLayout>

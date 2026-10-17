@@ -1,0 +1,99 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const lastUpdated = "16 de octubre de 2026";
+---
+
+<BaseLayout
+  title="Política de Privacidad — DepositRescue | Protección de Datos del Inquilino"
+  description="Conozca cómo DepositRescue protege su información personal, datos de contrato de arrendamiento y registros de entrega de correo certificado con máxima seguridad."
+  path="/privacy"
+>
+  <article class="mx-auto max-w-3xl px-4 py-12 sm:py-16 space-y-10">
+    <!-- Header -->
+    <header class="border-b border-border pb-8">
+      <span class="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs font-mono font-medium text-text-secondary">
+        <span class="h-1.5 w-1.5 rounded-full bg-success"></span>
+        Protección de Datos y Confidencialidad
+      </span>
+      <h1 class="mt-4 text-3xl font-bold tracking-tight text-text-primary sm:text-4xl">
+        Política de Privacidad
+      </h1>
+      <p class="mt-2 text-xs font-mono text-text-muted">
+        Última actualización: {lastUpdated}
+      </p>
+    </header>
+
+    <!-- Intro -->
+    <section class="space-y-4 text-sm text-text-secondary leading-relaxed">
+      <p>
+        DepositRescue (&ldquo;nosotros&rdquo;) opera getdepositrescue.com para proporcionar cálculos legales de autoayuda y automatización de cartas de demanda certificadas para inquilinos residenciales.
+      </p>
+      <p>
+        Entendemos que la información financiera y personal introducida mientras defiende sus derechos merece la más estricta confidencialidad. No vendemos sus datos personales a propietarios, agencias de crédito ni empresas de publicidad.
+      </p>
+    </section>
+
+    <!-- 1. Datos Recopilados -->
+    <section class="space-y-3">
+      <h2 class="text-lg font-semibold text-text-primary">1. Información que Recopilamos</h2>
+      <div class="space-y-3 text-xs leading-relaxed text-text-secondary">
+        <p>
+          <strong class="text-text-primary">A. Información Proporcionada Voluntariamente:</strong> Al usar la calculadora de depósito o redactar cartas de demanda, usted puede ingresar el estado del contrato, fechas de mudanza, montos de depósito, deducciones impugnadas, nombres y direcciones postales de entrega.
+        </p>
+        <p>
+          <strong class="text-text-primary">B. Datos de Pago:</strong> Si contrata el despacho por Correo Certificado USPS ($29.99), los pagos se procesan de forma encriptada mediante pasarelas certificadas PCI-DSS Nivel 1 (como Stripe). DepositRescue nunca almacena números de tarjeta completos ni códigos CVV.
+        </p>
+        <p>
+          <strong class="text-text-primary">C. Datos Técnicos de Conexión:</strong> Registros del servidor que incluyen dirección IP, tipo de navegador y fecha para mantener la seguridad y prevenir el fraude cibernético.
+        </p>
+      </div>
+    </section>
+
+    <!-- 2. Uso de Datos -->
+    <section class="space-y-3 border-t border-border pt-6">
+      <h2 class="text-lg font-semibold text-text-primary">2. Cómo Usamos su Información</h2>
+      <ul class="list-disc pl-5 space-y-2 text-xs text-text-secondary leading-relaxed">
+        <li>Calcular plazos de vencimiento según el código estatal y calcular sanciones legales de mala fe.</li>
+        <li>Generar cartas de demanda personalizadas y documentos PDF imprimibles.</li>
+        <li>Enviar cartas físicas mediante USPS Certified Mail con Acuse de Recibo Electrónico a través de centros postales autorizados.</li>
+        <li>Comunicar actualizaciones de seguimiento y números de rastreo postal de 20 dígitos.</li>
+        <li>Cumplir con las obligaciones legales y fiscales aplicables.</li>
+      </ul>
+    </section>
+
+    <!-- 3. Proveedores de Servicios -->
+    <section class="space-y-3 border-t border-border pt-6">
+      <h2 class="text-lg font-semibold text-text-primary">3. Proveedores de Servicios y Terceros</h2>
+      <p class="text-xs text-text-secondary leading-relaxed">
+        Compartimos datos exclusivamente con los proveedores indispensables para brindar el servicio:
+      </p>
+      <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 pt-1 text-xs">
+        <div class="rounded-lg border border-border bg-card p-3">
+          <strong class="text-text-primary">Impresión y Despacho Postal (Lob / USPS):</strong>
+          <p class="mt-1 text-text-muted">Nombres y direcciones se envían de forma encriptada únicamente para imprimir y certificar su sobre postal.</p>
+        </div>
+        <div class="rounded-lg border border-border bg-card p-3">
+          <strong class="text-text-primary">Pasarelas de Pago (Stripe):</strong>
+          <p class="mt-1 text-text-muted">Procesamiento seguro de transacciones con encriptación TLS 1.3 de extremo a extremo.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Seguridad y Retención -->
+    <section class="space-y-3 border-t border-border pt-6">
+      <h2 class="text-lg font-semibold text-text-primary">4. Seguridad y Retención de Datos</h2>
+      <p class="text-xs text-text-secondary leading-relaxed">
+        Los datos de los cálculos permanecen en su navegador de manera local hasta que decide enviar una carta certificada. Conservamos los registros de rastreo postal por un período de hasta 180 días para servir como prueba ante la corte de reclamos menores, tras lo cual pueden ser eliminados a petición del usuario.
+      </p>
+    </section>
+
+    <!-- 5. Derechos del Usuario -->
+    <section class="space-y-3 border-t border-border pt-6">
+      <h2 class="text-lg font-semibold text-text-primary">5. Sus Derechos de Privacidad (CCPA y Regulaciones)</h2>
+      <p class="text-xs text-text-secondary leading-relaxed">
+        Usted tiene derecho a solicitar copia de sus datos, rectificar imprecisiones o solicitar la eliminación total de su registro en cualquier momento. Para ejercer estos derechos, escriba a <a href="mailto:privacy@getdepositrescue.com" class="text-text-primary underline hover:text-emerald-400">privacy@getdepositrescue.com</a> o contáctenos mediante nuestra <a href="/es/contact" class="text-text-primary underline hover:text-emerald-400">página de contacto</a>.
+      </p>
+    </section>
+  </article>
+</BaseLayout>

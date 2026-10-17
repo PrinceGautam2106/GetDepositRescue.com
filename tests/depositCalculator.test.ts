@@ -8,7 +8,7 @@
 
 import assert from "node:assert/strict";
 import { calculateClaim } from "../src/utils/depositCalculator.js";
-import { getStatute, STATE_STATUTES, DEFAULT_STATUTE } from "../src/data/stateStatutes.js";
+import { getStatute, STATE_STATUTES } from "../src/data/stateStatutes.js";
 
 let passed = 0;
 let failed = 0;

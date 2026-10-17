@@ -1,0 +1,202 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const contactSchema = {
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  name: "Contacto — DepositRescue | Soporte al Inquilino y Asistencia Postal",
+  description: "Póngase en contacto con DepositRescue para seguimiento de órdenes de correo certificado, consultas legales o alianzas.",
+  url: "https://getdepositrescue.com/es/contact",
+  mainEntity: {
+    "@type": "Organization",
+    name: "DepositRescue",
+    url: "https://getdepositrescue.com/es",
+    email: "support@getdepositrescue.com",
+    contactPoint: {
+      "@type": "ContactPoint",
+      email: "support@getdepositrescue.com",
+      contactType: "customer service",
+      availableLanguage: ["Spanish", "English"],
+    },
+  },
+};
+---
+
+<BaseLayout
+  title="Contacto — DepositRescue | Soporte y Asistencia Postal"
+  description="¿Tiene dudas sobre el cálculo de su depósito de seguridad, su carta de demanda o el rastreo de su correo certificado de USPS? Contáctenos hoy."
+  path="/contact"
+>
+  <slot name="head" slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(contactSchema)} />
+  </slot>
+
+  <section class="mx-auto max-w-4xl px-4 py-12 sm:py-16">
+    <div class="grid grid-cols-1 gap-12 lg:grid-cols-12">
+      <!-- Left Column: Context & Direct Info -->
+      <div class="lg:col-span-5 space-y-6">
+        <div>
+          <span class="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs font-mono font-medium text-text-secondary">
+            <span class="h-1.5 w-1.5 rounded-full bg-success"></span>
+            Equipo de Soporte al Inquilino
+          </span>
+          <h1 class="mt-4 text-3xl font-bold tracking-tight text-text-primary sm:text-4xl">
+            Póngase en Contacto
+          </h1>
+          <p class="mt-3 text-sm text-text-secondary leading-relaxed">
+            Ya sea que necesite ayuda para rastrear una carta enviada por USPS Certified Mail, tenga preguntas sobre los plazos de su estado o desee sugerir una actualización legislativa, estamos para ayudarle.
+          </p>
+        </div>
+
+        <div class="space-y-4 pt-2">
+          <!-- Email card -->
+          <div class="rounded-lg border border-border bg-card p-4">
+            <div class="text-xs font-semibold uppercase tracking-wider text-text-muted">Correo Electrónico</div>
+            <a href="mailto:support@getdepositrescue.com" class="mt-1 block text-sm font-medium text-text-primary hover:text-emerald-400 transition-colors">
+              support@getdepositrescue.com
+            </a>
+            <div class="mt-1 text-[11px] text-text-muted">Tiempo de respuesta habitual: menos de 24 horas hábiles</div>
+          </div>
+
+          <!-- Postal support card -->
+          <div class="rounded-lg border border-border bg-card p-4">
+            <div class="text-xs font-semibold uppercase tracking-wider text-text-muted">Órdenes de Correo Certificado</div>
+            <p class="mt-1 text-xs leading-relaxed text-text-secondary">
+              Si consulta sobre una orden existente, incluya su ID de orden (ej. <code class="font-mono text-text-primary">ord_sim_...</code>) o número de rastreo de 20 dígitos para una localización inmediata.
+            </p>
+          </div>
+
+          <!-- Bilingual support card -->
+          <div class="rounded-lg border border-border bg-card p-4">
+            <div class="text-xs font-semibold uppercase tracking-wider text-text-muted">Atención Bilingüe</div>
+            <p class="mt-1 text-xs text-text-secondary">
+              Atención disponible en español e inglés / Support available in English &amp; Spanish.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Interactive Contact Form -->
+      <div class="lg:col-span-7">
+        <div class="rounded-xl border border-border bg-card p-6 sm:p-8 shadow-sm">
+          <h2 class="text-lg font-semibold text-text-primary">
+            Envíenos un Mensaje
+          </h2>
+          <p class="mt-1 text-xs text-text-secondary">
+            Complete el siguiente formulario y nuestro equipo de defensa del inquilino le responderá a la brevedad.
+          </p>
+
+          <form id="contact-form" class="mt-6 space-y-4">
+            <!-- Name Input -->
+            <div>
+              <label for="contact-name" class="block text-xs font-medium text-text-primary mb-1.5">
+                Su Nombre Completo <span class="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                id="contact-name"
+                name="name"
+                required
+                aria-label="Su Nombre Completo"
+                placeholder="Juan Pérez"
+                class="w-full rounded-md border border-border bg-canvas-alt px-3.5 py-2 text-xs text-text-primary focus:border-text-primary focus:outline-none focus:ring-1 focus:ring-text-primary"
+              />
+            </div>
+
+            <!-- Email Input -->
+            <div>
+              <label for="contact-email" class="block text-xs font-medium text-text-primary mb-1.5">
+                Correo Electrónico <span class="text-danger">*</span>
+              </label>
+              <input
+                type="email"
+                id="contact-email"
+                name="email"
+                required
+                aria-label="Correo Electrónico"
+                placeholder="juan@ejemplo.com"
+                class="w-full rounded-md border border-border bg-canvas-alt px-3.5 py-2 text-xs text-text-primary focus:border-text-primary focus:outline-none focus:ring-1 focus:ring-text-primary"
+              />
+            </div>
+
+            <!-- Subject Selector -->
+            <div>
+              <label for="contact-subject" class="block text-xs font-medium text-text-primary mb-1.5">
+                Tema / Asunto <span class="text-danger">*</span>
+              </label>
+              <select
+                id="contact-subject"
+                name="subject"
+                required
+                aria-label="Tema del Mensaje"
+                class="w-full rounded-md border border-border bg-canvas-alt px-3.5 py-2 text-xs text-text-primary focus:border-text-primary focus:outline-none focus:ring-1 focus:ring-text-primary"
+              >
+                <option value="mail-order">Estado / Rastreo de Correo Certificado</option>
+                <option value="calculator">Pregunta sobre Leyes Estatales o Calculadora</option>
+                <option value="feedback">Corrección o Actualización Legislativa</option>
+                <option value="partnership">Alianzas o Prensa</option>
+                <option value="other">Otra Consulta</option>
+              </select>
+            </div>
+
+            <!-- Message Textarea -->
+            <div>
+              <label for="contact-message" class="block text-xs font-medium text-text-primary mb-1.5">
+                ¿En qué podemos ayudarle? <span class="text-danger">*</span>
+              </label>
+              <textarea
+                id="contact-message"
+                name="message"
+                rows="4"
+                required
+                aria-label="Su Mensaje"
+                placeholder="Describa su consulta o detalles de su orden..."
+                class="w-full rounded-md border border-border bg-canvas-alt px-3.5 py-2 text-xs text-text-primary focus:border-text-primary focus:outline-none focus:ring-1 focus:ring-text-primary"
+              ></textarea>
+            </div>
+
+            <!-- Submit button -->
+            <button
+              type="submit"
+              id="contact-submit-btn"
+              aria-label="Enviar Mensaje de Contacto"
+              class="w-full flex items-center justify-center gap-2 rounded-lg bg-cta-bg py-2.5 text-xs font-semibold text-cta-text hover:bg-cta-hover active:scale-[0.99] transition-all shadow-sm"
+            >
+              <span id="contact-btn-text">Enviar Mensaje</span>
+              <span id="contact-spinner" class="hidden h-3.5 w-3.5 animate-spin rounded-full border-2 border-black border-t-transparent"></span>
+            </button>
+
+            <!-- Success message -->
+            <div id="contact-success" class="hidden rounded-md border border-success/40 bg-success/10 p-3 text-xs text-success">
+              ¡Muchas gracias! Su mensaje ha sido recibido. Nuestro equipo revisará su consulta y le responderá dentro de 24 horas.
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const form = document.getElementById("contact-form") as HTMLFormElement | null;
+  const submitBtn = document.getElementById("contact-submit-btn") as HTMLButtonElement | null;
+  const btnText = document.getElementById("contact-btn-text");
+  const spinner = document.getElementById("contact-spinner");
+  const successBox = document.getElementById("contact-success");
+
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!submitBtn || !btnText || !spinner || !successBox) return;
+
+    submitBtn.disabled = true;
+    btnText.textContent = "Enviando...";
+    spinner.classList.remove("hidden");
+
+    await new Promise((r) => setTimeout(r, 600));
+
+    spinner.classList.add("hidden");
+    btnText.textContent = "¡Enviado!";
+    form.reset();
+    successBox.classList.remove("hidden");
+  });
+</script>

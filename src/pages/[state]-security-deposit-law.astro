@@ -1,0 +1,24 @@
+---
+/**
+ * [state]-security-deposit-law.astro
+ * Root English programmatic dynamic route for all 50 states + DC
+ */
+import { STATE_STATUTES, type StateStatute } from "../data/stateStatutes";
+import StateLawPage from "../components/seo/StateLawPage.astro";
+
+export function getStaticPaths() {
+  return Object.keys(STATE_STATUTES).map((code) => ({
+    params: { state: code.toLowerCase() },
+    props: { statute: STATE_STATUTES[code], lang: "en" as const },
+  }));
+}
+
+interface Props {
+  statute: StateStatute;
+  lang: "en";
+}
+
+const { statute, lang } = Astro.props;
+---
+
+<StateLawPage statute={statute} lang={lang} />

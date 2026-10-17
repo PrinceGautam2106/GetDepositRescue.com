@@ -1,0 +1,1963 @@
+---
+/**
+ * DepositWizard.astro
+ * 4-Step Interactive "Deposit Recovery Calculator" Island.
+ *
+ * Implements Vercel-inspired minimalist legal-tech design:
+ * - Pure black / zinc monochrome palette with emerald-500 accents
+ * - Zero layout shift with pre-rendered server structure
+ * - Real-time client-side calculation & validation
+ * - Instant state statute citations, statutory penalties, and small-claims thresholds
+ * - Attorney-grade demand letter live preview & PDF print generation
+ * - Certified mail legal proof checkout modal
+ * - Bilingual English / Spanish support via i18n dictionary
+ */
+import { STATE_STATUTES, SUPPORTED_STATE_CODES } from "../../data/stateStatutes";
+import { getStrings, type Locale } from "./i18n";
+import PartnerOffers from "../monetization/PartnerOffers.astro";
+
+interface Props {
+  locale?: Locale;
+  defaultState?: string;
+}
+
+const { locale = "en", defaultState } = Astro.props;
+const t = getStrings(locale);
+const isEs = locale === "es";
+const activeDefaultState = defaultState ? defaultState.toUpperCase() : "CA";
+
+// Build sorted state list for select dropdown
+const stateOptions = SUPPORTED_STATE_CODES
+  .map((code) => ({
+    code,
+    name: STATE_STATUTES[code].stateName[locale],
+  }))
+  .sort((a, b) => a.name.localeCompare(b.name));
+---
+
+<div
+  id="deposit-wizard"
+  class="relative mx-auto w-full max-w-2xl select-text"
+  data-locale={locale}
+  data-default-state={defaultState ? defaultState.toUpperCase() : ""}
+>
+  <!-- ═════════════════════════════════════════════════════════════════════════ -->
+  <!-- Stepper / Progress Header                                                -->
+  <!-- ═════════════════════════════════════════════════════════════════════════ -->
+  <div class="mb-8" aria-label="Calculator Progress">
+    <!-- Step tabs -->
+    <div class="mb-4 grid grid-cols-4 gap-2">
+      {[
+        { num: 1, name: t.step1Name },
+        { num: 2, name: t.step2Name },
+        { num: 3, name: t.step3Name },
+        { num: 4, name: t.step4Name },
+      ].map((s) => (
+        <button
+          type="button"
+          data-goto-step={s.num}
+          aria-label={`${isEs ? "Paso" : "Step"} ${s.num}: ${s.name}`}
+          class="wz-tab-btn group flex flex-col items-start gap-1 rounded-md border border-border bg-card p-2 text-left transition-all duration-150 ease-out hover:border-border-hover focus:outline-none focus:ring-1 focus:ring-border-hover disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          <div class="flex items-center gap-1.5">
+            <span class="wz-tab-badge flex h-4 w-4 items-center justify-center rounded-full bg-border text-[10px] font-mono font-bold text-text-muted transition-colors">
+              {s.num}
+            </span>
+            <span class="wz-tab-title hidden text-xs font-medium text-text-secondary group-hover:text-text-primary sm:inline transition-colors">
+              {s.name}
+            </span>
+          </div>
+          <div class="h-0.5 w-full rounded-full bg-border transition-colors wz-tab-bar"></div>
+        </button>
+      ))}
+    </div>
+
+    <!-- Step Progress Text -->
+    <div class="flex items-center justify-between text-xs text-text-muted">
+      <span id="wz-step-label" class="font-medium text-text-secondary">
+        {isEs ? "Paso 1 de 4" : "Step 1 of 4"}
+      </span>
+      <span id="wz-step-pct" class="font-mono text-text-muted">25%</span>
+    </div>
+  </div>
+
+  <!-- ═════════════════════════════════════════════════════════════════════════ -->
+  <!-- Step 1: Location & Lease Details                                         -->
+  <!-- ═════════════════════════════════════════════════════════════════════════ -->
+  <section id="wz-step-1" class="wz-step" data-step="1">
+    <div class="rounded-lg border border-border bg-card p-6 shadow-sm sm:p-8">
+      <div class="border-b border-border pb-5">
+        <h2 class="text-xl font-semibold tracking-tight text-text-primary">
+          {t.step1Title}
+        </h2>
+        <p class="mt-1 text-sm text-text-secondary">
+          {t.step1Subtitle}
+        </p>
+      </div>
+
+      <div class="mt-6 space-y-6">
+        <!-- State Selector -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <label for="wz-state" class="block text-sm font-medium text-text-primary">
+              {t.stateLabel}
+            </label>
+            <span id="wz-state-detected-tag" class="inline-flex items-center gap-1 rounded-full border border-success/30 bg-success/10 px-2 py-0.5 text-[11px] font-medium text-success">
+              <span class="h-1.5 w-1.5 rounded-full bg-success animate-pulse"></span>
+              {t.autoDetectedHint}
+            </span>
+          </div>
+          <div class="relative">
+            <select
+              id="wz-state"
+              aria-label={t.stateLabel}
+              class="w-full appearance-none rounded-md border border-border bg-canvas-alt px-3.5 py-2.5 pr-10 text-sm text-text-primary transition-all duration-150 ease-out hover:border-border-hover focus:border-text-primary focus:outline-none focus:ring-1 focus:ring-text-primary"
+            >
+              <option value="" disabled>
+                {t.statePlaceholder}
+              </option>
+              {stateOptions.map(({ code, name }) => (
+                <option value={code} selected={code === activeDefaultState}>
+                  {name} ({code})
+                </option>
+              ))}
+            </select>
+            <svg
+              class="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </div>
+          <p id="wz-state-statute-hint" class="mt-2 min-h-[1.25rem] text-xs text-text-muted">
+            {isEs
+              ? `Plazo legal de ${STATE_STATUTES[activeDefaultState]?.deadlineDays ?? 21} días según ${STATE_STATUTES[activeDefaultState]?.legalCodeCitation ?? "código estatal"}.`
+              : `Statutory ${STATE_STATUTES[activeDefaultState]?.deadlineDays ?? 21}-day return deadline under ${STATE_STATUTES[activeDefaultState]?.legalCodeCitation ?? "state statute"}.`}
+          </p>
+        </div>
+
+        <!-- Move-Out Date Picker -->
+        <div>
+          <label for="wz-moveout" class="block text-sm font-medium text-text-primary mb-2">
+            {t.moveOutLabel}
+          </label>
+          <div class="relative">
+            <input
+              type="date"
+              id="wz-moveout"
+              aria-label={t.moveOutLabel}
+              class="w-full rounded-md border border-border bg-canvas-alt px-3.5 py-2.5 text-sm text-text-primary transition-all duration-150 ease-out hover:border-border-hover focus:border-text-primary focus:outline-none focus:ring-1 focus:ring-text-primary [color-scheme:dark]"
+            />
+          </div>
+          <p class="mt-2 text-xs text-text-muted">
+            {t.moveOutHelp}
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════════════════════════════════════════════════════════════════════ -->
+  <!-- Step 2: Financials & Deductions                                          -->
+  <!-- ═════════════════════════════════════════════════════════════════════════ -->
+  <section id="wz-step-2" class="wz-step hidden" data-step="2">
+    <div class="rounded-lg border border-border bg-card p-6 shadow-sm sm:p-8">
+      <div class="border-b border-border pb-5">
+        <h2 class="text-xl font-semibold tracking-tight text-text-primary">
+          {t.step2Title}
+        </h2>
+        <p class="mt-1 text-sm text-text-secondary">
+          {t.step2Subtitle}
+        </p>
+      </div>
+
+      <div class="mt-6 space-y-6">
+        <!-- Original Deposit Paid -->
+        <div>
+          <label for="wz-deposit" class="block text-sm font-medium text-text-primary mb-2">
+            {t.depositLabel}
+          </label>
+          <div class="relative">
+            <span class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-mono text-text-muted">
+              $
+            </span>
+            <input
+              type="number"
+              id="wz-deposit"
+              aria-label={t.depositLabel}
+              min="0"
+              step="any"
+              placeholder={t.depositPlaceholder}
+              class="w-full rounded-md border border-border bg-canvas-alt py-2.5 pl-8 pr-3.5 font-mono text-sm text-text-primary tabular-nums transition-all duration-150 ease-out hover:border-border-hover focus:border-text-primary focus:outline-none focus:ring-1 focus:ring-text-primary"
+            />
+          </div>
+        </div>
+
+        <!-- Amount Landlord Actually Returned -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <label for="wz-returned" class="block text-sm font-medium text-text-primary">
+              {t.returnedLabel}
+            </label>
+            <span class="text-xs text-text-muted">
+              {isEs ? "0 = nada devuelto" : "0 = nothing returned"}
+            </span>
+          </div>
+          <div class="relative">
+            <span class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-mono text-text-muted">
+              $
+            </span>
+            <input
+              type="number"
+              id="wz-returned"
+              aria-label={t.returnedLabel}
+              min="0"
+              step="any"
+              value="0"
+              placeholder="0"
+              class="w-full rounded-md border border-border bg-canvas-alt py-2.5 pl-8 pr-3.5 font-mono text-sm text-text-primary tabular-nums transition-all duration-150 ease-out hover:border-border-hover focus:border-text-primary focus:outline-none focus:ring-1 focus:ring-text-primary"
+            />
+          </div>
+        </div>
+
+        <!-- Deductions Claimed Checkboxes -->
+        <fieldset>
+          <legend class="block text-sm font-medium text-text-primary mb-2">
+            {t.deductionsLabel}
+          </legend>
+          <p class="mb-3 text-xs text-text-muted">
+            {t.deductionsHelp}
+          </p>
+          <div class="space-y-2.5">
+            {[
+              {
+                id: "painting",
+                label: t.deductionPainting,
+                desc: isEs ? "Desgaste natural de pintura prohibido por ley" : "Wear-and-tear prohibited from deduction by statute",
+                value: "Normal wear and tear",
+              },
+              {
+                id: "carpet",
+                label: t.deductionCarpet,
+                desc: isEs ? "Uso ordinario de alfombras no es imputable al inquilino" : "Ordinary carpet wear cannot be billed to tenant",
+                value: "Routine carpet cleaning",
+              },
+              {
+                id: "cleaning",
+                label: t.deductionCleaning,
+                desc: isEs ? "Limpieza obligatoria genérica sin prueba de suciedad extrema" : "Mandatory non-itemized turnover cleaning",
+                value: "Professional cleaning when unit was left in same condition",
+              },
+              {
+                id: "receipt",
+                label: t.deductionNoReceipt,
+                desc: isEs ? "Deducciones sin facturas ni recibos de contratistas con licencia" : "Withholdings lacking licensed contractor invoices",
+                value: "Deductions without required itemized statement",
+              },
+            ].map((item) => (
+              <label class="group relative flex cursor-pointer items-start gap-3 rounded-lg border border-border bg-canvas-alt p-3.5 transition-all duration-150 ease-out hover:border-border-hover hover:bg-card">
+                <input
+                  type="checkbox"
+                  name="wz-deduction"
+                  aria-label={item.label}
+                  value={item.value}
+                  class="mt-0.5 h-4 w-4 shrink-0 rounded border-border bg-canvas text-success accent-success focus:ring-1 focus:ring-success"
+                />
+                <div class="flex flex-col">
+                  <span class="text-sm font-medium text-text-primary group-hover:text-white transition-colors">
+                    {item.label}
+                  </span>
+                  <span class="text-xs text-text-muted">
+                    {item.desc}
+                  </span>
+                </div>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════════════════════════════════════════════════════════════════════ -->
+  <!-- Step 3: Instant Violation & Damage Assessment                           -->
+  <!-- ═════════════════════════════════════════════════════════════════════════ -->
+  <section id="wz-step-3" class="wz-step hidden" data-step="3">
+    <div class="rounded-lg border border-border bg-card p-6 shadow-sm sm:p-8">
+      <div class="border-b border-border pb-5">
+        <h2 class="text-xl font-semibold tracking-tight text-text-primary">
+          {t.step3Title}
+        </h2>
+        <p class="mt-1 text-sm text-text-secondary">
+          {t.step3Subtitle}
+        </p>
+      </div>
+
+      <!-- Statutory Deadline Violation Badge (flashing bold emerald) -->
+      <div
+        id="wz-violation-badge"
+        class="mt-6 hidden rounded-lg border-2 border-success/80 bg-success/10 px-4 py-3.5 shadow-[0_0_20px_rgba(16,185,129,0.25)] wz-flash-badge"
+      >
+        <div class="flex items-start gap-3">
+          <svg class="mt-0.5 h-5 w-5 shrink-0 text-success" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
+          </svg>
+          <div>
+            <p id="wz-violation-text" class="text-sm font-bold text-success leading-snug">
+              <!-- Dynamically populated: Statutory Deadline Violated! Your landlord may owe you up to [3x/2x] your deposit under [State Code]. -->
+            </p>
+            <p id="wz-violation-subtext" class="mt-1 text-xs text-success/80">
+              <!-- Additional state statute info -->
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- No Violation Fallback Badge -->
+      <div id="wz-no-violation-badge" class="mt-6 hidden rounded-lg border border-border bg-canvas-alt px-4 py-3">
+        <p class="text-sm text-text-secondary">
+          {t.noViolationBadge}
+        </p>
+      </div>
+
+      <!-- Timeline & Statutory Days Elapsed Grid -->
+      <div class="mt-6 grid grid-cols-2 gap-3 sm:gap-4">
+        <div class="rounded-lg border border-border bg-canvas-alt p-4 text-center">
+          <p class="text-[11px] font-medium uppercase tracking-wider text-text-muted">
+            {t.daysElapsedLabel}
+          </p>
+          <p id="wz-days-elapsed" class="mt-1 text-3xl font-extrabold font-mono tabular-nums text-text-primary">
+            —
+          </p>
+          <span id="wz-days-status" class="mt-1 inline-block text-[11px] font-mono text-text-muted">
+            <!-- elapsed days tag -->
+          </span>
+        </div>
+
+        <div class="rounded-lg border border-border bg-canvas-alt p-4 text-center">
+          <p class="text-[11px] font-medium uppercase tracking-wider text-text-muted">
+            {t.deadlineLabel}
+          </p>
+          <p id="wz-state-deadline" class="mt-1 text-3xl font-extrabold font-mono tabular-nums text-text-primary">
+            —
+          </p>
+          <span id="wz-statute-code-label" class="mt-1 inline-block text-[11px] font-mono text-text-muted truncate max-w-full">
+            <!-- state code citation -->
+          </span>
+        </div>
+      </div>
+
+      <!-- Detected Violations Breakdown List -->
+      <div id="wz-violations-list" class="mt-6 hidden rounded-lg border border-border bg-canvas-alt p-4">
+        <h3 class="text-xs font-semibold uppercase tracking-wider text-text-primary mb-3">
+          {t.violationsDetected}
+        </h3>
+        <ul id="wz-violations-ul" class="space-y-2"></ul>
+      </div>
+
+      <!-- Dynamic Financial Comparison -->
+      <div class="mt-6 space-y-3">
+        <div class="flex items-center justify-between rounded-lg border border-border bg-canvas-alt px-4 py-3">
+          <span class="text-sm text-text-secondary">{t.originalOwed}</span>
+          <span id="wz-owed" class="text-sm font-mono font-semibold tabular-nums text-text-primary">
+            $0.00
+          </span>
+        </div>
+
+        <div class="flex items-center justify-between rounded-lg border border-border bg-canvas-alt px-4 py-3">
+          <div class="flex items-center gap-2">
+            <span class="text-sm text-text-secondary">{t.penaltyEntitlement}</span>
+            <span id="wz-multiplier-tag" class="rounded bg-success/10 px-1.5 py-0.5 text-[10px] font-mono font-semibold text-success">
+              +0x
+            </span>
+          </div>
+          <span id="wz-penalty" class="text-sm font-mono font-bold tabular-nums text-success">
+            +$0.00
+          </span>
+        </div>
+
+        <!-- Total Court Recovery Target: Large mono font with glowing border -->
+        <div class="relative overflow-hidden rounded-xl border border-success/80 bg-gradient-to-b from-[#0e2a1e] to-[#091510] p-6 text-center shadow-[0_0_30px_rgba(16,185,129,0.22),inset_0_0_20px_rgba(16,185,129,0.08)]">
+          <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(16,185,129,0.2)_0%,transparent_70%)] pointer-events-none"></div>
+          
+          <div class="relative">
+            <p class="text-xs font-semibold uppercase tracking-widest text-emerald-400">
+              {t.totalRecovery}
+            </p>
+            <p id="wz-total" class="mt-2 text-4xl font-black font-mono tracking-tight text-white sm:text-5xl drop-shadow-[0_2px_10px_rgba(16,185,129,0.3)]">
+              $0.00
+            </p>
+            <div class="mt-3 flex items-center justify-center gap-1.5">
+              <span id="wz-claims-badge" class="inline-flex items-center gap-1 rounded-full border border-border bg-black/60 px-2.5 py-0.5 text-xs font-medium text-text-secondary">
+                <!-- Small claims limit & eligibility -->
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Strategic Affiliate Placements Under Calculation Results -->
+      <PartnerOffers locale={locale} variant="grid" headline={isEs ? "Recursos Recomendados Tras Su Cálculo" : "Recommended Resources For Your Next Move"} />
+    </div>
+  </section>
+
+  <!-- ═════════════════════════════════════════════════════════════════════════ -->
+  <!-- Step 4: Demand Letter Generator & Action Bar                             -->
+  <!-- ═════════════════════════════════════════════════════════════════════════ -->
+  <section id="wz-step-4" class="wz-step hidden" data-step="4">
+    <div class="rounded-lg border border-border bg-card p-6 shadow-sm sm:p-8">
+      <div class="border-b border-border pb-5">
+        <h2 class="text-xl font-semibold tracking-tight text-text-primary">
+          {t.step4Title}
+        </h2>
+        <p class="mt-1 text-sm text-text-secondary">
+          {t.step4Subtitle}
+        </p>
+      </div>
+
+      <!-- Optional Tenant Details Accordion -->
+      <div class="mt-5">
+        <details class="group rounded-lg border border-border bg-canvas-alt transition-colors">
+          <summary class="flex cursor-pointer items-center justify-between p-3.5 text-xs font-medium text-text-secondary hover:text-text-primary">
+            <span>{t.tenantDetailsToggle}</span>
+            <svg class="h-4 w-4 transition-transform group-open:rotate-180" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+            </svg>
+          </summary>
+          <div class="border-t border-border p-4 space-y-3 text-xs">
+            <div>
+              <label for="wz-tenant-name" class="block font-medium text-text-primary mb-1">{t.yourNameLabel}</label>
+              <input type="text" id="wz-tenant-name" aria-label={t.yourNameLabel} placeholder={t.yourNamePlaceholder} class="w-full rounded-md border border-border bg-card px-3 py-1.5 text-xs text-text-primary focus:border-text-primary focus:outline-none" />
+            </div>
+            <div>
+              <label for="wz-landlord-name" class="block font-medium text-text-primary mb-1">{t.landlordNameLabel}</label>
+              <input type="text" id="wz-landlord-name" aria-label={t.landlordNameLabel} placeholder={t.landlordNamePlaceholder} class="w-full rounded-md border border-border bg-card px-3 py-1.5 text-xs text-text-primary focus:border-text-primary focus:outline-none" />
+            </div>
+            <div>
+              <label for="wz-property-addr" class="block font-medium text-text-primary mb-1">{t.propertyAddressLabel}</label>
+              <input type="text" id="wz-property-addr" aria-label={t.propertyAddressLabel} placeholder={t.propertyAddressPlaceholder} class="w-full rounded-md border border-border bg-card px-3 py-1.5 text-xs text-text-primary focus:border-text-primary focus:outline-none" />
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <!-- Formal Demand Letter Live Preview Card -->
+      <div class="mt-6 rounded-lg border border-border bg-canvas-alt p-5 sm:p-7 shadow-inner">
+        <div class="mb-4 flex items-center justify-between border-b border-border pb-3">
+          <div class="flex items-center gap-2">
+            <span class="h-2 w-2 rounded-full bg-success"></span>
+            <span class="text-xs font-semibold uppercase tracking-wider text-text-primary">
+              {t.demandLetterPreview}
+            </span>
+          </div>
+          <span class="rounded border border-border bg-card px-2 py-0.5 text-[10px] font-mono text-text-muted">
+            USPS Certified Format
+          </span>
+        </div>
+
+        <!-- Rendered Letter Body -->
+        <div
+          id="wz-letter-preview"
+          class="space-y-4 text-xs sm:text-sm font-sans leading-relaxed text-text-secondary select-text"
+        >
+          <!-- Populated in client script with live data and legal citations -->
+        </div>
+      </div>
+
+      <!-- ═════════════════════════════════════════════════════════════════ -->
+      <!-- Dual Monetization Checkout Tiers ($14.99 PDF vs $29.99 USPS Mail) -->
+      <!-- ═════════════════════════════════════════════════════════════════ -->
+      <div class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <!-- Card A (Digital Download - $14.99) -->
+        <div class="relative flex flex-col justify-between rounded-xl border border-border bg-card p-5 sm:p-6 transition-all duration-150 hover:border-zinc-500">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono uppercase tracking-wider text-text-muted">
+                {isEs ? "Descarga Digital" : "Digital Download"}
+              </span>
+            </div>
+            <h3 class="mt-2 text-lg font-bold text-text-primary">
+              {isEs ? "Paquete Legal PDF Oficial" : "Official Legal PDF Package"}
+            </h3>
+            <div class="mt-2 flex items-baseline gap-1">
+              <span class="text-3xl font-extrabold font-mono text-white">$14.99</span>
+              <span class="text-xs text-text-muted">{isEs ? "pago único" : "one-time"}</span>
+            </div>
+
+            <!-- Features -->
+            <ul class="mt-4 space-y-2.5 text-xs text-text-secondary border-t border-border pt-4">
+              <li class="flex items-start gap-2">
+                <svg class="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                <span>{isEs ? "Descarga inmediata en PDF" : "Instant PDF download"}</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <svg class="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                <span>{isEs ? "Cláusula con citación de ley estatal" : "State statute citation clause"}</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <svg class="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                <span>{isEs ? "Lista de verificación para tribunal de reclamos menores" : "Small claims court checklist"}</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <svg class="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                <span>{isEs ? "Registro detallado de disputa de deducciones" : "Itemized dispute ledger"}</span>
+              </li>
+            </ul>
+          </div>
+
+          <button
+            id="wz-btn-download-pdf"
+            type="button"
+            aria-label={isEs ? "Descargar PDF ($14.99)" : "Download PDF ($14.99)"}
+            class="mt-6 flex w-full items-center justify-center gap-2 rounded-lg border border-border-hover bg-card px-4 py-3 text-sm font-semibold text-text-primary transition-all duration-150 hover:bg-zinc-800 hover:border-zinc-400 active:scale-[0.99] focus:outline-none focus:ring-1 focus:ring-border-hover"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4 text-text-secondary">
+              <path d="M10.75 2.75a.75.75 0 00-1.5 0v8.614L6.295 8.235a.75.75 0 10-1.09 1.03l4.25 4.5a.75.75 0 001.09 0l4.25-4.5a.75.75 0 00-1.09-1.03l-2.955 3.129V2.75z" />
+              <path d="M3.5 12.75a.75.75 0 00-1.5 0v2.5A2.75 2.75 0 004.75 18h10.5A2.75 2.75 0 0018 15.25v-2.5a.75.75 0 00-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5z" />
+            </svg>
+            <span id="wz-btn-pdf-text">{isEs ? "Descargar PDF ($14.99)" : "Download PDF ($14.99)"}</span>
+            <span id="wz-btn-pdf-spinner" class="hidden h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
+          </button>
+        </div>
+
+        <!-- Card B (Turnkey Delivery - $29.99 - Recommended Badge) -->
+        <div class="relative flex flex-col justify-between rounded-xl border-2 border-emerald-500/80 bg-gradient-to-b from-[#0c2419] to-[#091510] p-5 sm:p-6 shadow-[0_0_25px_rgba(16,185,129,0.18)] transition-all duration-150 hover:shadow-[0_0_35px_rgba(16,185,129,0.28)]">
+          <!-- Recommended Badge -->
+          <div class="absolute -top-3 right-4 inline-flex items-center gap-1 rounded-full bg-emerald-500 px-3 py-0.5 text-[10px] font-bold uppercase tracking-wider text-black shadow-md">
+            ★ {isEs ? "Recomendado por Defensores" : "Recommended by Tenant Advocates"}
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono uppercase tracking-wider text-emerald-400">
+                {isEs ? "Servicio Postal Oficial" : "Turnkey Delivery"}
+              </span>
+            </div>
+            <h3 class="mt-2 text-lg font-bold text-white">
+              {isEs ? "Entrega por Correo Certificado USPS" : "USPS Certified Mail Delivery"}
+            </h3>
+            <div class="mt-2 flex items-baseline gap-1">
+              <span class="text-3xl font-extrabold font-mono text-emerald-400">$29.99</span>
+              <span class="text-xs text-text-muted">{isEs ? "todo incluido" : "all-inclusive"}</span>
+            </div>
+
+            <!-- Features -->
+            <ul class="mt-4 space-y-2.5 text-xs text-zinc-300 border-t border-emerald-900/60 pt-4">
+              <li class="flex items-start gap-2">
+                <svg class="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                <span>{isEs ? "Imprimimos, empaquetamos y enviamos por Correo Certificado USPS" : "We print, package, and dispatch via USPS Certified Mail"}</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <svg class="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                <span>{isEs ? "Incluye número de rastreo oficial de USPS" : "Includes official USPS tracking number"}</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <svg class="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                <span>{isEs ? "Acuse de recibo con firma legal para evidencia en corte" : "Legal signature receipt for court evidence"}</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <svg class="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                <span>{isEs ? "Le ahorra un viaje a la oficina postal" : "Saves you a trip to the post office"}</span>
+              </li>
+            </ul>
+          </div>
+
+          <button
+            id="wz-btn-certified-mail"
+            type="button"
+            aria-label={isEs ? "Enviar Correo Certificado ($29.99)" : "Send Certified Mail ($29.99)"}
+            class="mt-6 flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-500 px-4 py-3 text-sm font-bold text-black transition-all duration-150 hover:bg-emerald-400 active:scale-[0.99] shadow-md focus:outline-none focus:ring-2 focus:ring-emerald-400"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
+              <path d="M3 4a2 2 0 00-2 2v1.161l8.441 4.221a1.25 1.25 0 001.118 0L19 7.162V6a2 2 0 00-2-2H3z" />
+              <path d="M19 8.839l-7.77 3.885a2.75 2.75 0 01-2.46 0L1 8.839V14a2 2 0 002 2h14a2 2 0 002-2V8.839z" />
+            </svg>
+            <span>{isEs ? "Enviar Correo Certificado ($29.99)" : "Send Certified Mail ($29.99)"}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Legal Requirement Footnote -->
+      <div class="mt-4 flex items-start gap-2 text-xs text-text-muted">
+        <svg class="mt-0.5 h-3.5 w-3.5 shrink-0 text-text-secondary" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+        </svg>
+        <p>
+          {t.certifiedMailNote}
+        </p>
+      </div>
+
+      <!-- Strategic Affiliate Placements Under Demand Letter Preview -->
+      <PartnerOffers locale={locale} variant="grid" headline={isEs ? "Protección y Opciones de Presentación Legal" : "Protection & Legal Filing Next Steps"} />
+    </div>
+  </section>
+
+  <!-- ═════════════════════════════════════════════════════════════════════════ -->
+  <!-- Navigation Buttons Bar                                                   -->
+  <!-- ═════════════════════════════════════════════════════════════════════════ -->
+  <div class="mt-6 flex items-center justify-between">
+    <button
+      id="wz-back"
+      type="button"
+      aria-label={t.back}
+      class="hidden inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-4 py-2.5 text-sm font-medium text-text-secondary transition-all duration-150 ease-out hover:border-border-hover hover:text-text-primary active:scale-[0.99]"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
+        <path fill-rule="evenodd" d="M15 10a.75.75 0 01-.75.75H7.612l2.158 1.96a.75.75 0 11-1.04 1.08l-3.5-3.25a.75.75 0 010-1.08l3.5-3.25a.75.75 0 111.04 1.08L7.612 9.25h6.638A.75.75 0 0115 10z" clip-rule="evenodd" />
+      </svg>
+      {t.back}
+    </button>
+
+    <div class="ml-auto flex items-center gap-3">
+      <button
+        id="wz-restart"
+        type="button"
+        aria-label={t.restart}
+        class="hidden inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-4 py-2.5 text-sm font-medium text-text-secondary transition-all duration-150 ease-out hover:border-border-hover hover:text-text-primary active:scale-[0.99]"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
+          <path fill-rule="evenodd" d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311V15a.75.75 0 01-1.5 0v-3.5a.75.75 0 01.75-.75H8.5a.75.75 0 010 1.5H7.058l.164.163a4 4 0 006.703-1.795.75.75 0 011.387.562zM4.688 8.576a5.5 5.5 0 019.201-2.466l.312.311V5a.75.75 0 011.5 0v3.5a.75.75 0 01-.75.75H11.5a.75.75 0 010-1.5h1.442l-.164-.163a4 4 0 00-6.703 1.795.75.75 0 01-1.387-.562z" clip-rule="evenodd" />
+        </svg>
+        {t.restart}
+      </button>
+
+      <button
+        id="wz-next"
+        type="button"
+        aria-label={t.next}
+        class="inline-flex items-center gap-2 rounded-lg bg-cta-bg px-6 py-2.5 text-sm font-semibold text-cta-text transition-all duration-150 ease-out hover:bg-cta-hover active:scale-[0.99] disabled:opacity-40 disabled:cursor-not-allowed shadow-sm"
+      >
+        <span>{t.next}</span>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
+          <path fill-rule="evenodd" d="M5 10a.75.75 0 01.75-.75h6.638L10.23 7.29a.75.75 0 111.04-1.08l3.5 3.25a.75.75 0 010 1.08l-3.5 3.25a.75.75 0 11-1.04-1.08l2.158-1.96H5.75A.75.75 0 015 10z" clip-rule="evenodd" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ═════════════════════════════════════════════════════════════════════════ -->
+  <!-- Lead Capture Gate Modal (Step 3 -> Step 4 Transition)                    -->
+  <!-- ═════════════════════════════════════════════════════════════════════════ -->
+  <div
+    id="wz-lead-modal"
+    class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/85 backdrop-blur-md"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="wz-lead-modal-title"
+  >
+    <div class="relative w-full max-w-md rounded-2xl border border-zinc-800 bg-[#0c0c0e] p-6 shadow-2xl sm:p-8 text-left animate-in fade-in zoom-in-95 duration-150">
+      <!-- Close / dismiss button -->
+      <button
+        id="wz-lead-modal-close"
+        type="button"
+        aria-label={isEs ? "Cerrar modal" : "Close lead modal"}
+        class="absolute right-4 top-4 rounded-lg p-1 text-text-muted hover:text-text-primary hover:bg-zinc-800/60 focus:outline-none transition-colors"
+      >
+        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+        </svg>
+      </button>
+
+      <!-- Badge & Icon -->
+      <div class="flex items-center gap-2 mb-3">
+        <span class="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 text-xs font-mono font-medium text-emerald-400">
+          <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          {isEs ? "Evaluación Completada" : "Penalty Audit Ready"}
+        </span>
+      </div>
+
+      <!-- Headline -->
+      <h3 id="wz-lead-modal-title" class="text-lg sm:text-xl font-bold tracking-tight text-white leading-snug">
+        {isEs
+          ? "¿A dónde debemos enviar por correo su desglose de sanciones y carta de demanda?"
+          : "Where should we email your statutory penalty breakdown & demand letter?"}
+      </h3>
+
+      <p class="mt-2 text-xs sm:text-sm text-text-secondary leading-relaxed">
+        {isEs
+          ? "Guarde su cálculo legal y desbloquee inmediatamente la carta oficial de demanda lista para enviar a su arrendador."
+          : "Save your audit calculations and unlock your official demand letter pre-filled with state statutory citations."}
+      </p>
+
+      <!-- Form Inputs -->
+      <div class="mt-5 space-y-3.5">
+        <div>
+          <label for="wz-lead-name" class="block text-xs font-medium text-text-primary mb-1.5">
+            {isEs ? "Su Nombre Completo" : "Your Full Legal Name"}
+          </label>
+          <input
+            type="text"
+            id="wz-lead-name"
+            aria-label={isEs ? "Su Nombre Completo" : "Your Full Legal Name"}
+            placeholder={isEs ? "ej. Juan Pérez" : "e.g. Jane Doe"}
+            class="w-full rounded-lg border border-border bg-card px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-colors"
+          />
+        </div>
+
+        <div>
+          <label for="wz-lead-email" class="block text-xs font-medium text-text-primary mb-1.5">
+            {isEs ? "Correo Electrónico" : "Email Address"}
+          </label>
+          <input
+            type="email"
+            id="wz-lead-email"
+            aria-label={isEs ? "Correo Electrónico" : "Email Address"}
+            placeholder={isEs ? "tu@correo.com" : "you@example.com"}
+            class="w-full rounded-lg border border-border bg-card px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-colors"
+          />
+        </div>
+
+        <!-- Error Feedback -->
+        <div id="wz-lead-error" class="hidden rounded-md border border-danger/40 bg-danger/10 p-2.5 text-xs text-danger font-medium"></div>
+
+        <!-- Submit Button -->
+        <button
+          id="wz-lead-submit"
+          type="button"
+          class="w-full mt-2 inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-500 py-3 text-sm font-bold text-black hover:bg-emerald-400 active:scale-[0.99] transition-all shadow-md focus:outline-none focus:ring-2 focus:ring-emerald-400"
+        >
+          <span id="wz-lead-btn-text">
+            {isEs ? "Desbloquear Carta de Demanda" : "Unlock Official Demand Letter"}
+          </span>
+          <span id="wz-lead-spinner" class="hidden h-4 w-4 animate-spin rounded-full border-2 border-black border-t-transparent"></span>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
+            <path fill-rule="evenodd" d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z" clip-rule="evenodd" />
+          </svg>
+        </button>
+
+        <!-- Secondary Reassurance (as requested) -->
+        <div class="flex items-center justify-center gap-1.5 pt-1 text-xs text-text-muted">
+          <svg class="h-3.5 w-3.5 text-emerald-400 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z" clip-rule="evenodd" />
+          </svg>
+          <span>{isEs ? "Respetamos su privacidad. Cero spam." : "We respect your privacy. No spam."}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═════════════════════════════════════════════════════════════════════════ -->
+  <!-- Certified Mail Checkout Modal                                            -->
+  <!-- ═════════════════════════════════════════════════════════════════════════ -->
+  <div
+    id="wz-certified-modal"
+    class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+  >
+    <div class="relative w-full max-w-lg rounded-xl border border-border bg-card p-6 shadow-2xl sm:p-8 animate-in fade-in zoom-in-95 duration-150">
+      <div class="flex items-center justify-between border-b border-border pb-4">
+        <div class="flex items-center gap-2">
+          <span class="inline-flex h-2 w-2 rounded-full bg-success"></span>
+          <h3 class="text-base font-semibold text-text-primary">
+            {t.certifiedModalTitle}
+          </h3>
+        </div>
+        <button
+          id="wz-modal-close"
+          type="button"
+          aria-label={isEs ? "Cerrar modal de envío" : "Close checkout modal"}
+          class="rounded p-1 text-text-muted hover:text-text-primary focus:outline-none"
+        >
+          <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Screen 1: Address Input & Checkout Form -->
+      <div id="wz-modal-form-screen" class="mt-4 space-y-4">
+        <p class="text-xs text-text-secondary leading-relaxed">
+          {isEs
+            ? "Ingrese las direcciones exactas de entrega y remitente para la notificación certificada por USPS."
+            : "Enter the legal mailing addresses for USPS Certified Mail delivery with court-admissible tracking."}
+        </p>
+
+        <!-- Landlord Mailing Address -->
+        <div class="rounded-lg border border-border bg-canvas-alt p-3.5 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-text-primary uppercase tracking-wider">
+              {isEs ? "Dirección del Arrendador (Destinatario)" : "Landlord Mailing Address (Recipient)"}
+            </span>
+            <span class="text-[10px] text-danger">*Requerido</span>
+          </div>
+          <div class="space-y-2 text-xs">
+            <input
+              type="text"
+              id="wz-mail-landlord-name"
+              aria-label={isEs ? "Nombre del Arrendador o Compañía Inmobiliaria" : "Landlord or Property Management Company"}
+              placeholder={isEs ? "Nombre del Arrendador o Compañía Inmobiliaria" : "Landlord / Property Management Company"}
+              class="w-full rounded border border-border bg-card px-3 py-1.5 text-text-primary focus:border-text-primary focus:outline-none"
+            />
+            <input
+              type="text"
+              id="wz-mail-landlord-street"
+              aria-label={isEs ? "Dirección física del arrendador (Calle, Número, Suite/Apto)" : "Landlord Street Address (e.g. 500 Landlord Ave, Ste 200)"}
+              placeholder={isEs ? "Dirección (Calle, Número, Suite/Apto)" : "Street Address (e.g. 500 Landlord Ave, Ste 200)"}
+              class="w-full rounded border border-border bg-card px-3 py-1.5 text-text-primary focus:border-text-primary focus:outline-none"
+            />
+            <div class="grid grid-cols-5 gap-2">
+              <input
+                type="text"
+                id="wz-mail-landlord-city"
+                aria-label={isEs ? "Ciudad del arrendador" : "Landlord City"}
+                placeholder={isEs ? "Ciudad" : "City"}
+                class="col-span-2 rounded border border-border bg-card px-3 py-1.5 text-text-primary focus:border-text-primary focus:outline-none"
+              />
+              <input
+                type="text"
+                id="wz-mail-landlord-state"
+                aria-label={isEs ? "Estado del arrendador (dos letras, ej. CA)" : "Landlord State (2-letter code, e.g. CA)"}
+                placeholder="ST (e.g. CA)"
+                maxlength="2"
+                class="col-span-1 uppercase font-mono text-center rounded border border-border bg-card px-2 py-1.5 text-text-primary focus:border-text-primary focus:outline-none"
+              />
+              <input
+                type="text"
+                id="wz-mail-landlord-zip"
+                aria-label={isEs ? "Código postal del arrendador" : "Landlord ZIP Code"}
+                placeholder="ZIP"
+                maxlength="10"
+                class="col-span-2 font-mono rounded border border-border bg-card px-3 py-1.5 text-text-primary focus:border-text-primary focus:outline-none"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Tenant Return Address -->
+        <div class="rounded-lg border border-border bg-canvas-alt p-3.5 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-text-primary uppercase tracking-wider">
+              {isEs ? "Su Dirección de Remitente (Inquilino)" : "Your Return Address (Tenant)"}
+            </span>
+            <span class="text-[10px] text-danger">*Requerido</span>
+          </div>
+          <div class="space-y-2 text-xs">
+            <input
+              type="text"
+              id="wz-mail-tenant-name"
+              aria-label={isEs ? "Su Nombre Completo Legal" : "Your Full Legal Name"}
+              placeholder={isEs ? "Su Nombre Completo Legal" : "Your Full Legal Name"}
+              class="w-full rounded border border-border bg-card px-3 py-1.5 text-text-primary focus:border-text-primary focus:outline-none"
+            />
+            <input
+              type="text"
+              id="wz-mail-tenant-street"
+              aria-label={isEs ? "Su Nueva Dirección Postal (Calle, Apto)" : "Current Forwarding Address (Street, Apt)"}
+              placeholder={isEs ? "Su Nueva Dirección Postal (Calle, Apto)" : "Current Forwarding Address (Street, Apt)"}
+              class="w-full rounded border border-border bg-card px-3 py-1.5 text-text-primary focus:border-text-primary focus:outline-none"
+            />
+            <div class="grid grid-cols-5 gap-2">
+              <input
+                type="text"
+                id="wz-mail-tenant-city"
+                aria-label={isEs ? "Su Ciudad Actual" : "Your Current City"}
+                placeholder={isEs ? "Ciudad" : "City"}
+                class="col-span-2 rounded border border-border bg-card px-3 py-1.5 text-text-primary focus:border-text-primary focus:outline-none"
+              />
+              <input
+                type="text"
+                id="wz-mail-tenant-state"
+                aria-label={isEs ? "Su Estado Actual (dos letras)" : "Your Current State (2-letter code)"}
+                placeholder="ST"
+                maxlength="2"
+                class="col-span-1 uppercase font-mono text-center rounded border border-border bg-card px-2 py-1.5 text-text-primary focus:border-text-primary focus:outline-none"
+              />
+              <input
+                type="text"
+                id="wz-mail-tenant-zip"
+                aria-label={isEs ? "Su Código Postal Actual" : "Your Current ZIP Code"}
+                placeholder="ZIP"
+                maxlength="10"
+                class="col-span-2 font-mono rounded border border-border bg-card px-3 py-1.5 text-text-primary focus:border-text-primary focus:outline-none"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div id="wz-modal-error" class="hidden rounded-md border border-danger/40 bg-danger/10 p-2.5 text-xs text-danger"></div>
+
+        <div class="rounded-lg border border-border bg-canvas-alt p-3 flex items-center justify-between">
+          <div>
+            <span class="block text-xs font-semibold text-text-primary">{isEs ? "Tarifa Total de Envío Certificado" : "Total Certified Mail Fee"}</span>
+            <span class="text-[11px] text-text-muted">{isEs ? "Incluye Acuse de Recibo Electrónico USPS" : "Includes Electronic Return Receipt"}</span>
+          </div>
+          <span class="text-base font-bold font-mono text-white">$29.99</span>
+        </div>
+
+        <button
+          id="wz-modal-submit"
+          type="button"
+          aria-label={isEs ? "Despachar Correo Certificado ($29.99)" : "Dispatch Certified Mail ($29.99)"}
+          class="w-full flex items-center justify-center gap-2 rounded-lg bg-cta-bg py-3 text-sm font-semibold text-cta-text hover:bg-cta-hover active:scale-[0.99] transition-all shadow-sm"
+        >
+          <span id="wz-modal-btn-text">{isEs ? "Despachar Correo Certificado ($29.99)" : "Dispatch Certified Mail ($29.99)"}</span>
+          <span id="wz-modal-spinner" class="hidden h-4 w-4 animate-spin rounded-full border-2 border-black border-t-transparent"></span>
+        </button>
+      </div>
+
+      <!-- Screen 2: Tracking & Fulfillment Confirmation Screen -->
+      <div id="wz-modal-success-screen" class="hidden mt-4 space-y-4 text-center">
+        <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-success/20 text-success">
+          <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
+          </svg>
+        </div>
+
+        <div>
+          <h4 class="text-base font-bold text-text-primary">
+            {isEs ? "¡Correo Certificado Despachado con Éxito!" : "Certified Mail Dispatched Successfully!"}
+          </h4>
+          <p class="text-xs text-text-secondary mt-1">
+            {isEs ? "Su carta de demanda formal ha sido enrutada al centro postal de USPS." : "Your formal demand letter has been queued for postal printing and sorting."}
+          </p>
+        </div>
+
+        <!-- Simulated Barcode Card -->
+        <div class="rounded-lg border border-border bg-canvas-alt p-4 font-mono text-left space-y-2">
+          <div class="flex justify-between items-center text-[10px] text-text-muted">
+            <span>UNITED STATES POSTAL SERVICE</span>
+            <span class="rounded bg-success/10 px-1.5 py-0.5 text-success font-semibold">CERTIFIED MAIL</span>
+          </div>
+
+          <div class="my-2 h-7 w-full bg-text-primary/20 flex items-center justify-center text-[11px] text-text-muted tracking-[0.35em] select-none">
+            ||||| | |||| || |||||| | ||||| ||| ||||
+          </div>
+
+          <div class="border-t border-border pt-2 space-y-1 text-xs">
+            <div class="flex justify-between">
+              <span class="text-text-muted">{isEs ? "Número de Rastreo" : "Tracking Number"}:</span>
+              <span id="wz-confirmed-tracking" class="font-bold text-emerald-400">7023 0490 0001 8492 4192</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-text-muted">{isEs ? "Entrega Estimada" : "Estimated Delivery"}:</span>
+              <span id="wz-confirmed-delivery" class="text-text-primary font-medium">—</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-text-muted">{isEs ? "ID de Orden" : "Order ID"}:</span>
+              <span id="wz-confirmed-order-id" class="text-text-muted font-mono text-[11px]">—</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex gap-2">
+          <a
+            id="wz-tracking-link"
+            href="https://tools.usps.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-border bg-canvas-alt py-2.5 text-xs font-semibold text-text-primary hover:border-border-hover transition-colors"
+          >
+            <span>{isEs ? "Rastrear en USPS.com →" : "Track on USPS.com →"}</span>
+          </a>
+          <button
+            id="wz-modal-done"
+            type="button"
+            aria-label={isEs ? "Cerrar confirmación" : "Done"}
+            class="inline-flex flex-1 items-center justify-center rounded-lg bg-cta-bg py-2.5 text-xs font-semibold text-cta-text hover:bg-cta-hover transition-colors"
+          >
+            {isEs ? "Cerrar Confirmación" : "Done"}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═════════════════════════════════════════════════════════════════════════ -->
+<!-- Dedicated Printable Demand Letter (Hidden on screen, visible on print)   -->
+<!-- ═════════════════════════════════════════════════════════════════════════ -->
+<div id="wz-printable-letter" class="hidden print:block print:bg-white print:text-black print:p-8 font-serif leading-relaxed text-sm">
+  <!-- Populated before print -->
+</div>
+
+<!-- ═════════════════════════════════════════════════════════════════════════ -->
+<!-- Island Styles: Flash Badge Keyframes & Glowing Recovery Border           -->
+<!-- ═════════════════════════════════════════════════════════════════════════ -->
+<style>
+  @keyframes badge-flash {
+    0% {
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.8);
+      border-color: rgba(16, 185, 129, 1);
+      transform: scale(0.99);
+    }
+    50% {
+      box-shadow: 0 0 28px 6px rgba(16, 185, 129, 0.45);
+      border-color: rgba(16, 185, 129, 1);
+      transform: scale(1.008);
+    }
+    100% {
+      box-shadow: 0 0 16px 2px rgba(16, 185, 129, 0.25);
+      border-color: rgba(16, 185, 129, 0.8);
+      transform: scale(1);
+    }
+  }
+
+  .wz-flash-badge {
+    animation: badge-flash 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @media print {
+    body * {
+      visibility: hidden;
+    }
+    #wz-printable-letter, #wz-printable-letter * {
+      visibility: visible;
+    }
+    #wz-printable-letter {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      margin: 0;
+      padding: 32px;
+      display: block !important;
+      color: #000000 !important;
+      background: #ffffff !important;
+    }
+  }
+</style>
+
+<!-- ═════════════════════════════════════════════════════════════════════════ -->
+<!-- Client-Side Island Logic: Reactive Transitions, Statutes, & Export       -->
+<!-- ═════════════════════════════════════════════════════════════════════════ -->
+<script>
+  import { calculateClaim, type CalculatorResult } from "../../utils/depositCalculator";
+  import { getStatute } from "../../data/stateStatutes";
+  import { processMailOrder, type CreateOrderRequest } from "../../pages/api/create-mail-order";
+
+  // ── Elements & State ─────────────────────────────────────────────────────
+  const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+  const wizard = $<HTMLDivElement>("deposit-wizard");
+  const locale = (wizard?.dataset.locale ?? "en") as "en" | "es";
+  const isEs = locale === "es";
+
+  // Step containers & Progress controls
+  const stepSections = document.querySelectorAll<HTMLElement>(".wz-step");
+  const tabButtons = document.querySelectorAll<HTMLButtonElement>(".wz-tab-btn");
+  const stepLabel = $<HTMLSpanElement>("wz-step-label");
+  const stepPct = $<HTMLSpanElement>("wz-step-pct");
+
+  // Navigation Buttons
+  const btnBack = $<HTMLButtonElement>("wz-back");
+  const btnNext = $<HTMLButtonElement>("wz-next");
+  const btnRestart = $<HTMLButtonElement>("wz-restart");
+
+  // Inputs
+  const inputState = $<HTMLSelectElement>("wz-state");
+  const inputMoveout = $<HTMLInputElement>("wz-moveout");
+  const inputDeposit = $<HTMLInputElement>("wz-deposit");
+  const inputReturned = $<HTMLInputElement>("wz-returned");
+  const stateDetectedTag = $<HTMLSpanElement>("wz-state-detected-tag");
+  const stateStatuteHint = $<HTMLParagraphElement>("wz-state-statute-hint");
+
+  // Optional letter inputs
+  const inputTenantName = $<HTMLInputElement>("wz-tenant-name");
+  const inputLandlordName = $<HTMLInputElement>("wz-landlord-name");
+  const inputPropertyAddr = $<HTMLInputElement>("wz-property-addr");
+
+  // Step 3 Outputs
+  const violationBadge = $<HTMLDivElement>("wz-violation-badge");
+  const violationText = $<HTMLParagraphElement>("wz-violation-text");
+  const violationSubtext = $<HTMLParagraphElement>("wz-violation-subtext");
+  const noViolationBadge = $<HTMLDivElement>("wz-no-violation-badge");
+  const daysEl = $<HTMLParagraphElement>("wz-days-elapsed");
+  const daysStatus = $<HTMLSpanElement>("wz-days-status");
+  const deadlineEl = $<HTMLParagraphElement>("wz-state-deadline");
+  const statuteCodeLabel = $<HTMLSpanElement>("wz-statute-code-label");
+  const violationsList = $<HTMLDivElement>("wz-violations-list");
+  const violationsUl = $<HTMLUListElement>("wz-violations-ul");
+  const owedEl = $<HTMLSpanElement>("wz-owed");
+  const penaltyEl = $<HTMLSpanElement>("wz-penalty");
+  const multiplierTag = $<HTMLSpanElement>("wz-multiplier-tag");
+  const totalEl = $<HTMLParagraphElement>("wz-total");
+  const claimsBadge = $<HTMLSpanElement>("wz-claims-badge");
+
+  // Step 4 Outputs & Action buttons
+  const letterPreview = $<HTMLDivElement>("wz-letter-preview");
+  const printableLetter = $<HTMLDivElement>("wz-printable-letter");
+  const btnDownloadPdf = $<HTMLButtonElement>("wz-btn-download-pdf");
+  const btnPdfText = $<HTMLSpanElement>("wz-btn-pdf-text");
+  const btnPdfSpinner = $<HTMLSpanElement>("wz-btn-pdf-spinner");
+  const btnCertifiedMail = $<HTMLButtonElement>("wz-btn-certified-mail");
+
+  // Lead capture gate modal elements
+  const leadModal = $<HTMLDivElement>("wz-lead-modal");
+  const leadModalClose = $<HTMLButtonElement>("wz-lead-modal-close");
+  const leadNameInput = $<HTMLInputElement>("wz-lead-name");
+  const leadEmailInput = $<HTMLInputElement>("wz-lead-email");
+  const leadSubmitBtn = $<HTMLButtonElement>("wz-lead-submit");
+  const leadBtnText = $<HTMLSpanElement>("wz-lead-btn-text");
+  const leadSpinner = $<HTMLSpanElement>("wz-lead-spinner");
+  const leadError = $<HTMLDivElement>("wz-lead-error");
+
+  // Certified mail modal elements
+  const certifiedModal = $<HTMLDivElement>("wz-certified-modal");
+  const modalClose = $<HTMLButtonElement>("wz-modal-close");
+  const modalSubmit = $<HTMLButtonElement>("wz-modal-submit");
+  const modalFormScreen = $<HTMLDivElement>("wz-modal-form-screen");
+  const modalSuccessScreen = $<HTMLDivElement>("wz-modal-success-screen");
+  const modalError = $<HTMLDivElement>("wz-modal-error");
+  const modalBtnText = $<HTMLSpanElement>("wz-modal-btn-text");
+  const modalSpinner = $<HTMLSpanElement>("wz-modal-spinner");
+  const modalDone = $<HTMLButtonElement>("wz-modal-done");
+
+  const mailLandlordName = $<HTMLInputElement>("wz-mail-landlord-name");
+  const mailLandlordStreet = $<HTMLInputElement>("wz-mail-landlord-street");
+  const mailLandlordCity = $<HTMLInputElement>("wz-mail-landlord-city");
+  const mailLandlordState = $<HTMLInputElement>("wz-mail-landlord-state");
+  const mailLandlordZip = $<HTMLInputElement>("wz-mail-landlord-zip");
+
+  const mailTenantName = $<HTMLInputElement>("wz-mail-tenant-name");
+  const mailTenantStreet = $<HTMLInputElement>("wz-mail-tenant-street");
+  const mailTenantCity = $<HTMLInputElement>("wz-mail-tenant-city");
+  const mailTenantState = $<HTMLInputElement>("wz-mail-tenant-state");
+  const mailTenantZip = $<HTMLInputElement>("wz-mail-tenant-zip");
+
+  const confirmedTracking = $<HTMLSpanElement>("wz-confirmed-tracking");
+  const confirmedDelivery = $<HTMLSpanElement>("wz-confirmed-delivery");
+  const confirmedOrderId = $<HTMLSpanElement>("wz-confirmed-order-id");
+  const trackingLink = $<HTMLAnchorElement>("wz-tracking-link");
+
+  // Internal State
+  let currentStep = 1;
+  const TOTAL_STEPS = 4;
+  let lastResult: CalculatorResult | null = null;
+
+  // ── Currency & Date Formatters ───────────────────────────────────────────
+  const fmtMoney = (n: number) =>
+    new Intl.NumberFormat(isEs ? "es-US" : "en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 2,
+    }).format(n);
+
+  const fmtDate = (d: Date) =>
+    new Intl.DateTimeFormat(isEs ? "es-US" : "en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }).format(d);
+
+  // ── Auto-Detect State from Timezone ──────────────────────────────────────
+  function autoDetectState(): string {
+    try {
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+      if (tz.includes("Los_Angeles") || tz.includes("Pacific")) return "CA";
+      if (tz.includes("New_York") || tz.includes("Eastern")) return "NY";
+      if (tz.includes("Chicago") || tz.includes("Central")) return "TX";
+      if (tz.includes("Denver") || tz.includes("Mountain") || tz.includes("Phoenix")) return "CO";
+    } catch {
+      // fallback
+    }
+    return "CA";
+  }
+
+  // ── Step Navigation ──────────────────────────────────────────────────────
+  function goToStep(step: number) {
+    currentStep = step;
+
+    // Show/hide step sections with zero layout shift
+    stepSections.forEach((el) => {
+      const s = Number(el.dataset.step);
+      el.classList.toggle("hidden", s !== step);
+    });
+
+    // Update Stepper Tabs
+    tabButtons.forEach((btn, index) => {
+      const sNum = index + 1;
+      const badge = btn.querySelector(".wz-tab-badge");
+      const title = btn.querySelector(".wz-tab-title");
+      const bar = btn.querySelector(".wz-tab-bar");
+
+      if (sNum === step) {
+        btn.classList.add("border-border-hover", "bg-card");
+        btn.classList.remove("opacity-60");
+        badge?.classList.add("bg-cta-bg", "text-cta-text");
+        badge?.classList.remove("bg-border", "text-text-muted", "bg-success", "text-white");
+        title?.classList.add("text-text-primary");
+        bar?.classList.add("bg-cta-bg");
+        bar?.classList.remove("bg-border", "bg-success");
+      } else if (sNum < step) {
+        btn.classList.remove("border-border-hover");
+        btn.classList.remove("opacity-60");
+        badge?.classList.add("bg-success", "text-white");
+        badge?.classList.remove("bg-cta-bg", "text-cta-text", "bg-border", "text-text-muted");
+        title?.classList.remove("text-text-primary");
+        bar?.classList.add("bg-success");
+        bar?.classList.remove("bg-cta-bg", "bg-border");
+      } else {
+        btn.classList.remove("border-border-hover");
+        btn.classList.add("opacity-60");
+        badge?.classList.add("bg-border", "text-text-muted");
+        badge?.classList.remove("bg-cta-bg", "text-cta-text", "bg-success", "text-white");
+        title?.classList.remove("text-text-primary");
+        bar?.classList.add("bg-border");
+        bar?.classList.remove("bg-cta-bg", "bg-success");
+      }
+    });
+
+    // Progress percentage
+    const pct = Math.round((step / TOTAL_STEPS) * 100);
+    if (stepLabel) {
+      stepLabel.textContent = isEs
+        ? `Paso ${step} de ${TOTAL_STEPS}`
+        : `Step ${step} of ${TOTAL_STEPS}`;
+    }
+    if (stepPct) {
+      stepPct.textContent = `${pct}%`;
+    }
+
+    // Action button visibility
+    btnBack.classList.toggle("hidden", step === 1);
+    btnNext.classList.toggle("hidden", step === TOTAL_STEPS);
+    btnRestart.classList.toggle("hidden", step !== TOTAL_STEPS);
+
+    // Compute or render on step changes
+    if (step === 3) {
+      runCalculation();
+    }
+    if (step === 4) {
+      renderDemandLetter();
+    }
+
+    // Ensure smooth view scroll
+    wizard.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  // ── Validation ───────────────────────────────────────────────────────────
+  function validateCurrentStep(): boolean {
+    if (currentStep === 1) {
+      if (!inputState.value) {
+        flashError(inputState);
+        return false;
+      }
+      if (!inputMoveout.value) {
+        flashError(inputMoveout);
+        return false;
+      }
+      return true;
+    }
+    if (currentStep === 2) {
+      const deposit = parseFloat(inputDeposit.value);
+      if (isNaN(deposit) || deposit <= 0) {
+        flashError(inputDeposit);
+        return false;
+      }
+      return true;
+    }
+    return true;
+  }
+
+  function flashError(el: HTMLElement) {
+    el.classList.add("!border-danger");
+    el.focus();
+    setTimeout(() => el.classList.remove("!border-danger"), 2000);
+  }
+
+  // ── Step 1 Hint Updater ──────────────────────────────────────────────────
+  function updateStateHint() {
+    const code = inputState.value;
+    const stat = getStatute(code);
+    if (stateStatuteHint && stat) {
+      stateStatuteHint.textContent = isEs
+        ? `Plazo legal de ${stat.deadlineDays} días según ${stat.legalCodeCitation}.`
+        : `Statutory return deadline: ${stat.deadlineDays} days under ${stat.legalCodeCitation}.`;
+    }
+  }
+
+  // ── Step 3: Run Instant Violation & Damage Assessment ────────────────────
+  function runCalculation() {
+    const stateCode = inputState.value;
+    const moveOutDate = inputMoveout.value;
+    const depositAmount = parseFloat(inputDeposit.value) || 0;
+    const amountReturned = parseFloat(inputReturned.value) || 0;
+    const disputedDeductions = Array.from(
+      document.querySelectorAll<HTMLInputElement>('input[name="wz-deduction"]:checked'),
+    ).map((cb) => cb.value);
+
+    const result = calculateClaim({
+      stateCode,
+      depositAmount,
+      moveOutDate,
+      amountReturned,
+      disputedDeductions,
+    });
+    lastResult = result;
+
+    // Timeline counters
+    daysEl.textContent = String(result.daysElapsed);
+    deadlineEl.textContent = `${result.statute.deadlineDays} ${isEs ? "Días" : "Days"}`;
+    statuteCodeLabel.textContent = result.statute.legalCodeCitation;
+
+    if (result.isPastDeadline) {
+      daysEl.classList.add("text-danger");
+      daysEl.classList.remove("text-text-primary");
+      daysStatus.textContent = isEs
+        ? `+${result.daysElapsed - result.statute.deadlineDays} días tarde`
+        : `+${result.daysElapsed - result.statute.deadlineDays} days late`;
+      daysStatus.className = "mt-1 inline-block text-[11px] font-mono text-danger font-semibold";
+    } else {
+      daysEl.classList.remove("text-danger");
+      daysEl.classList.add("text-text-primary");
+      daysStatus.textContent = isEs
+        ? `${result.statute.deadlineDays - result.daysElapsed} días restantes`
+        : `${result.statute.deadlineDays - result.daysElapsed} days remaining`;
+      daysStatus.className = "mt-1 inline-block text-[11px] font-mono text-success";
+    }
+
+    // Flash bold emerald badge if deadline violated
+    if (result.isPastDeadline) {
+      violationBadge.classList.remove("hidden");
+      noViolationBadge.classList.add("hidden");
+
+      // Multiplier string logic:
+      // If penaltyMultiplier is 2, up to 3x total recovery or up to 2x penalty
+      // Format: "Statutory Deadline Violated! Your landlord may owe you up to [3x / 2x] your deposit under [State Code]."
+      const mult = result.statute.penaltyMultiplier;
+      const multiplierDisplay = mult > 0 ? (mult === 2 ? "3x" : `${mult}x`) : (isEs ? "el 100%" : "full return");
+
+      violationText.textContent = isEs
+        ? `¡Plazo Legal Violado! Su arrendador puede deberle hasta ${multiplierDisplay} de su depósito bajo ${result.statute.legalCodeCitation}.`
+        : `Statutory Deadline Violated! Your landlord may owe you up to ${multiplierDisplay} your deposit under ${result.statute.legalCodeCitation}.`;
+
+      violationSubtext.textContent = isEs
+        ? `El plazo legal de ${result.statute.deadlineDays} días expiró hace ${result.daysElapsed - result.statute.deadlineDays} días. El arrendador perdió el derecho legal a deducciones.`
+        : `The ${result.statute.deadlineDays}-day legal window expired ${result.daysElapsed - result.statute.deadlineDays} days ago. The landlord has forfeited rights to withhold your funds.`;
+
+      // Trigger flash animation
+      violationBadge.classList.remove("wz-flash-badge");
+      void violationBadge.offsetWidth; // reflow
+      violationBadge.classList.add("wz-flash-badge");
+    } else {
+      violationBadge.classList.add("hidden");
+      noViolationBadge.classList.remove("hidden");
+    }
+
+    // Violations list
+    if (result.violationTypes.length > 0) {
+      violationsList.classList.remove("hidden");
+      violationsUl.innerHTML = result.violationTypes
+        .map(
+          (v) =>
+            `<li class="flex items-start gap-2 text-xs sm:text-sm text-text-secondary">
+              <svg class="mt-0.5 h-4 w-4 shrink-0 text-danger" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+              </svg>
+              <span>${v}</span>
+            </li>`,
+        )
+        .join("");
+    } else {
+      violationsList.classList.add("hidden");
+    }
+
+    // Financial calculations comparison
+    const penaltyOnly = result.statutoryPenaltyAmount - result.unreturnedAmount;
+    owedEl.textContent = fmtMoney(result.unreturnedAmount);
+    penaltyEl.textContent = `+${fmtMoney(penaltyOnly)}`;
+    totalEl.textContent = fmtMoney(result.statutoryPenaltyAmount);
+
+    if (result.statute.penaltyMultiplier > 0) {
+      multiplierTag.textContent = `+${result.statute.penaltyMultiplier}x penalty`;
+      multiplierTag.classList.remove("hidden");
+    } else {
+      multiplierTag.classList.add("hidden");
+    }
+
+    // Small Claims Eligibility Badge
+    if (result.smallClaimsEligible) {
+      claimsBadge.innerHTML = `
+        <svg class="h-3.5 w-3.5 text-success" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
+        </svg>
+        <span class="text-text-primary">${isEs ? "Elegible para Corte de Reclamos Menores" : "Eligible for Small Claims Court"}</span>
+        <span class="text-text-muted">(${isEs ? "tope" : "cap"}: ${fmtMoney(result.statute.smallClaimsLimit)})</span>
+      `;
+      claimsBadge.className = "inline-flex items-center gap-1.5 rounded-full border border-success/30 bg-success/10 px-3 py-1 text-xs font-medium text-success";
+    } else {
+      claimsBadge.innerHTML = `
+        <svg class="h-3.5 w-3.5 text-danger" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+        </svg>
+        <span class="text-danger">${isEs ? "Excede el Tope de Reclamos Menores" : "Exceeds Small Claims Limit"}</span>
+        <span class="text-text-muted">(${isEs ? "tope" : "cap"}: ${fmtMoney(result.statute.smallClaimsLimit)})</span>
+      `;
+      claimsBadge.className = "inline-flex items-center gap-1.5 rounded-full border border-danger/30 bg-danger/10 px-3 py-1 text-xs font-medium text-danger";
+    }
+  }
+
+  // ── Step 4: Demand Letter Generator ──────────────────────────────────────
+  function renderDemandLetter() {
+    if (!lastResult) return;
+    const r = lastResult;
+    const statute = r.statute;
+    const today = fmtDate(new Date());
+    const moveOutFormatted = fmtDate(new Date(inputMoveout.value));
+    const originalDeposit = parseFloat(inputDeposit.value) || 0;
+    const amountReturned = parseFloat(inputReturned.value) || 0;
+    const penaltyOnly = r.statutoryPenaltyAmount - r.unreturnedAmount;
+
+    // Names and addresses
+    const tenantName = inputTenantName?.value.trim() || (isEs ? "[SU NOMBRE COMPLETO]" : "[YOUR FULL NAME]");
+    const landlordName = inputLandlordName?.value.trim() || (isEs ? "[ARRENDADOR / ADMINISTRADOR]" : "[LANDLORD / MANAGEMENT CO.]");
+    const propertyAddr = inputPropertyAddr?.value.trim() || (isEs ? "[DIRECCIÓN DE LA PROPIEDAD]" : "[RENTAL PROPERTY ADDRESS]");
+
+    const letterHtml = `
+      <!-- Demand Letter Header -->
+      <div class="border-b border-border pb-3 font-mono text-xs">
+        <div class="flex justify-between items-center text-text-muted">
+          <span>${isEs ? "FECHA" : "DATE"}: ${today}</span>
+          <span class="text-emerald-400 font-semibold">${isEs ? "ENVÍO CERTIFICADO USPS" : "USPS CERTIFIED MAIL"}</span>
+        </div>
+        <div class="mt-2 text-text-secondary">
+          <p><strong class="text-text-primary">${isEs ? "DE" : "FROM"}:</strong> ${tenantName}</p>
+          <p><strong class="text-text-primary">${isEs ? "PARA" : "TO"}:</strong> ${landlordName}</p>
+          <p><strong class="text-text-primary">${isEs ? "PROPIEDAD" : "PREMISES"}:</strong> ${propertyAddr}</p>
+        </div>
+      </div>
+
+      <!-- Subject line -->
+      <div class="font-bold text-text-primary pt-1 text-sm sm:text-base tracking-tight">
+        ${isEs ? "RE: DEMANDA FORMAL DE DEVOLUCIÓN DE DEPÓSITO DE SEGURIDAD Y AVISO DE LITIGIO" : "RE: FORMAL DEMAND FOR RETURN OF SECURITY DEPOSIT & INTENT TO LITIGATE"}
+      </div>
+
+      <!-- Greeting & Notice -->
+      <p>
+        ${isEs ? `Estimado(a) ${landlordName}:` : `Dear ${landlordName}:`}
+      </p>
+
+      <p>
+        ${isEs
+          ? `Por medio de la presente, notifico formalmente la demanda de devolución de mi depósito de seguridad original por la suma de ${fmtMoney(originalDeposit)}, entregado en garantía para el inmueble en ${propertyAddr}. Entregué formalmente las llaves y desocupé la propiedad el ${moveOutFormatted}.`
+          : `This letter serves as formal written demand for the immediate return of my security deposit originally paid in the amount of ${fmtMoney(originalDeposit)} for the residential property located at ${propertyAddr}. I vacated the premises and surrendered all keys on ${moveOutFormatted}.`}
+      </p>
+
+      <!-- Statutory Clause with Legal Citation -->
+      <div class="rounded-lg border border-border bg-canvas p-4 text-xs font-mono leading-relaxed text-text-secondary">
+        <p class="font-bold text-text-primary mb-1">
+          ${isEs ? "CITA LEGAL Y VIOLACIÓN ESTATUTARIA:" : "STATUTORY LEGAL CITATION & VIOLATION:"}
+        </p>
+        <p>${statute.demandLetterStatutoryClause[locale]}</p>
+      </div>
+
+      <!-- Accounting Summary Table -->
+      <div class="overflow-x-auto rounded-lg border border-border bg-card p-3 font-mono text-xs">
+        <div class="font-bold text-text-primary mb-2">${isEs ? "LIQUIDACIÓN DE DAÑOS Y PERJUICIOS:" : "ACCOUNTING OF DAMAGES & MONETARY CLAIM:"}</div>
+        <div class="space-y-1">
+          <div class="flex justify-between py-0.5 border-b border-border/50">
+            <span>${isEs ? "Depósito Original Pagado" : "Original Deposit Paid"}:</span>
+            <span>${fmtMoney(originalDeposit)}</span>
+          </div>
+          <div class="flex justify-between py-0.5 border-b border-border/50">
+            <span>${isEs ? "Monto Devuelto por Arrendador" : "Amount Returned by Landlord"}:</span>
+            <span>${fmtMoney(amountReturned)}</span>
+          </div>
+          <div class="flex justify-between py-0.5 border-b border-border/50 text-text-primary font-medium">
+            <span>${isEs ? "Saldo Retenido Ilegalmente" : "Unreturned Balance Owed"}:</span>
+            <span>${fmtMoney(r.unreturnedAmount)}</span>
+          </div>
+          <div class="flex justify-between py-0.5 border-b border-border/50 text-success font-medium">
+            <span>${isEs ? "Sanción Estatutaria por Retención Indebida" : "Statutory Bad-Faith Damages"}:</span>
+            <span>+${fmtMoney(penaltyOnly)}</span>
+          </div>
+          <div class="flex justify-between pt-1.5 font-bold text-sm text-emerald-400">
+            <span>${isEs ? "TOTAL DEMANDADO EN CORTE" : "TOTAL COURT DEMAND TARGET"}:</span>
+            <span>${fmtMoney(r.statutoryPenaltyAmount)}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formal 10-day notice & closing -->
+      <p>
+        ${isEs
+          ? `Le concedo un plazo perentorio de diez (10) días hábiles contados a partir de la recepción de esta notificación para remitir un cheque certificado o transferencia por la cantidad total adeudada de ${fmtMoney(r.statutoryPenaltyAmount)}. En caso contrario, radicaré de inmediato la demanda correspondiente ante el tribunal competente, solicitando además los costos de radicación, honorarios legales y sanciones legales completas.`
+          : `You are hereby granted ten (10) business days from the verified delivery of this letter to remit payment in the amount of ${fmtMoney(r.statutoryPenaltyAmount)}. Failure to comply will result in an immediate complaint filed in small claims court without further notice, seeking all statutory penalties, filing fees, and court costs allowable under law.`}
+      </p>
+
+      <div class="pt-2">
+        <p class="font-medium text-text-primary">${isEs ? "Respetuosamente," : "Respectfully submitted,"}</p>
+        <p class="mt-4 font-semibold text-text-primary underline decoration-border-hover">${tenantName}</p>
+      </div>
+    `;
+
+    if (letterPreview) {
+      letterPreview.innerHTML = letterHtml;
+    }
+    if (printableLetter) {
+      printableLetter.innerHTML = letterHtml;
+    }
+  }
+
+  // ── Lead Capture Gate Handlers ───────────────────────────────────────────
+  interface StoredLead {
+    name: string;
+    email: string;
+    timestamp?: string;
+  }
+
+  function getStoredLead(): StoredLead | null {
+    try {
+      const raw = localStorage.getItem("dr_lead");
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed.email === "string" && parsed.email.includes("@")) {
+        return parsed;
+      }
+    } catch {
+      // ignore storage access errors
+    }
+    return null;
+  }
+
+  function openLeadModal() {
+    if (leadError) leadError.classList.add("hidden");
+    const stored = getStoredLead();
+    if (stored) {
+      if (leadNameInput && !leadNameInput.value) leadNameInput.value = stored.name;
+      if (leadEmailInput && !leadEmailInput.value) leadEmailInput.value = stored.email;
+    }
+    leadModal?.classList.remove("hidden");
+    leadModal?.classList.add("flex");
+    leadNameInput?.focus();
+  }
+
+  function closeLeadModal() {
+    leadModal?.classList.add("hidden");
+    leadModal?.classList.remove("flex");
+  }
+
+  leadModalClose?.addEventListener("click", closeLeadModal);
+  leadModal?.addEventListener("click", (e) => {
+    if (e.target === leadModal) closeLeadModal();
+  });
+
+  leadSubmitBtn?.addEventListener("click", async () => {
+    const name = leadNameInput?.value.trim() || "";
+    const email = leadEmailInput?.value.trim().toLowerCase() || "";
+
+    if (!name || name.length < 2) {
+      if (leadError) {
+        leadError.textContent = isEs ? "Por favor ingrese su nombre completo." : "Please enter your full legal name.";
+        leadError.classList.remove("hidden");
+      }
+      leadNameInput?.focus();
+      return;
+    }
+
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      if (leadError) {
+        leadError.textContent = isEs ? "Por favor ingrese un correo electrónico válido." : "Please enter a valid email address.";
+        leadError.classList.remove("hidden");
+      }
+      leadEmailInput?.focus();
+      return;
+    }
+
+    if (leadError) leadError.classList.add("hidden");
+    if (leadSubmitBtn) leadSubmitBtn.disabled = true;
+    if (leadSpinner) leadSpinner.classList.remove("hidden");
+
+    // Persist lead locally to localStorage
+    const leadPayload: StoredLead = { name, email, timestamp: new Date().toISOString() };
+    try {
+      localStorage.setItem("dr_lead", JSON.stringify(leadPayload));
+    } catch {
+      // ignore storage failure
+    }
+
+    // Auto-populate tenant names on Step 4 and Certified modal
+    if (inputTenantName) inputTenantName.value = name;
+    if (mailTenantName) mailTenantName.value = name;
+
+    // Send lead to /api/leads endpoint
+    try {
+      await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          email,
+          stateCode: inputState?.value || "CA",
+          totalClaimAmount: lastResult?.statutoryPenaltyAmount,
+          statutoryPenalty: lastResult?.statutoryPenaltyAmount ? lastResult.statutoryPenaltyAmount - lastResult.unreturnedAmount : 0,
+        }),
+      });
+    } catch {
+      // Non-blocking
+    } finally {
+      if (leadSubmitBtn) leadSubmitBtn.disabled = false;
+      if (leadSpinner) leadSpinner.classList.add("hidden");
+      closeLeadModal();
+      goToStep(4);
+    }
+  });
+
+  // ── Download Plain Text / Print PDF Handler ──────────────────────────────
+  btnDownloadPdf?.addEventListener("click", async () => {
+    renderDemandLetter();
+    const stored = getStoredLead();
+    const tenantName = inputTenantName?.value.trim() || stored?.name || "";
+    const tenantEmail = stored?.email || "";
+    const landlordName = inputLandlordName?.value.trim() || "";
+    const state = inputState?.value || "CA";
+    const totalClaim = lastResult?.statutoryPenaltyAmount || 0;
+
+    // UI Loading state
+    if (btnDownloadPdf) btnDownloadPdf.disabled = true;
+    if (btnPdfSpinner) btnPdfSpinner.classList.remove("hidden");
+    if (btnPdfText) {
+      btnPdfText.textContent = isEs ? "Iniciando descarga..." : "Preparing Download...";
+    }
+
+    try {
+      const response = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tier: "pdf",
+          stateCode: state,
+          tenantName,
+          tenantEmail,
+          landlordName,
+          totalClaimAmount: totalClaim,
+          letterContent: printableLetter?.innerText || letterPreview?.innerText || "",
+          locale,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.checkoutUrl) {
+          window.location.href = data.checkoutUrl;
+          return;
+        }
+        if (data.redirectUrl) {
+          window.location.href = data.redirectUrl;
+          return;
+        }
+      }
+      window.location.href = `/${isEs ? "es/" : ""}success?tier=pdf&state=${encodeURIComponent(state)}`;
+    } catch {
+      window.location.href = `/${isEs ? "es/" : ""}success?tier=pdf&state=${encodeURIComponent(state)}`;
+    } finally {
+      if (btnDownloadPdf) btnDownloadPdf.disabled = false;
+      if (btnPdfSpinner) btnPdfSpinner.classList.add("hidden");
+      if (btnPdfText) {
+        btnPdfText.textContent = isEs ? "Descargar PDF ($14.99)" : "Download PDF ($14.99)";
+      }
+    }
+  });
+
+  // ── Send Certified Mail Modal Handlers ────────────────────────────────────
+  function resetCertifiedModal() {
+    if (modalError) {
+      modalError.classList.add("hidden");
+      modalError.textContent = "";
+    }
+    if (modalFormScreen) modalFormScreen.classList.remove("hidden");
+    if (modalSuccessScreen) modalSuccessScreen.classList.add("hidden");
+    if (modalSubmit) modalSubmit.disabled = false;
+    if (modalSpinner) modalSpinner.classList.add("hidden");
+    if (modalBtnText) {
+      modalBtnText.textContent = isEs
+        ? "Despachar Correo Certificado ($29.99)"
+        : "Dispatch Certified Mail ($29.99)";
+    }
+  }
+
+  function prefillModalAddresses() {
+    const stored = getStoredLead();
+    if (inputLandlordName?.value.trim() && mailLandlordName && !mailLandlordName.value) {
+      mailLandlordName.value = inputLandlordName.value.trim();
+    }
+    if (inputTenantName?.value.trim() && mailTenantName && !mailTenantName.value) {
+      mailTenantName.value = inputTenantName.value.trim();
+    } else if (stored?.name && mailTenantName && !mailTenantName.value) {
+      mailTenantName.value = stored.name;
+    }
+    if (inputPropertyAddr?.value.trim() && mailLandlordStreet && !mailLandlordStreet.value) {
+      mailLandlordStreet.value = inputPropertyAddr.value.trim();
+    }
+    if (inputState?.value) {
+      if (mailLandlordState && !mailLandlordState.value) mailLandlordState.value = inputState.value;
+      if (mailTenantState && !mailTenantState.value) mailTenantState.value = inputState.value;
+    }
+  }
+
+  btnCertifiedMail?.addEventListener("click", () => {
+    prefillModalAddresses();
+    resetCertifiedModal();
+    certifiedModal.classList.remove("hidden");
+    certifiedModal.classList.add("flex");
+  });
+
+  const closeModal = () => {
+    certifiedModal.classList.add("hidden");
+    certifiedModal.classList.remove("flex");
+  };
+
+  modalClose?.addEventListener("click", closeModal);
+  modalDone?.addEventListener("click", closeModal);
+
+  certifiedModal?.addEventListener("click", (e) => {
+    if (e.target === certifiedModal) {
+      closeModal();
+    }
+  });
+
+  modalSubmit?.addEventListener("click", async () => {
+    // 1. Gather inputs
+    const lName = mailLandlordName?.value.trim() || "";
+    const lStreet = mailLandlordStreet?.value.trim() || "";
+    const lCity = mailLandlordCity?.value.trim() || "";
+    const lState = mailLandlordState?.value.trim().toUpperCase() || "";
+    const lZip = mailLandlordZip?.value.trim() || "";
+
+    const tName = mailTenantName?.value.trim() || "";
+    const tStreet = mailTenantStreet?.value.trim() || "";
+    const tCity = mailTenantCity?.value.trim() || "";
+    const tState = mailTenantState?.value.trim().toUpperCase() || "";
+    const tZip = mailTenantZip?.value.trim() || "";
+
+    // 2. Validate
+    const errors: string[] = [];
+    if (!lName || lName.length < 2) errors.push(isEs ? "Nombre del arrendador requerido" : "Landlord name required");
+    if (!lStreet || lStreet.length < 4) errors.push(isEs ? "Dirección del arrendador requerida" : "Landlord street address required");
+    if (!lCity) errors.push(isEs ? "Ciudad del arrendador requerida" : "Landlord city required");
+    if (!lState || lState.length !== 2) errors.push(isEs ? "Estado del arrendador (2 letras)" : "Landlord 2-letter state code required");
+    if (!/^\d{5}(-\d{4})?$/.test(lZip)) errors.push(isEs ? "Código postal del arrendador inválido" : "Landlord 5-digit ZIP code required");
+
+    if (!tName || tName.length < 2) errors.push(isEs ? "Su nombre legal requerido" : "Tenant legal name required");
+    if (!tStreet || tStreet.length < 4) errors.push(isEs ? "Su dirección de remitente requerida" : "Tenant street address required");
+    if (!tCity) errors.push(isEs ? "Su ciudad requerida" : "Tenant city required");
+    if (!tState || tState.length !== 2) errors.push(isEs ? "Su estado (2 letras)" : "Tenant 2-letter state code required");
+    if (!/^\d{5}(-\d{4})?$/.test(tZip)) errors.push(isEs ? "Su código postal inválido" : "Tenant 5-digit ZIP code required");
+
+    if (errors.length > 0) {
+      if (modalError) {
+        modalError.textContent = errors.join(" • ");
+        modalError.classList.remove("hidden");
+      }
+      return;
+    }
+
+    // 3. UI Loading state
+    if (modalError) modalError.classList.add("hidden");
+    if (modalSubmit) modalSubmit.disabled = true;
+    if (modalSpinner) modalSpinner.classList.remove("hidden");
+    if (modalBtnText) {
+      modalBtnText.textContent = isEs
+        ? "Procesando Orden USPS ($29.99)..."
+        : "Processing USPS Order ($29.99)...";
+    }
+
+    try {
+      const stored = getStoredLead();
+      const response = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tier: "mail",
+          stateCode: lState || inputState?.value || "CA",
+          tenantName: tName || stored?.name || "",
+          tenantEmail: stored?.email || "",
+          landlordName: lName,
+          totalClaimAmount: lastResult?.statutoryPenaltyAmount,
+          letterContent: printableLetter?.innerText || letterPreview?.innerText || "",
+          locale,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.checkoutUrl) {
+          window.location.href = data.checkoutUrl;
+          return;
+        }
+        if (data.redirectUrl) {
+          window.location.href = data.redirectUrl;
+          return;
+        }
+      }
+
+      const orderPayload: CreateOrderRequest = {
+        tenantAddress: {
+          name: tName,
+          addressLine1: tStreet,
+          city: tCity,
+          state: tState,
+          zip: tZip,
+        },
+        landlordAddress: {
+          name: lName,
+          addressLine1: lStreet,
+          city: lCity,
+          state: lState,
+          zip: lZip,
+        },
+        letterContent: printableLetter?.innerText || letterPreview?.innerText || "Formal Demand Letter for Return of Security Deposit",
+        stateCode: inputState?.value || "CA",
+        totalClaimAmount: lastResult?.statutoryPenaltyAmount,
+      };
+
+      const result = await processMailOrder(orderPayload);
+
+      // If live Stripe session returned, redirect to checkout
+      if (result.checkoutUrl) {
+        window.location.href = result.checkoutUrl;
+        return;
+      }
+
+      // Display Screen 2: Barcode & Tracking Confirmation
+      if (confirmedTracking) confirmedTracking.textContent = result.trackingNumber;
+      if (confirmedDelivery) confirmedDelivery.textContent = result.estimatedDeliveryDate;
+      if (confirmedOrderId) confirmedOrderId.textContent = result.orderId;
+      if (trackingLink) {
+        const rawTracking = result.trackingNumber.replace(/\s+/g, "");
+        trackingLink.href = result.proofDocumentUrl || `https://tools.usps.com/go/TrackConfirmAction?tLabels=${rawTracking}`;
+      }
+
+      if (modalFormScreen) modalFormScreen.classList.add("hidden");
+      if (modalSuccessScreen) modalSuccessScreen.classList.remove("hidden");
+    } catch (err) {
+      if (modalError) {
+        modalError.textContent = err instanceof Error ? err.message : (isEs ? "Error al procesar el despacho." : "Error processing mail order.");
+        modalError.classList.remove("hidden");
+      }
+    } finally {
+      if (modalSubmit) modalSubmit.disabled = false;
+      if (modalSpinner) modalSpinner.classList.add("hidden");
+      if (modalBtnText) {
+        modalBtnText.textContent = isEs
+          ? "Despachar Correo Certificado ($29.99)"
+          : "Dispatch Certified Mail ($29.99)";
+      }
+    }
+  });
+
+  // ── Event Listeners ──────────────────────────────────────────────────────
+  btnNext?.addEventListener("click", () => {
+    if (!validateCurrentStep()) return;
+    if (currentStep === 3 && !getStoredLead()) {
+      openLeadModal();
+      return;
+    }
+    if (currentStep < TOTAL_STEPS) goToStep(currentStep + 1);
+  });
+
+  btnBack?.addEventListener("click", () => {
+    if (currentStep > 1) goToStep(currentStep - 1);
+  });
+
+  btnRestart?.addEventListener("click", () => {
+    goToStep(1);
+  });
+
+  // Tab buttons click
+  tabButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const targetStep = Number(btn.dataset.gotoStep);
+      if (targetStep < currentStep) {
+        goToStep(targetStep);
+      } else if (targetStep === 4 && !getStoredLead()) {
+        if (validateCurrentStep()) openLeadModal();
+      } else if (targetStep === currentStep + 1) {
+        if (validateCurrentStep()) goToStep(targetStep);
+      }
+    });
+  });
+
+  // Update hints when state changes
+  inputState?.addEventListener("change", () => {
+    updateStateHint();
+    if (currentStep >= 3) runCalculation();
+    if (currentStep >= 4) renderDemandLetter();
+  });
+
+  // Update on input changes
+  inputMoveout?.addEventListener("change", () => {
+    if (currentStep >= 3) runCalculation();
+    if (currentStep >= 4) renderDemandLetter();
+  });
+  inputDeposit?.addEventListener("input", () => {
+    if (currentStep >= 3) runCalculation();
+    if (currentStep >= 4) renderDemandLetter();
+  });
+  inputReturned?.addEventListener("input", () => {
+    if (currentStep >= 3) runCalculation();
+    if (currentStep >= 4) renderDemandLetter();
+  });
+
+  // Optional inputs on Step 4
+  inputTenantName?.addEventListener("input", renderDemandLetter);
+  inputLandlordName?.addEventListener("input", renderDemandLetter);
+  inputPropertyAddr?.addEventListener("input", renderDemandLetter);
+
+  // Keyboard shortcut: Enter to advance
+  wizard?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && (e.target as HTMLElement).tagName !== "TEXTAREA") {
+      if (currentStep === 3 && !getStoredLead()) {
+        e.preventDefault();
+        openLeadModal();
+        return;
+      }
+      if (currentStep < TOTAL_STEPS && validateCurrentStep()) {
+        e.preventDefault();
+        goToStep(currentStep + 1);
+      }
+    }
+  });
+
+  // ── Auto Pre-fill Saved Lead ─────────────────────────────────────────────
+  const initialLead = getStoredLead();
+  if (initialLead) {
+    if (inputTenantName && !inputTenantName.value) inputTenantName.value = initialLead.name;
+    if (mailTenantName && !mailTenantName.value) mailTenantName.value = initialLead.name;
+    if (leadNameInput && !leadNameInput.value) leadNameInput.value = initialLead.name;
+    if (leadEmailInput && !leadEmailInput.value) leadEmailInput.value = initialLead.email;
+  }
+
+  // ── Initial Setup on Mount ───────────────────────────────────────────────
+  // 1. Pre-selected state or auto-detect from timezone
+  const presetState = wizard?.dataset.defaultState;
+  if (presetState && inputState) {
+    inputState.value = presetState;
+    if (stateDetectedTag) stateDetectedTag.classList.add("hidden");
+  } else {
+    const detected = autoDetectState();
+    if (inputState && detected) {
+      inputState.value = detected;
+    }
+  }
+  updateStateHint();
+
+  // 2. Set default move-out date to 30 days ago (standard case)
+  const defaultMoveOut = new Date();
+  defaultMoveOut.setDate(defaultMoveOut.getDate() - 30);
+  const maxDateStr = new Date().toISOString().split("T")[0];
+  if (inputMoveout) {
+    inputMoveout.max = maxDateStr;
+    inputMoveout.value = defaultMoveOut.toISOString().split("T")[0];
+  }
+</script>

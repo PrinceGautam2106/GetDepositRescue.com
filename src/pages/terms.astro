@@ -1,0 +1,104 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const lastUpdated = "October 16, 2026";
+---
+
+<BaseLayout
+  title="Terms & Conditions — DepositRescue | Legal Agreement & Disclaimers"
+  description="Review the terms of service, legal disclaimers, and self-help software terms for using DepositRescue's tenant security deposit tools and certified mail dispatch."
+  path="/terms"
+>
+  <article class="mx-auto max-w-3xl px-4 py-12 sm:py-16 space-y-10">
+    <!-- Header -->
+    <header class="border-b border-border pb-8">
+      <span class="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs font-mono font-medium text-text-secondary">
+        <span class="h-1.5 w-1.5 rounded-full bg-success"></span>
+        Legal Agreement &amp; User Terms
+      </span>
+      <h1 class="mt-4 text-3xl font-bold tracking-tight text-text-primary sm:text-4xl">
+        Terms &amp; Conditions
+      </h1>
+      <p class="mt-2 text-xs font-mono text-text-muted">
+        Last Updated: {lastUpdated}
+      </p>
+    </header>
+
+    <!-- Important Notice Callout -->
+    <div class="rounded-lg border border-border bg-card p-5 space-y-2">
+      <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-text-primary">
+        <span class="h-2 w-2 rounded-full bg-danger"></span>
+        Important Legal Practice Disclaimer
+      </div>
+      <p class="text-xs leading-relaxed text-text-secondary">
+        DepositRescue provides automated software tools and informational resources for self-represented tenants. We are not an attorney, law firm, or legal services provider. Use of DepositRescue does not create an attorney-client relationship. If you require tailored legal advice or representation, consult a licensed attorney in your jurisdiction.
+      </p>
+    </div>
+
+    <!-- 1. Acceptance of Terms -->
+    <section class="space-y-3">
+      <h2 class="text-lg font-semibold text-text-primary">1. Acceptance of Terms</h2>
+      <p class="text-xs text-text-secondary leading-relaxed">
+        By accessing or using getdepositrescue.com, including our calculation models, legal demand letter templates, and certified postal dispatch services, you agree to be bound by these Terms and Conditions. If you do not agree, do not use the site.
+      </p>
+    </section>
+
+    <!-- 2. Nature of Software & Services -->
+    <section class="space-y-3 border-t border-border pt-6">
+      <h2 class="text-lg font-semibold text-text-primary">2. Description of Services &amp; Self-Help Scope</h2>
+      <p class="text-xs text-text-secondary leading-relaxed">
+        DepositRescue provides:
+      </p>
+      <ul class="list-disc pl-5 space-y-1.5 text-xs text-text-secondary leading-relaxed">
+        <li>A rules-based statutory calculator referencing public civil codes for landlord-tenant deposit return deadlines and penalty multipliers across 50 states + DC.</li>
+        <li>Automated document templates that draft demand letters citing relevant statutory sections based on data inputted by the user.</li>
+        <li>An optional dispatch integration that facilitates printing, addressing, and shipping physical demand letters via USPS Certified Mail with Electronic Return Receipt.</li>
+      </ul>
+      <p class="text-xs text-text-secondary leading-relaxed">
+        You acknowledge that all statutory calculations, deduction legality assessments, and letter contents depend upon the accuracy and truthfulness of the information you provide.
+      </p>
+    </section>
+
+    <!-- 3. Certified Mail Orders & Refund Policy -->
+    <section class="space-y-3 border-t border-border pt-6">
+      <h2 class="text-lg font-semibold text-text-primary">3. Certified Mail Fulfillment &amp; Refund Policy</h2>
+      <div class="space-y-2 text-xs text-text-secondary leading-relaxed">
+        <p>
+          When you submit a Certified Mail Order ($29.99), the request is transmitted to a certified postal fulfillment center for immediate printing, sorting, and delivery into the United States Postal Service (USPS) mail stream.
+        </p>
+        <p>
+          Because print production begins immediately, orders cannot be cancelled once processed. In the event of a documented postal printing or addressing failure prior to postal induction, DepositRescue will re-dispatch your letter at zero additional charge or issue a full refund upon request. Delivery timelines are subject to standard USPS operational conditions.
+        </p>
+      </div>
+    </section>
+
+    <!-- 4. User Representations -->
+    <section class="space-y-3 border-t border-border pt-6">
+      <h2 class="text-lg font-semibold text-text-primary">4. User Representations &amp; Lawful Use</h2>
+      <p class="text-xs text-text-secondary leading-relaxed">
+        You agree that:
+      </p>
+      <ul class="list-disc pl-5 space-y-1.5 text-xs text-text-secondary leading-relaxed">
+        <li>You are of legal age and possess the authority to enter into these terms.</li>
+        <li>You will not submit false, fraudulent, defamatory, or harassing claims to any landlord, court, or postal carrier.</li>
+        <li>You will not use the platform for unlawful, fraudulent, or harassing purposes.</li>
+      </ul>
+    </section>
+
+    <!-- 5. Limitation of Liability -->
+    <section class="space-y-3 border-t border-border pt-6">
+      <h2 class="text-lg font-semibold text-text-primary">5. Limitation of Liability &amp; Warranty Disclaimer</h2>
+      <p class="text-xs text-text-secondary leading-relaxed">
+        TO THE MAXIMUM EXTENT PERMITTED UNDER APPLICABLE LAW, THE SERVICES ARE PROVIDED &ldquo;AS IS&rdquo; AND &ldquo;AS AVAILABLE.&rdquo; DEPOSITRESCUE DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. IN NO EVENT SHALL DEPOSITRESCUE BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF COURT OUTCOMES, LANDLORD RESPONSES, OR DELAYS IN POSTAL TRANSIT. TOTAL LIABILITY SHALL NOT EXCEED THE AMOUNT PAID BY YOU TO DEPOSITRESCUE IN THE PAST SIX MONTHS.
+      </p>
+    </section>
+
+    <!-- 6. Governing Law -->
+    <section class="space-y-3 border-t border-border pt-6">
+      <h2 class="text-lg font-semibold text-text-primary">6. Governing Law &amp; Dispute Resolution</h2>
+      <p class="text-xs text-text-secondary leading-relaxed">
+        These Terms are governed by the laws of the State of Delaware, without regard to conflict of law principles. Any dispute arising from these terms or our services shall be resolved through binding individual arbitration administered under the Commercial Arbitration Rules of the American Arbitration Association (AAA), rather than in a court of general jurisdiction.
+      </p>
+    </section>
+  </article>
+</BaseLayout>

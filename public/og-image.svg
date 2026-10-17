@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#09090b"/>
+      <stop offset="50%" stop-color="#0c0c0e"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </linearGradient>
+    <linearGradient id="cardBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#141418"/>
+      <stop offset="100%" stop-color="#0e0e11"/>
+    </linearGradient>
+    <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#34d399"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Canvas Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Subtle Grid Accent -->
+  <g stroke="#27272a" stroke-width="1" opacity="0.25">
+    <line x1="80" y1="0" x2="80" y2="630"/>
+    <line x1="200" y1="0" x2="200" y2="630"/>
+    <line x1="1000" y1="0" x2="1000" y2="630"/>
+    <line x1="1120" y1="0" x2="1120" y2="630"/>
+    <line x1="0" y1="80" x2="1200" y2="80"/>
+    <line x1="0" y1="550" x2="1200" y2="550"/>
+  </g>
+
+  <!-- Central Card Shell -->
+  <rect x="70" y="60" width="1060" height="510" rx="20" fill="url(#cardBg)" stroke="#27272a" stroke-width="2"/>
+
+  <!-- Top Badge -->
+  <g transform="translate(120, 115)">
+    <rect width="320" height="34" rx="17" fill="#10b981" fill-opacity="0.12" stroke="#10b981" stroke-opacity="0.35" stroke-width="1.5"/>
+    <circle cx="20" cy="17" r="5" fill="#10b981"/>
+    <text x="36" y="22" fill="#34d399" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="700" letter-spacing="1.5">50-STATE LEGAL STATUTORY ENGINE</text>
+  </g>
+
+  <!-- Scale Icon & Logo Brand -->
+  <g transform="translate(120, 190)">
+    <!-- Scale icon -->
+    <g transform="scale(1.8)" fill="none" stroke="#fafafa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 3v18"/>
+      <path d="M3 7l3 5h6l3-5"/>
+      <path d="M15 7l3 5h6l-3-5"/>
+      <path d="M6 12a3 3 0 0 1-3 0"/>
+      <path d="M21 12a3 3 0 0 1-3 0"/>
+      <circle cx="12" cy="3" r="1"/>
+    </g>
+    <!-- Brand Name -->
+    <text x="64" y="32" fill="#fafafa" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="52" font-weight="800" letter-spacing="-1.5">DepositRescue</text>
+  </g>
+
+  <!-- Headline -->
+  <text x="120" y="300" fill="url(#emeraldGrad)" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="34" font-weight="700" letter-spacing="-0.5">Recover Your Security Deposit. Claim Up to 3&#215; Penalties.</text>
+
+  <!-- Subheadline / Value Proposition -->
+  <text x="120" y="350" fill="#a1a1aa" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="20" font-weight="400">Automated statutory deadline auditing &#8226; USPS Certified Demand Letters &#8226; Small claims evidence</text>
+
+  <!-- Three Pill Badges -->
+  <g transform="translate(120, 400)">
+    <!-- Pill 1 -->
+    <rect x="0" y="0" width="230" height="42" rx="8" fill="#1c1c22" stroke="#27272a" stroke-width="1"/>
+    <text x="20" y="26" fill="#fafafa" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="14" font-weight="600">&#10003; All 50 States + DC</text>
+
+    <!-- Pill 2 -->
+    <rect x="250" y="0" width="260" height="42" rx="8" fill="#1c1c22" stroke="#27272a" stroke-width="1"/>
+    <text x="270" y="26" fill="#fafafa" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="14" font-weight="600">&#10003; USPS Certified Mail</text>
+
+    <!-- Pill 3 -->
+    <rect x="530" y="0" width="260" height="42" rx="8" fill="#1c1c22" stroke="#27272a" stroke-width="1"/>
+    <text x="550" y="26" fill="#fafafa" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="14" font-weight="600">&#10003; 100% Free Calculator</text>
+  </g>
+
+  <!-- Footer Attribution -->
+  <line x1="120" y1="480" x2="1000" y2="480" stroke="#27272a" stroke-width="1"/>
+  <text x="120" y="515" fill="#71717a" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="14">https://getdepositrescue.com &#8226; Self-Help Tenant Advocacy Platform</text>
+  <text x="1000" y="515" text-anchor="end" fill="#10b981" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="14" font-weight="600">English &amp; Espa&#241;ol</text>
+</svg>

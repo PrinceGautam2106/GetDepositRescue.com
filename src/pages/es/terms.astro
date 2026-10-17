@@ -1,0 +1,99 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const lastUpdated = "16 de octubre de 2026";
+---
+
+<BaseLayout
+  title="Términos y Condiciones — DepositRescue | Acuerdo Legal y Descargos"
+  description="Revise los términos del servicio, descargos legales y condiciones de uso de la plataforma de autoayuda legal DepositRescue y su servicio de correo certificado."
+  path="/terms"
+>
+  <article class="mx-auto max-w-3xl px-4 py-12 sm:py-16 space-y-10">
+    <!-- Header -->
+    <header class="border-b border-border pb-8">
+      <span class="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs font-mono font-medium text-text-secondary">
+        <span class="h-1.5 w-1.5 rounded-full bg-success"></span>
+        Acuerdo Legal y Términos de Uso
+      </span>
+      <h1 class="mt-4 text-3xl font-bold tracking-tight text-text-primary sm:text-4xl">
+        Términos y Condiciones
+      </h1>
+      <p class="mt-2 text-xs font-mono text-text-muted">
+        Última actualización: {lastUpdated}
+      </p>
+    </header>
+
+    <!-- Important Notice Callout -->
+    <div class="rounded-lg border border-border bg-card p-5 space-y-2">
+      <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-text-primary">
+        <span class="h-2 w-2 rounded-full bg-danger"></span>
+        Descargo Fundamental de Práctica Jurídica
+      </div>
+      <p class="text-xs leading-relaxed text-text-secondary">
+        DepositRescue proporciona software automatizado e información de autoayuda para inquilinos que se representan a sí mismos. No somos abogados ni un bufete legal. El uso de esta plataforma no establece una relación abogado-cliente. Si requiere asesoría jurídica especializada, consulte a un abogado colegiado en su estado.
+      </p>
+    </div>
+
+    <!-- 1. Aceptación -->
+    <section class="space-y-3">
+      <h2 class="text-lg font-semibold text-text-primary">1. Aceptación de los Términos</h2>
+      <p class="text-xs text-text-secondary leading-relaxed">
+        Al acceder o utilizar getdepositrescue.com, incluyendo nuestros modelos de cálculo, plantillas de demandas y servicios de envío postal certificado, usted acepta quedar vinculado por estos Términos y Condiciones.
+      </p>
+    </section>
+
+    <!-- 2. Alcance -->
+    <section class="space-y-3 border-t border-border pt-6">
+      <h2 class="text-lg font-semibold text-text-primary">2. Descripción de los Servicios y Alcance de Autoayuda</h2>
+      <p class="text-xs text-text-secondary leading-relaxed">
+        DepositRescue brinda:
+      </p>
+      <ul class="list-disc pl-5 space-y-1.5 text-xs text-text-secondary leading-relaxed">
+        <li>Una calculadora de plazos estatutarios basada en los códigos civiles de los 50 estados y Washington D.C.</li>
+        <li>Generación automatizada de cartas de demanda citando artículos específicos de la ley según los datos aportados por el usuario.</li>
+        <li>Un servicio opcional de impresión y despacho físico por USPS Certified Mail con Acuse de Recibo Electrónico.</li>
+      </ul>
+      <p class="text-xs text-text-secondary leading-relaxed">
+        Usted reconoce que la exactitud de los cálculos y las cartas depende íntegramente de la veracidad y precisión de los datos ingresados.
+      </p>
+    </section>
+
+    <!-- 3. Órdenes y Reembolsos -->
+    <section class="space-y-3 border-t border-border pt-6">
+      <h2 class="text-lg font-semibold text-text-primary">3. Despacho Postal Certificado y Política de Reembolso</h2>
+      <div class="space-y-2 text-xs text-text-secondary leading-relaxed">
+        <p>
+          Al solicitar el servicio de Correo Certificado ($29.99), la orden se transmite de manera automática para su impresión inmediata y entrega al Servicio Postal de los Estados Unidos (USPS).
+        </p>
+        <p>
+          Debido a la naturaleza inmediata del proceso de impresión postal, no se admiten cancelaciones una vez procesada la orden. En caso de error técnico imputable al sistema de impresión antes de su ingreso al correo, DepositRescue reenviará la carta sin costo o reembolsará el importe íntegro a petición del usuario.
+        </p>
+      </div>
+    </section>
+
+    <!-- 4. Responsabilidades -->
+    <section class="space-y-3 border-t border-border pt-6">
+      <h2 class="text-lg font-semibold text-text-primary">4. Declaraciones del Usuario y Uso Lícito</h2>
+      <p class="text-xs text-text-secondary leading-relaxed">
+        Usted declara que es mayor de edad, tiene capacidad jurídica para contratar y se compromete a no utilizar esta plataforma para presentar reclamos fraudulentos, falsos o de acoso contra propietarios o terceros.
+      </p>
+    </section>
+
+    <!-- 5. Limitación de Responsabilidad -->
+    <section class="space-y-3 border-t border-border pt-6">
+      <h2 class="text-lg font-semibold text-text-primary">5. Limitación de Responsabilidad</h2>
+      <p class="text-xs text-text-secondary leading-relaxed">
+        EN LA MEDIDA MÁXIMA PERMITIDA POR LA LEY, LOS SERVICIOS SE OFRECEN &ldquo;TAL CUAL&rdquo; SIN GARANTÍAS DE NINGÚN TIPO. DEPOSITRESCUE NO ASUME RESPONSABILIDAD POR RESOLUCIONES JUDICIALES, ACCIONES DE LOS PROPIETARIOS NI RETRASOS OPERATIVOS DE USPS. LA RESPONSABILIDAD TOTAL DE DEPOSITRESCUE NO EXCEDERÁ EL MONTO PAGADO POR EL USUARIO EN LOS ÚLTIMOS SEIS MESES.
+      </p>
+    </section>
+
+    <!-- 6. Ley Aplicable -->
+    <section class="space-y-3 border-t border-border pt-6">
+      <h2 class="text-lg font-semibold text-text-primary">6. Ley Aplicable y Resolución de Disputas</h2>
+      <p class="text-xs text-text-secondary leading-relaxed">
+        Estos Términos se rigen por las leyes del Estado de Delaware, sin dar efecto a principios de conflicto de leyes. Cualquier controversia se resolverá mediante arbitraje individual vinculante de conformidad con la Asociación Americana de Arbitraje (AAA).
+      </p>
+    </section>
+  </article>
+</BaseLayout>

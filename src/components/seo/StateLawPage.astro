@@ -1,0 +1,443 @@
+---
+/**
+ * StateLawPage.astro
+ * High-ranking programmatic SEO landing page for state security deposit laws.
+ *
+ * Implements:
+ * - High-CTR metadata & semantic heading hierarchy
+ * - Hero section with 1-sentence legal summary & preloaded DepositWizard
+ * - Quick facts table
+ * - Normal Wear & Tear vs. Damage deep-dive
+ * - Bilingual FAQ section with Schema.org FAQPage JSON-LD
+ * - Breadcrumbs & LegalService Schema markup for Google Rich Snippets
+ */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import DepositWizard from "../calculator/DepositWizard.astro";
+import PartnerOffers from "../monetization/PartnerOffers.astro";
+import AdSlot from "../ads/AdSlot.astro";
+import AdBanner from "../ads/AdBanner.astro";
+import TrustSignals from "../TrustSignals.astro";
+import { type StateStatute } from "../../data/stateStatutes";
+import { getSiteUrl, getCanonicalUrl } from "../../utils/seo";
+
+interface Props {
+  statute: StateStatute;
+  lang: "en" | "es";
+}
+
+const { statute, lang } = Astro.props;
+const isEs = lang === "es";
+const currentYear = new Date().getFullYear();
+
+const stateName = statute.stateName.en;
+const stateNameEs = statute.stateName.es;
+const activeStateName = isEs ? stateNameEs : stateName;
+
+// Title tags
+const title = isEs
+  ? `Ley de Depósito de Renta en ${stateNameEs}: Calculadora, Plazos y Carta de Demanda`
+  : `${stateName} Security Deposit Law: Calculator, Deadlines & Demand Letter`;
+
+// Meta description
+const description = isEs
+  ? `¿Su arrendador violó el plazo de devolución de ${statute.deadlineDays} días en ${stateNameEs}? Calcule su sanción legal de ${statute.penaltyMultiplierText} y descargue una carta de demanda oficial.`
+  : `Did your landlord violate the ${stateName} ${statute.deadlineDays}-day return deadline? Calculate your ${statute.penaltyMultiplierText} statutory penalty and download an official demand letter.`;
+
+const siteUrl = getSiteUrl();
+const pagePath = `/${statute.stateCode.toLowerCase()}-security-deposit-law`;
+const canonicalUrl = getCanonicalUrl(isEs ? `/es${pagePath}` : pagePath);
+
+// Formatters
+const fmtMoney = (n: number) =>
+  new Intl.NumberFormat(isEs ? "es-US" : "en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  }).format(n);
+
+// Statutory multiplier description
+const penaltyText = statute.penaltyMultiplier > 0
+  ? (isEs ? `Hasta ${statute.penaltyMultiplier} veces el depósito retenido` : `Up to ${statute.penaltyMultiplier}× deposit amount`)
+  : (isEs ? "Pérdida total del derecho a retener + devolución del 100%" : "Forfeiture of all deductions + 100% refund required");
+
+// FAQ Data
+const faqs = isEs
+  ? [
+      {
+        question: `¿Cuánto tiempo tiene un arrendador para devolver el depósito en ${stateNameEs}?`,
+        answer: `Bajo ${statute.legalCodeCitation}, el arrendador tiene exactamente ${statute.deadlineDays} días calendario a partir del día en que el inquilino desocupa y entrega las llaves para devolver el depósito completo o enviar un estado de cuenta detallado de deducciones legítimas.`,
+      },
+      {
+        question: `¿Puedo demandar por el doble o triple del depósito en ${stateNameEs}?`,
+        answer: statute.penaltyMultiplier > 0
+          ? `Sí. Si el arrendador retiene indebidamente su depósito de mala fe o no cumple con el plazo legal de ${statute.deadlineDays} días, la ley de ${stateNameEs} permite recuperar el monto original más una sanción estatutaria de hasta ${statute.penaltyMultiplier} veces la cantidad retenida.${statute.statutoryBonus > 0 ? ` Además, la ley otorga una bonificación fija de $${statute.statutoryBonus}.` : ""}`
+          : `En ${stateNameEs}, el incumplimiento del plazo legal hace que el propietario pierda el derecho a realizar cualquier deducción, debiendo restituir el depósito completo más costos judiciales y posibles honorarios legales.`,
+      },
+      {
+        question: `¿Necesito enviar una carta de demanda por correo certificado en ${stateNameEs}?`,
+        answer: `Sí, es altamente recomendable${statute.certifiedMailRequired ? " y legalmente obligatorio bajo el código estatal" : ""}. El correo certificado de USPS con acuse de recibo electrónico proporciona la prueba irrefutable de entrega que los jueces exigen en la corte de reclamos menores para conceder sanciones punitivas.`,
+      },
+      {
+        question: `¿Cuál es el límite máximo para demandar en la corte de reclamos menores de ${stateNameEs}?`,
+        answer: `El límite máximo para reclamos individuales en la corte de reclamos menores de ${stateNameEs} es de ${fmtMoney(statute.smallClaimsLimit)}. Si su reclamación total más sanciones es menor o igual a este monto, puede representarse a sí mismo de manera rápida sin necesidad de contratar un abogado costoso.`,
+      },
+    ]
+  : [
+      {
+        question: `How long does a landlord have to return a security deposit in ${stateName}?`,
+        answer: `Under ${statute.legalCodeCitation}, your landlord has exactly ${statute.deadlineDays} days after you surrender the premises and return the keys to return your deposit or provide an itemized written statement of lawful deductions.`,
+      },
+      {
+        question: `Can I sue for double or triple my deposit in ${stateName}?`,
+        answer: statute.penaltyMultiplier > 0
+          ? `Yes. If your landlord withholds your deposit in bad faith or fails to provide an itemized statement within ${statute.deadlineDays} days, ${stateName} law allows tenants to sue for the unreturned balance plus statutory damages up to ${statute.penaltyMultiplier}× the deposit amount.${statute.statutoryBonus > 0 ? ` Additionally, statutory bonuses of $${statute.statutoryBonus} may apply.` : ""}`
+          : `While ${stateName} does not have an automatic multiplier, landlords who violate return deadlines completely forfeit their right to withhold any portion of your deposit and can be ordered to refund 100% plus court costs.`,
+      },
+      {
+        question: `Do I need to send a certified demand letter in ${stateName}?`,
+        answer: `Yes, sending a formal demand letter via USPS Certified Mail with Return Receipt is critical${statute.certifiedMailRequired ? " and mandated by state statute" : ""}. Small claims court judges require verifiable proof of delivery before awarding statutory penalties or attorney fees.`,
+      },
+      {
+        question: `What is the small claims court limit in ${stateName}?`,
+        answer: `The individual small claims limit in ${stateName} is ${fmtMoney(statute.smallClaimsLimit)}. If your total recovery target (deposit plus statutory penalties) is within this cap, you can litigate affordably without paying expensive attorney retainers.`,
+      },
+    ];
+
+// Schema.org JSON-LD Structured Data
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqs.map((f) => ({
+    "@type": "Question",
+    "name": f.question,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": f.answer,
+    },
+  })),
+};
+
+const breadcrumbItems = [
+  { name: isEs ? "Inicio" : "Home", path: isEs ? "/es" : "/" },
+  { name: isEs ? "Leyes Estatales" : "State Laws", path: isEs ? "/es/calculator" : "/calculator" },
+  { name: `${activeStateName} ${isEs ? "Ley de Depósito" : "Deposit Law"}`, path: isEs ? `/es${pagePath}` : pagePath },
+];
+
+const legalServiceSchema = {
+  "@context": "https://schema.org",
+  "@type": "LegalService",
+  "name": `${activeStateName} Security Deposit Recovery Engine`,
+  "description": description,
+  "url": canonicalUrl,
+  "priceRange": "Free - $29.99",
+  "areaServed": {
+    "@type": "AdministrativeArea",
+    "name": activeStateName,
+  },
+  "serviceType": "Security Deposit Self-Help Legal Automation",
+  "provider": {
+    "@type": "Organization",
+    "name": "DepositRescue",
+    "url": siteUrl,
+  },
+};
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  path={pagePath}
+  breadcrumbs={breadcrumbItems}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(legalServiceSchema)} />
+  </Fragment>
+
+  <article class="mx-auto max-w-4xl px-4 py-10 sm:py-14 space-y-12 sm:space-y-16">
+    <!-- ─── Visual Breadcrumbs ─────────────────────────────────────────────── -->
+    <nav class="flex items-center gap-2 text-xs font-mono text-text-muted" aria-label="Breadcrumbs">
+      <a href={isEs ? "/es" : "/"} class="hover:text-text-primary transition-colors">
+        {isEs ? "Inicio" : "Home"}
+      </a>
+      <span>/</span>
+      <a href={isEs ? "/es/calculator" : "/calculator"} class="hover:text-text-primary transition-colors">
+        {isEs ? "Calculadora" : "States"}
+      </a>
+      <span>/</span>
+      <span class="text-text-secondary truncate">
+        {activeStateName}
+      </span>
+    </nav>
+
+    <!-- ─── Top Leaderboard Ad Slot (CLS-Safe) ─────────────────────────────── -->
+    <AdSlot format="leaderboard" slotId={`state-${statute.stateCode.toLowerCase()}-top-banner`} locale={lang} />
+
+    <!-- ─── Hero Section ─────────────────────────────────────────────────── -->
+    <header class="text-center sm:text-left border-b border-border pb-10">
+      <div class="flex flex-wrap items-center gap-3 mb-4 justify-center sm:justify-start">
+        <div class="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3.5 py-1 text-xs font-medium text-text-secondary shadow-xs">
+          <span class="inline-block h-1.5 w-1.5 rounded-full bg-success animate-pulse"></span>
+          <span>Statutory Rules Audited for 2026 Compliance under US Landlord-Tenant Codes</span>
+        </div>
+
+        <div class="inline-flex items-center gap-2 rounded-full border border-success/30 bg-success/10 px-3 py-1 text-xs font-medium text-success">
+          <span class="h-1.5 w-1.5 rounded-full bg-success"></span>
+          <span>{statute.legalCodeCitation}</span>
+        </div>
+
+        <!-- Outbound Authority Signal (.gov statute badge) -->
+        <a
+          href={statute.officialGovUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs font-mono text-text-secondary hover:border-border-hover hover:text-text-primary transition-colors shadow-xs"
+          title={`Read official state statute at ${statute.officialGovUrl}`}
+        >
+          <svg class="h-3 w-3 text-emerald-400 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M16.403 12.652a3 3 0 0 0 0-5.304 3 3 0 0 0-3.75-3.751 3 3 0 0 0-5.305 0 3 3 0 0 0-3.751 3.75 3 3 0 0 0 0 5.305 3 3 0 0 0 3.75 3.751 3 3 0 0 0 5.305 0 3 3 0 0 0 3.751-3.75Zm-2.546-4.46a.75.75 0 0 0-1.214-.883l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" />
+          </svg>
+          <span>{isEs ? "Estatuto Oficial del Estado (.gov)" : "Official State Statute (.gov)"}</span>
+          <svg class="h-3 w-3 shrink-0 text-text-muted" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+          </svg>
+        </a>
+      </div>
+
+      <h1 class="text-3xl font-extrabold tracking-tight sm:text-5xl text-text-primary">
+        {isEs ? (
+          <>Ley de Depósito de Renta en <span class="text-white underline decoration-success/60">{stateNameEs}</span></>
+        ) : (
+          <><span class="text-white underline decoration-success/60">{stateName}</span> Security Deposit Law</>
+        )}
+      </h1>
+
+      <p class="mt-4 text-base sm:text-lg text-text-secondary max-w-3xl leading-relaxed">
+        {isEs ? (
+          <>De conformidad con <strong>{statute.legalCodeCitation}</strong>, los arrendadores en {stateNameEs} tienen un plazo improrrogable de <strong>{statute.deadlineDays} días</strong> para devolver su depósito de seguridad. Retenerlo indebidamente otorga el derecho a reclamar hasta <strong>{penaltyText}</strong> en corte.</>
+        ) : (
+          <>Under <strong>{statute.legalCodeCitation}</strong>, landlords in {stateName} have a strict deadline of <strong>{statute.deadlineDays} calendar days</strong> to return your security deposit. Wrongful bad-faith retention entitles tenants to recover up to <strong>{penaltyText}</strong>.</>
+        )}
+      </p>
+
+      <!-- Statutory Rules & Bad Faith Summary Box -->
+      <div class="mt-6 rounded-lg border border-border/80 bg-canvas-alt/70 p-4 text-xs sm:text-sm text-text-secondary leading-relaxed">
+        <p>
+          <strong class="text-text-primary font-semibold">{isEs ? "Resumen Legal y Cláusulas de Mala Fe:" : "Statutory Overview & Bad-Faith Clauses:"}</strong>{" "}
+          {statute.statutorySummary}
+        </p>
+      </div>
+    </header>
+
+    <!-- ─── Embedded DepositWizard Preloaded with Active State ────────────── -->
+    <section aria-labelledby="calculator-heading">
+      <div class="mb-6 text-center sm:text-left">
+        <h2 id="calculator-heading" class="text-xl font-bold tracking-tight text-text-primary">
+          {isEs ? `Calcule su Reclamación en ${stateNameEs}` : `Calculate Your ${stateName} Statutory Claim`}
+        </h2>
+        <p class="mt-1 text-xs sm:text-sm text-text-muted">
+          {isEs
+            ? "Preconfigurado automáticamente con los estatutos y plazos oficiales de este estado."
+            : `Pre-configured automatically with ${stateName}'s statutory deadlines and multiplier formula.`}
+        </p>
+      </div>
+
+      <DepositWizard locale={lang} defaultState={statute.stateCode} />
+
+      <!-- ─── Strategic Affiliate Placements ──────────────────────────────── -->
+      <PartnerOffers locale={lang} variant="grid" />
+    </section>
+
+    <!-- ─── Quick Facts Table ────────────────────────────────────────────── -->
+    <section aria-labelledby="quick-facts-heading" class="rounded-xl border border-border bg-card p-6 sm:p-8 shadow-sm">
+      <div class="border-b border-border pb-4 mb-6">
+        <h2 id="quick-facts-heading" class="text-lg sm:text-xl font-bold text-text-primary">
+          {isEs ? `Datos Clave de la Ley en ${stateNameEs}` : `${stateName} Security Deposit Law Quick Facts`}
+        </h2>
+        <p class="text-xs text-text-muted mt-1">
+          {isEs ? "Parámetros estatutarios codificados para litigio y cartas de demanda" : "Statutory figures codified for demand letters and small claims court filing"}
+        </p>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs sm:text-sm font-sans">
+          <tbody class="divide-y divide-border">
+            <tr class="hover:bg-canvas-alt/50 transition-colors">
+              <th scope="row" class="py-3.5 pr-4 font-medium text-text-secondary">
+                {isEs ? "Plazo Límite de Devolución" : "Deadline to Return Deposit"}
+              </th>
+              <td class="py-3.5 px-4 font-mono font-semibold text-text-primary text-right sm:text-left">
+                <span class="inline-flex items-center rounded-md border border-border bg-canvas-alt px-2.5 py-1 text-success">
+                  {statute.deadlineDays} {isEs ? "Días Calendario" : "Calendar Days"}
+                </span>
+              </td>
+            </tr>
+
+            <tr class="hover:bg-canvas-alt/50 transition-colors">
+              <th scope="row" class="py-3.5 pr-4 font-medium text-text-secondary">
+                {isEs ? "Penalidad Legal por Retención Indebida" : "Statutory Bad-Faith Penalty Multiplier"}
+              </th>
+              <td class="py-3.5 px-4 font-mono font-semibold text-text-primary text-right sm:text-left">
+                {statute.penaltyMultiplier > 0 ? (
+                  <span class="inline-flex items-center rounded-md border border-success/40 bg-success/10 px-2.5 py-1 text-success">
+                    {statute.penaltyMultiplier}× {isEs ? "del depósito" : "Deposit Value"} {statute.statutoryBonus > 0 ? `+ $${statute.statutoryBonus}` : ""}
+                  </span>
+                ) : (
+                  <span class="inline-flex items-center rounded-md border border-border bg-canvas-alt px-2.5 py-1 text-text-secondary">
+                    {isEs ? "Reembolso 100% + Honorarios" : "100% Deposit Forfeiture + Legal Fees"}
+                  </span>
+                )}
+              </td>
+            </tr>
+
+            <tr class="hover:bg-canvas-alt/50 transition-colors">
+              <th scope="row" class="py-3.5 pr-4 font-medium text-text-secondary">
+                {isEs ? "Tope en Corte de Reclamos Menores" : "Small Claims Court Dollar Limit"}
+              </th>
+              <td class="py-3.5 px-4 font-mono font-semibold text-text-primary text-right sm:text-left">
+                {fmtMoney(statute.smallClaimsLimit)}
+              </td>
+            </tr>
+
+            <tr class="hover:bg-canvas-alt/50 transition-colors">
+              <th scope="row" class="py-3.5 pr-4 font-medium text-text-secondary">
+                {isEs ? "Requisito de Facturas y Recibos Detallados" : "Itemized Deduction Receipt Requirements"}
+              </th>
+              <td class="py-3.5 px-4 text-text-primary text-right sm:text-left">
+                {statute.itemizedReceiptRequired ? (
+                  <span class="inline-flex items-center gap-1.5 text-success">
+                    <svg class="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    <span>{isEs ? "Obligatorio por escrito con recibos de reparación" : "Mandatory written itemization with repair receipts"}</span>
+                  </span>
+                ) : (
+                  <span>{isEs ? "Declaración escrita requerida" : "Written itemized statement required"}</span>
+                )}
+              </td>
+            </tr>
+
+            <tr class="hover:bg-canvas-alt/50 transition-colors">
+              <th scope="row" class="py-3.5 pr-4 font-medium text-text-secondary">
+                {isEs ? "Estatuto Oficial del Estado (.gov)" : "Official Government Statute (.gov)"}
+              </th>
+              <td class="py-3.5 px-4 font-mono text-xs text-text-primary text-right sm:text-left">
+                <a
+                  href={statute.officialGovUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-1 text-emerald-400 underline hover:text-emerald-300 transition-colors"
+                >
+                  <span>{statute.legalCodeCitation}</span>
+                  <svg class="h-3 w-3 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                  </svg>
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ─── Statutory Law Deep Dive: Wear & Tear vs Damage ───────────────── -->
+    <section aria-labelledby="deep-dive-heading" class="space-y-6">
+      <div>
+        <h2 id="deep-dive-heading" class="text-xl sm:text-2xl font-bold tracking-tight text-text-primary">
+          {isEs ? `Desgaste Normal vs. Daños en ${stateNameEs}` : `Normal Wear & Tear vs. Damage Under ${stateName} Law`}
+        </h2>
+        <p class="mt-2 text-sm text-text-secondary leading-relaxed">
+          {isEs ? (
+            <>Bajo la jurisprudencia de {stateNameEs}, el arrendador no puede descontar gastos causados por el deterioro habitual de habitar la propiedad. Conozca la diferencia legal para identificar deducciones ilícitas.</>
+          ) : (
+            <>Landlords in {stateName} frequently attempt to pass routine apartment turnover costs onto departing tenants. Under state statute, deductions for natural aging and ordinary occupancy are illegal.</>
+          )}
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Normal Wear & Tear (Illegal) -->
+        <div class="rounded-xl border border-success/40 bg-gradient-to-b from-success/5 to-transparent p-5 sm:p-6 space-y-3">
+          <div class="flex items-center gap-2 text-success font-semibold text-sm">
+            <svg class="h-5 w-5 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
+            </svg>
+            <span>{isEs ? "Desgaste Normal (Prohibido Deducir)" : "Normal Wear & Tear (Landlord CANNOT Deduct)"}</span>
+          </div>
+
+          <ul class="space-y-2 text-xs sm:text-sm text-text-secondary">
+            {statute.commonIllegalDeductions.map((item) => (
+              <li class="flex items-start gap-2">
+                <span class="text-success font-bold">✓</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <!-- Real Tenant Damage (Lawful) -->
+        <div class="rounded-xl border border-danger/40 bg-gradient-to-b from-danger/5 to-transparent p-5 sm:p-6 space-y-3">
+          <div class="flex items-center gap-2 text-danger font-semibold text-sm">
+            <svg class="h-5 w-5 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+            </svg>
+            <span>{isEs ? "Daños Reales (Deducción Permitida)" : "Actual Damage (Lawful Deductions)"}</span>
+          </div>
+
+          <ul class="space-y-2 text-xs sm:text-sm text-text-secondary">
+            <li class="flex items-start gap-2">
+              <span class="text-danger font-bold">✗</span>
+              <span>{isEs ? "Agujeros grandes en paneles de yeso o puertas rotas" : "Large drywall holes, cracked mirrors, or broken interior doors"}</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-danger font-bold">✗</span>
+              <span>{isEs ? "Quemaduras o manchas severas de orina de mascotas en alfombras" : "Carpet burns, bleach spills, or permanent pet urine staining"}</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-danger font-bold">✗</span>
+              <span>{isEs ? "Pintura no autorizada en colores oscuros o calcomanías permanentes" : "Unauthorized dark wall paint or peeling permanent adhesive"}</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-danger font-bold">✗</span>
+              <span>{isEs ? "Electrodomésticos destrozados o ventanas rotas" : "Shattered windows, missing blinds, or broken appliances"}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Mid-Article In-Content Ad Banner (CLS-Safe) ──────────────────────── -->
+    <AdBanner slotId={`state-${statute.stateCode.toLowerCase()}-mid-content`} desktopSize="728x90" mobileSize="300x250" locale={lang} />
+
+    <!-- ─── FAQ Section ─────────────────────────────────────────────────── -->
+    <section aria-labelledby="faq-heading" class="rounded-xl border border-border bg-card p-6 sm:p-8 space-y-6">
+      <div>
+        <h2 id="faq-heading" class="text-xl sm:text-2xl font-bold tracking-tight text-text-primary">
+          {isEs ? `Preguntas Frecuentes sobre la Ley en ${stateNameEs}` : `Frequently Asked Questions: ${stateName} Deposit Law`}
+        </h2>
+        <p class="mt-1 text-xs sm:text-sm text-text-muted">
+          {isEs ? "Respuestas legales directas a las dudas más comunes de inquilinos." : "Clear legal answers for tenants recovering withheld rental funds."}
+        </p>
+      </div>
+
+      <div class="space-y-3">
+        {faqs.map((faq) => (
+          <details class="group rounded-lg border border-border bg-canvas-alt transition-all">
+            <summary class="flex cursor-pointer items-center justify-between p-4 text-sm font-semibold text-text-primary hover:text-white">
+              <span>{faq.question}</span>
+              <svg class="h-4 w-4 shrink-0 transition-transform group-open:rotate-180 text-text-muted" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+              </svg>
+            </summary>
+            <div class="border-t border-border p-4 text-xs sm:text-sm leading-relaxed text-text-secondary">
+              <p>{faq.answer}</p>
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- ─── E-E-A-T Trust & Methodology Grid ────────────────────────────── -->
+    <TrustSignals locale={lang} class="my-8" />
+  </article>
+</BaseLayout>

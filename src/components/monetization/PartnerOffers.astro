@@ -1,0 +1,122 @@
+---
+/**
+ * PartnerOffers.astro
+ * Strategic high-yield affiliate placement cards for tenant lifecycle monetization.
+ *
+ * Placements:
+ * 1. Relocation & Moving (PODS / U-Pack)
+ * 2. Renters Insurance (Lemonade / Policygenius)
+ * 3. Small Claims Court Automated Filing (Dispute.com / LegalZoom)
+ */
+
+interface Props {
+  locale?: "en" | "es";
+  variant?: "inline" | "grid";
+  headline?: string;
+}
+
+const { locale = "en", variant = "grid", headline } = Astro.props;
+const isEs = locale === "es";
+
+const offers = [
+  {
+    id: "legal-filing",
+    badge: isEs ? "Siguiente Paso Legal" : "Next Legal Step",
+    badgeColor: "border-success/40 bg-success/10 text-success",
+    title: isEs ? "Presentación en Reclamos Menores en 5 Minutos" : "Automated Small Claims Court Filing",
+    description: isEs
+      ? "Si su arrendador ignora esta carta, demande en la corte de reclamos menores sin contratar un abogado costoso."
+      : "If your landlord ignores this demand letter, file directly in Small Claims Court in 5 minutes without hiring a lawyer.",
+    partner: "Dispute.com / LegalZoom",
+    cta: isEs ? "Iniciar Demanda Online →" : "File Your Claim Online →",
+    href: "https://www.dispute.com/?utm_source=depositrescue&utm_medium=affiliate&utm_campaign=deposit_recovery",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v18m-9-6l3 5h6l3-5m-9-6l3-5h6l3 5m-9 6a3 3 0 01-3 0m15 0a3 3 0 01-3 0" />`,
+  },
+  {
+    id: "renters-insurance",
+    badge: isEs ? "Protección de Depósito" : "Deposit Protection",
+    badgeColor: "border-blue-500/40 bg-blue-500/10 text-blue-400",
+    title: isEs ? "Seguro de Inquilinos desde $5/mes" : "Renters Insurance from $5/mo",
+    description: isEs
+      ? "Proteja su próximo depósito de seguridad con cobertura de $100k contra reclamos injustos y daños accidentales."
+      : "Protect your next security deposit with $100k liability and personal property coverage from top-rated carriers.",
+    partner: "Lemonade / Policygenius",
+    cta: isEs ? "Cotizar en 90 Segundos →" : "Get Instant Quote →",
+    href: "https://www.lemonade.com/renters?utm_source=depositrescue&utm_medium=affiliate&utm_campaign=deposit_recovery",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />`,
+  },
+  {
+    id: "moving-storage",
+    badge: isEs ? "Ahorro en Mudanza" : "Moving & Storage",
+    badgeColor: "border-purple-500/40 bg-purple-500/10 text-purple-400",
+    title: isEs ? "Comparador de Camiones de Mudanza y Bodegas" : "Compare Moving Truck & Storage Quotes",
+    description: isEs
+      ? "¿Mudándose a su próxima vivienda? Compare tarifas de contenedores portátiles y empresas de mudanza certificadas."
+      : "Moving into your next rental? Compare top-rated moving truck, portable container, and secure storage quotes.",
+    partner: "PODS / U-Pack",
+    cta: isEs ? "Comparar Cotizaciones Gratis →" : "Compare Free Quotes →",
+    href: "https://www.pods.com/?utm_source=depositrescue&utm_medium=affiliate&utm_campaign=deposit_recovery",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />`,
+  },
+];
+---
+
+<div class="w-full my-8">
+  <div class="mb-4 flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <span class="h-2 w-2 rounded-full bg-border-hover"></span>
+      <h3 class="text-xs font-semibold uppercase tracking-wider text-text-primary">
+        {headline || (isEs ? "Servicios y Recursos Recomendados" : "Recommended Next-Step Resources")}
+      </h3>
+    </div>
+    <span class="text-[10px] uppercase tracking-wider text-text-muted">
+      {isEs ? "Socios Verificados" : "Verified Partners"}
+    </span>
+  </div>
+
+  <div class={`grid gap-4 ${variant === "grid" ? "grid-cols-1 md:grid-cols-3" : "grid-cols-1"}`}>
+    {offers.map((offer) => (
+      <div class="group relative flex flex-col justify-between rounded-lg border border-border bg-card p-5 transition-all duration-150 ease-out hover:border-border-hover hover:bg-canvas-alt">
+        <div>
+          <!-- Badge & Partner -->
+          <div class="flex items-center justify-between mb-3">
+            <span class={`rounded-full border px-2 py-0.5 text-[10px] font-medium font-mono ${offer.badgeColor}`}>
+              {offer.badge}
+            </span>
+            <span class="text-[11px] font-mono text-text-muted">
+              {offer.partner}
+            </span>
+          </div>
+
+          <!-- Title -->
+          <h4 class="text-sm font-semibold tracking-tight text-text-primary group-hover:text-white transition-colors mb-2">
+            {offer.title}
+          </h4>
+
+          <!-- Description -->
+          <p class="text-xs text-text-secondary leading-relaxed mb-4">
+            {offer.description}
+          </p>
+        </div>
+
+        <!-- CTA Link -->
+        <div class="pt-3 border-t border-border/60">
+          <a
+            href={offer.href}
+            target="_blank"
+            rel="noopener noreferrer sponsored"
+            class="inline-flex items-center gap-1.5 text-xs font-semibold text-text-primary group-hover:text-emerald-400 transition-colors focus:outline-none"
+          >
+            <span>{offer.cta}</span>
+          </a>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <p class="mt-2.5 text-right text-[10px] text-text-muted">
+    {isEs
+      ? "Aviso de Afiliación: DepositRescue puede recibir una comisión de referencia sin costo adicional para usted."
+      : "Affiliate Disclosure: DepositRescue may earn an affiliate commission when you click partner links at zero extra cost."}
+  </p>
+</div>

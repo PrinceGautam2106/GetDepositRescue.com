@@ -5,7 +5,8 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://getdepositrescue.com',
+  site: process.env.PUBLIC_SITE_URL || 'https://getdepositrescue.com',
+  output: 'static',
   trailingSlash: 'never',
 
   i18n: {
@@ -18,6 +19,7 @@ export default defineConfig({
 
   integrations: [
     sitemap({
+      filter: (page) => !page.includes('/success') && !page.includes('/404') && !page.includes('/500'),
       i18n: {
         defaultLocale: 'en',
         locales: {

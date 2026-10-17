@@ -9,7 +9,9 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "test": "tsx tests/depositCalculator.test.ts && tsx tests/mailOrder.test.ts",
+    "deploy": "astro build && wrangler pages deploy dist --project-name=getdepositrescue"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
@@ -18,6 +20,9 @@
     "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
-    "tsx": "^4.23.15"
+    "@astrojs/check": "^0.9.10",
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.151.0"
   }
 }
