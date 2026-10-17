@@ -8,6 +8,9 @@ export default defineConfig({
   site: process.env.PUBLIC_SITE_URL || 'https://getdepositrescue.com',
   output: 'static',
   trailingSlash: 'never',
+  build: {
+    format: 'file',
+  },
 
   i18n: {
     locales: ['en', 'es'],
