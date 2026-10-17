@@ -2,7 +2,6 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import DepositWizard from "../components/calculator/DepositWizard.astro";
 import AdSlot from "../components/ads/AdSlot.astro";
-import TrustSignals from "../components/TrustSignals.astro";
 import { STATE_STATUTES, SUPPORTED_STATE_CODES } from "../data/stateStatutes";
 
 const allStates = SUPPORTED_STATE_CODES.map((code) => STATE_STATUTES[code]).sort((a, b) =>
@@ -386,9 +385,6 @@ const organizationSchema = {
   <!-- ═══════════════════════════════════════════════════════════════════════ -->
   <section class="border-t border-border bg-canvas py-16">
     <div class="mx-auto max-w-5xl px-4">
-      <!-- E-E-A-T Trust & Methodology Grid -->
-      <TrustSignals locale="en" class="mb-16" />
-
       <div class="text-center max-w-2xl mx-auto">
         <span class="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs font-mono font-medium text-text-secondary">
           <span class="h-1.5 w-1.5 rounded-full bg-success"></span>

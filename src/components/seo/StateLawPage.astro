@@ -15,8 +15,6 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import DepositWizard from "../calculator/DepositWizard.astro";
 import PartnerOffers from "../monetization/PartnerOffers.astro";
 import AdSlot from "../ads/AdSlot.astro";
-import AdBanner from "../ads/AdBanner.astro";
-import TrustSignals from "../TrustSignals.astro";
 import { type StateStatute } from "../../data/stateStatutes";
 import { getSiteUrl, getCanonicalUrl } from "../../utils/seo";
 
@@ -176,13 +174,8 @@ const legalServiceSchema = {
     <!-- ─── Hero Section ─────────────────────────────────────────────────── -->
     <header class="text-center sm:text-left border-b border-border pb-10">
       <div class="flex flex-wrap items-center gap-3 mb-4 justify-center sm:justify-start">
-        <div class="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3.5 py-1 text-xs font-medium text-text-secondary shadow-xs">
-          <span class="inline-block h-1.5 w-1.5 rounded-full bg-success animate-pulse"></span>
-          <span>Statutory Rules Audited for 2026 Compliance under US Landlord-Tenant Codes</span>
-        </div>
-
         <div class="inline-flex items-center gap-2 rounded-full border border-success/30 bg-success/10 px-3 py-1 text-xs font-medium text-success">
-          <span class="h-1.5 w-1.5 rounded-full bg-success"></span>
+          <span class="h-1.5 w-1.5 rounded-full bg-success animate-pulse"></span>
           <span>{statute.legalCodeCitation}</span>
         </div>
 
@@ -406,8 +399,8 @@ const legalServiceSchema = {
       </div>
     </section>
 
-    <!-- ─── Mid-Article In-Content Ad Banner (CLS-Safe) ──────────────────────── -->
-    <AdBanner slotId={`state-${statute.stateCode.toLowerCase()}-mid-content`} desktopSize="728x90" mobileSize="300x250" locale={lang} />
+    <!-- ─── Mid-Article In-Content Ad Slot (CLS-Safe) ──────────────────────── -->
+    <AdSlot format="in-content" slotId={`state-${statute.stateCode.toLowerCase()}-mid-content`} locale={lang} />
 
     <!-- ─── FAQ Section ─────────────────────────────────────────────────── -->
     <section aria-labelledby="faq-heading" class="rounded-xl border border-border bg-card p-6 sm:p-8 space-y-6">
@@ -436,8 +429,5 @@ const legalServiceSchema = {
         ))}
       </div>
     </section>
-
-    <!-- ─── E-E-A-T Trust & Methodology Grid ────────────────────────────── -->
-    <TrustSignals locale={lang} class="my-8" />
   </article>
 </BaseLayout>
