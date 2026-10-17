@@ -299,20 +299,20 @@ const stateOptions = SUPPORTED_STATE_CODES
         </p>
       </div>
 
-      <!-- Statutory Deadline Violation Badge (flashing bold emerald) -->
+      <!-- Statutory Deadline Violation Badge (flashing bold sapphire) -->
       <div
         id="wz-violation-badge"
-        class="mt-6 hidden rounded-lg border-2 border-success/80 bg-success/10 px-4 py-3.5 shadow-[0_0_20px_rgba(16,185,129,0.25)] wz-flash-badge"
+        class="mt-6 hidden rounded-lg border-2 border-blue-500/80 bg-blue-950/30 px-4 py-3.5 shadow-[0_0_25px_rgba(59,130,246,0.25)] wz-flash-badge"
       >
         <div class="flex items-start gap-3">
-          <svg class="mt-0.5 h-5 w-5 shrink-0 text-success" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+          <svg class="mt-0.5 h-5 w-5 shrink-0 text-sky-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
           </svg>
           <div>
-            <p id="wz-violation-text" class="text-sm font-bold text-success leading-snug">
+            <p id="wz-violation-text" class="text-sm font-bold text-sky-300 leading-snug">
               <!-- Dynamically populated: Statutory Deadline Violated! Your landlord may owe you up to [3x/2x] your deposit under [State Code]. -->
             </p>
-            <p id="wz-violation-subtext" class="mt-1 text-xs text-success/80">
+            <p id="wz-violation-subtext" class="mt-1 text-xs text-sky-200/80">
               <!-- Additional state statute info -->
             </p>
           </div>
@@ -373,24 +373,24 @@ const stateOptions = SUPPORTED_STATE_CODES
         <div class="flex items-center justify-between rounded-lg border border-border bg-canvas-alt px-4 py-3">
           <div class="flex items-center gap-2">
             <span class="text-sm text-text-secondary">{t.penaltyEntitlement}</span>
-            <span id="wz-multiplier-tag" class="rounded bg-success/10 px-1.5 py-0.5 text-[10px] font-mono font-semibold text-success">
+            <span id="wz-multiplier-tag" class="rounded border border-blue-500/30 bg-blue-500/10 px-1.5 py-0.5 text-[10px] font-mono font-semibold text-sky-400">
               +0x
             </span>
           </div>
-          <span id="wz-penalty" class="text-sm font-mono font-bold tabular-nums text-success">
+          <span id="wz-penalty" class="text-sm font-mono font-bold tabular-nums text-sky-400">
             +$0.00
           </span>
         </div>
 
-        <!-- Total Court Recovery Target: Large mono font with glowing border -->
-        <div class="relative overflow-hidden rounded-xl border border-success/80 bg-gradient-to-b from-[#0e2a1e] to-[#091510] p-6 text-center shadow-[0_0_30px_rgba(16,185,129,0.22),inset_0_0_20px_rgba(16,185,129,0.08)]">
-          <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(16,185,129,0.2)_0%,transparent_70%)] pointer-events-none"></div>
+        <!-- Total Court Recovery Target: Large mono font with Royal Sapphire glowing border -->
+        <div class="relative overflow-hidden rounded-xl border border-blue-500/70 bg-gradient-to-b from-[#0f172a] via-[#091124] to-[#020617] p-6 text-center shadow-[0_0_35px_rgba(59,130,246,0.22),inset_0_0_20px_rgba(59,130,246,0.08)]">
+          <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(59,130,246,0.22)_0%,transparent_70%)] pointer-events-none"></div>
           
           <div class="relative">
-            <p class="text-xs font-semibold uppercase tracking-widest text-emerald-400">
+            <p class="text-xs font-semibold uppercase tracking-widest text-sky-400">
               {t.totalRecovery}
             </p>
-            <p id="wz-total" class="mt-2 text-4xl font-black font-mono tracking-tight text-white sm:text-5xl drop-shadow-[0_2px_10px_rgba(16,185,129,0.3)]">
+            <p id="wz-total" class="mt-2 text-4xl font-black font-mono tracking-tight text-white sm:text-5xl drop-shadow-[0_2px_12px_rgba(56,189,248,0.35)]">
               $0.00
             </p>
             <div class="mt-3 flex items-center justify-center gap-1.5">
@@ -493,25 +493,25 @@ const stateOptions = SUPPORTED_STATE_CODES
             <!-- Features -->
             <ul class="mt-4 space-y-2.5 text-xs text-text-secondary border-t border-border pt-4">
               <li class="flex items-start gap-2">
-                <svg class="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <svg class="h-4 w-4 text-sky-400 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                 </svg>
                 <span>{isEs ? "Descarga inmediata en PDF" : "Instant PDF download"}</span>
               </li>
               <li class="flex items-start gap-2">
-                <svg class="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <svg class="h-4 w-4 text-sky-400 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                 </svg>
                 <span>{isEs ? "Cláusula con citación de ley estatal" : "State statute citation clause"}</span>
               </li>
               <li class="flex items-start gap-2">
-                <svg class="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <svg class="h-4 w-4 text-sky-400 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                 </svg>
                 <span>{isEs ? "Lista de verificación para tribunal de reclamos menores" : "Small claims court checklist"}</span>
               </li>
               <li class="flex items-start gap-2">
-                <svg class="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <svg class="h-4 w-4 text-sky-400 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                 </svg>
                 <span>{isEs ? "Registro detallado de disputa de deducciones" : "Itemized dispute ledger"}</span>
@@ -535,15 +535,15 @@ const stateOptions = SUPPORTED_STATE_CODES
         </div>
 
         <!-- Card B (Turnkey Delivery - $29.99 - Recommended Badge) -->
-        <div class="relative flex flex-col justify-between rounded-xl border-2 border-emerald-500/80 bg-gradient-to-b from-[#0c2419] to-[#091510] p-5 sm:p-6 shadow-[0_0_25px_rgba(16,185,129,0.18)] transition-all duration-150 hover:shadow-[0_0_35px_rgba(16,185,129,0.28)]">
+        <div class="relative flex flex-col justify-between rounded-xl border-2 border-blue-500/80 bg-gradient-to-b from-[#0f172a] via-[#0b1329] to-[#040816] p-5 sm:p-6 shadow-[0_0_30px_rgba(59,130,246,0.22)] transition-all duration-150 hover:shadow-[0_0_40px_rgba(59,130,246,0.32)]">
           <!-- Recommended Badge -->
-          <div class="absolute -top-3 right-4 inline-flex items-center gap-1 rounded-full bg-emerald-500 px-3 py-0.5 text-[10px] font-bold uppercase tracking-wider text-black shadow-md">
+          <div class="absolute -top-3 right-4 inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 px-3 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-md">
             ★ {isEs ? "Recomendado por Defensores" : "Recommended by Tenant Advocates"}
           </div>
 
           <div>
             <div class="flex items-center justify-between">
-              <span class="text-xs font-mono uppercase tracking-wider text-emerald-400">
+              <span class="text-xs font-mono uppercase tracking-wider text-sky-400">
                 {isEs ? "Servicio Postal Oficial" : "Turnkey Delivery"}
               </span>
             </div>
@@ -551,32 +551,32 @@ const stateOptions = SUPPORTED_STATE_CODES
               {isEs ? "Entrega por Correo Certificado USPS" : "USPS Certified Mail Delivery"}
             </h3>
             <div class="mt-2 flex items-baseline gap-1">
-              <span class="text-3xl font-extrabold font-mono text-emerald-400">$29.99</span>
+              <span class="text-3xl font-extrabold font-mono text-sky-400">$29.99</span>
               <span class="text-xs text-text-muted">{isEs ? "todo incluido" : "all-inclusive"}</span>
             </div>
 
             <!-- Features -->
-            <ul class="mt-4 space-y-2.5 text-xs text-zinc-300 border-t border-emerald-900/60 pt-4">
+            <ul class="mt-4 space-y-2.5 text-xs text-zinc-300 border-t border-blue-900/60 pt-4">
               <li class="flex items-start gap-2">
-                <svg class="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <svg class="h-4 w-4 text-sky-400 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                 </svg>
                 <span>{isEs ? "Imprimimos, empaquetamos y enviamos por Correo Certificado USPS" : "We print, package, and dispatch via USPS Certified Mail"}</span>
               </li>
               <li class="flex items-start gap-2">
-                <svg class="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <svg class="h-4 w-4 text-sky-400 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                 </svg>
                 <span>{isEs ? "Incluye número de rastreo oficial de USPS" : "Includes official USPS tracking number"}</span>
               </li>
               <li class="flex items-start gap-2">
-                <svg class="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <svg class="h-4 w-4 text-sky-400 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                 </svg>
                 <span>{isEs ? "Acuse de recibo con firma legal para evidencia en corte" : "Legal signature receipt for court evidence"}</span>
               </li>
               <li class="flex items-start gap-2">
-                <svg class="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <svg class="h-4 w-4 text-sky-400 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                 </svg>
                 <span>{isEs ? "Le ahorra un viaje a la oficina postal" : "Saves you a trip to the post office"}</span>
@@ -588,7 +588,7 @@ const stateOptions = SUPPORTED_STATE_CODES
             id="wz-btn-certified-mail"
             type="button"
             aria-label={isEs ? "Enviar Correo Certificado ($29.99)" : "Send Certified Mail ($29.99)"}
-            class="mt-6 flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-500 px-4 py-3 text-sm font-bold text-black transition-all duration-150 hover:bg-emerald-400 active:scale-[0.99] shadow-md focus:outline-none focus:ring-2 focus:ring-emerald-400"
+            class="mt-6 flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-400 hover:to-indigo-500 px-4 py-3 text-sm font-bold text-white transition-all duration-150 active:scale-[0.99] shadow-lg shadow-blue-500/25 focus:outline-none focus:ring-2 focus:ring-blue-400"
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
               <path d="M3 4a2 2 0 00-2 2v1.161l8.441 4.221a1.25 1.25 0 001.118 0L19 7.162V6a2 2 0 00-2-2H3z" />
@@ -682,8 +682,8 @@ const stateOptions = SUPPORTED_STATE_CODES
 
       <!-- Badge & Icon -->
       <div class="flex items-center gap-2 mb-3">
-        <span class="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 text-xs font-mono font-medium text-emerald-400">
-          <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span class="inline-flex items-center gap-1.5 rounded-full border border-blue-500/30 bg-blue-500/10 px-2.5 py-0.5 text-xs font-mono font-medium text-sky-400">
+          <span class="h-1.5 w-1.5 rounded-full bg-sky-400 animate-pulse"></span>
           {isEs ? "Evaluación Completada" : "Penalty Audit Ready"}
         </span>
       </div>
@@ -712,7 +712,7 @@ const stateOptions = SUPPORTED_STATE_CODES
             id="wz-lead-name"
             aria-label={isEs ? "Su Nombre Completo" : "Your Full Legal Name"}
             placeholder={isEs ? "ej. Juan Pérez" : "e.g. Jane Doe"}
-            class="w-full rounded-lg border border-border bg-card px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-colors"
+            class="w-full rounded-lg border border-border bg-card px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-colors"
           />
         </div>
 
@@ -725,7 +725,7 @@ const stateOptions = SUPPORTED_STATE_CODES
             id="wz-lead-email"
             aria-label={isEs ? "Correo Electrónico" : "Email Address"}
             placeholder={isEs ? "tu@correo.com" : "you@example.com"}
-            class="w-full rounded-lg border border-border bg-card px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-colors"
+            class="w-full rounded-lg border border-border bg-card px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-colors"
           />
         </div>
 
@@ -736,12 +736,12 @@ const stateOptions = SUPPORTED_STATE_CODES
         <button
           id="wz-lead-submit"
           type="button"
-          class="w-full mt-2 inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-500 py-3 text-sm font-bold text-black hover:bg-emerald-400 active:scale-[0.99] transition-all shadow-md focus:outline-none focus:ring-2 focus:ring-emerald-400"
+          class="w-full mt-2 inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-400 hover:to-indigo-500 py-3 text-sm font-bold text-white active:scale-[0.99] transition-all shadow-lg shadow-blue-500/25 focus:outline-none focus:ring-2 focus:ring-blue-400"
         >
           <span id="wz-lead-btn-text">
             {isEs ? "Desbloquear Carta de Demanda" : "Unlock Official Demand Letter"}
           </span>
-          <span id="wz-lead-spinner" class="hidden h-4 w-4 animate-spin rounded-full border-2 border-black border-t-transparent"></span>
+          <span id="wz-lead-spinner" class="hidden h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
             <path fill-rule="evenodd" d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z" clip-rule="evenodd" />
           </svg>
@@ -749,7 +749,7 @@ const stateOptions = SUPPORTED_STATE_CODES
 
         <!-- Secondary Reassurance (as requested) -->
         <div class="flex items-center justify-center gap-1.5 pt-1 text-xs text-text-muted">
-          <svg class="h-3.5 w-3.5 text-emerald-400 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+          <svg class="h-3.5 w-3.5 text-sky-400 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd" d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z" clip-rule="evenodd" />
           </svg>
           <span>{isEs ? "Respetamos su privacidad. Cero spam." : "We respect your privacy. No spam."}</span>
@@ -937,7 +937,7 @@ const stateOptions = SUPPORTED_STATE_CODES
         <div class="rounded-lg border border-border bg-canvas-alt p-4 font-mono text-left space-y-2">
           <div class="flex justify-between items-center text-[10px] text-text-muted">
             <span>UNITED STATES POSTAL SERVICE</span>
-            <span class="rounded bg-success/10 px-1.5 py-0.5 text-success font-semibold">CERTIFIED MAIL</span>
+            <span class="rounded bg-blue-500/10 px-1.5 py-0.5 text-sky-400 font-semibold">CERTIFIED MAIL</span>
           </div>
 
           <div class="my-2 h-7 w-full bg-text-primary/20 flex items-center justify-center text-[11px] text-text-muted tracking-[0.35em] select-none">
@@ -947,7 +947,7 @@ const stateOptions = SUPPORTED_STATE_CODES
           <div class="border-t border-border pt-2 space-y-1 text-xs">
             <div class="flex justify-between">
               <span class="text-text-muted">{isEs ? "Número de Rastreo" : "Tracking Number"}:</span>
-              <span id="wz-confirmed-tracking" class="font-bold text-emerald-400">7023 0490 0001 8492 4192</span>
+              <span id="wz-confirmed-tracking" class="font-bold text-sky-400">7023 0490 0001 8492 4192</span>
             </div>
             <div class="flex justify-between">
               <span class="text-text-muted">{isEs ? "Entrega Estimada" : "Estimated Delivery"}:</span>
@@ -997,18 +997,18 @@ const stateOptions = SUPPORTED_STATE_CODES
 <style>
   @keyframes badge-flash {
     0% {
-      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.8);
-      border-color: rgba(16, 185, 129, 1);
+      box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.8);
+      border-color: rgba(59, 130, 246, 1);
       transform: scale(0.99);
     }
     50% {
-      box-shadow: 0 0 28px 6px rgba(16, 185, 129, 0.45);
-      border-color: rgba(16, 185, 129, 1);
+      box-shadow: 0 0 28px 6px rgba(59, 130, 246, 0.45);
+      border-color: rgba(96, 165, 250, 1);
       transform: scale(1.008);
     }
     100% {
-      box-shadow: 0 0 16px 2px rgba(16, 185, 129, 0.25);
-      border-color: rgba(16, 185, 129, 0.8);
+      box-shadow: 0 0 16px 2px rgba(59, 130, 246, 0.25);
+      border-color: rgba(59, 130, 246, 0.8);
       transform: scale(1);
     }
   }
@@ -1194,26 +1194,26 @@ const stateOptions = SUPPORTED_STATE_CODES
         btn.classList.add("border-border-hover", "bg-card");
         btn.classList.remove("opacity-60");
         badge?.classList.add("bg-cta-bg", "text-cta-text");
-        badge?.classList.remove("bg-border", "text-text-muted", "bg-success", "text-white");
+        badge?.classList.remove("bg-border", "text-text-muted", "bg-blue-600", "text-white");
         title?.classList.add("text-text-primary");
         bar?.classList.add("bg-cta-bg");
-        bar?.classList.remove("bg-border", "bg-success");
+        bar?.classList.remove("bg-border", "bg-blue-600");
       } else if (sNum < step) {
         btn.classList.remove("border-border-hover");
         btn.classList.remove("opacity-60");
-        badge?.classList.add("bg-success", "text-white");
+        badge?.classList.add("bg-blue-600", "text-white");
         badge?.classList.remove("bg-cta-bg", "text-cta-text", "bg-border", "text-text-muted");
         title?.classList.remove("text-text-primary");
-        bar?.classList.add("bg-success");
+        bar?.classList.add("bg-blue-600");
         bar?.classList.remove("bg-cta-bg", "bg-border");
       } else {
         btn.classList.remove("border-border-hover");
         btn.classList.add("opacity-60");
         badge?.classList.add("bg-border", "text-text-muted");
-        badge?.classList.remove("bg-cta-bg", "text-cta-text", "bg-success", "text-white");
+        badge?.classList.remove("bg-cta-bg", "text-cta-text", "bg-blue-600", "text-white");
         title?.classList.remove("text-text-primary");
         bar?.classList.add("bg-border");
-        bar?.classList.remove("bg-cta-bg", "bg-success");
+        bar?.classList.remove("bg-cta-bg", "bg-blue-600");
       }
     });
 
@@ -1323,7 +1323,7 @@ const stateOptions = SUPPORTED_STATE_CODES
       daysStatus.textContent = isEs
         ? `${result.statute.deadlineDays - result.daysElapsed} días restantes`
         : `${result.statute.deadlineDays - result.daysElapsed} days remaining`;
-      daysStatus.className = "mt-1 inline-block text-[11px] font-mono text-success";
+      daysStatus.className = "mt-1 inline-block text-[11px] font-mono text-sky-400";
     }
 
     // Flash bold emerald badge if deadline violated
@@ -1388,13 +1388,13 @@ const stateOptions = SUPPORTED_STATE_CODES
     // Small Claims Eligibility Badge
     if (result.smallClaimsEligible) {
       claimsBadge.innerHTML = `
-        <svg class="h-3.5 w-3.5 text-success" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+        <svg class="h-3.5 w-3.5 text-sky-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
           <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
         </svg>
         <span class="text-text-primary">${isEs ? "Elegible para Corte de Reclamos Menores" : "Eligible for Small Claims Court"}</span>
         <span class="text-text-muted">(${isEs ? "tope" : "cap"}: ${fmtMoney(result.statute.smallClaimsLimit)})</span>
       `;
-      claimsBadge.className = "inline-flex items-center gap-1.5 rounded-full border border-success/30 bg-success/10 px-3 py-1 text-xs font-medium text-success";
+      claimsBadge.className = "inline-flex items-center gap-1.5 rounded-full border border-blue-500/30 bg-blue-500/10 px-3 py-1 text-xs font-medium text-sky-300";
     } else {
       claimsBadge.innerHTML = `
         <svg class="h-3.5 w-3.5 text-danger" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -1428,7 +1428,7 @@ const stateOptions = SUPPORTED_STATE_CODES
       <div class="border-b border-border pb-3 font-mono text-xs">
         <div class="flex justify-between items-center text-text-muted">
           <span>${isEs ? "FECHA" : "DATE"}: ${today}</span>
-          <span class="text-emerald-400 font-semibold">${isEs ? "ENVÍO CERTIFICADO USPS" : "USPS CERTIFIED MAIL"}</span>
+          <span class="text-sky-400 font-semibold">${isEs ? "ENVÍO CERTIFICADO USPS" : "USPS CERTIFIED MAIL"}</span>
         </div>
         <div class="mt-2 text-text-secondary">
           <p><strong class="text-text-primary">${isEs ? "DE" : "FROM"}:</strong> ${tenantName}</p>
@@ -1477,11 +1477,11 @@ const stateOptions = SUPPORTED_STATE_CODES
             <span>${isEs ? "Saldo Retenido Ilegalmente" : "Unreturned Balance Owed"}:</span>
             <span>${fmtMoney(r.unreturnedAmount)}</span>
           </div>
-          <div class="flex justify-between py-0.5 border-b border-border/50 text-success font-medium">
+          <div class="flex justify-between py-0.5 border-b border-border/50 text-sky-400 font-medium">
             <span>${isEs ? "Sanción Estatutaria por Retención Indebida" : "Statutory Bad-Faith Damages"}:</span>
             <span>+${fmtMoney(penaltyOnly)}</span>
           </div>
-          <div class="flex justify-between pt-1.5 font-bold text-sm text-emerald-400">
+          <div class="flex justify-between pt-1.5 font-bold text-sm text-sky-300">
             <span>${isEs ? "TOTAL DEMANDADO EN CORTE" : "TOTAL COURT DEMAND TARGET"}:</span>
             <span>${fmtMoney(r.statutoryPenaltyAmount)}</span>
           </div>
