@@ -14,7 +14,6 @@
  */
 import { STATE_STATUTES, SUPPORTED_STATE_CODES } from "../../data/stateStatutes";
 import { getStrings, type Locale } from "./i18n";
-import PartnerOffers from "../monetization/PartnerOffers.astro";
 
 interface Props {
   locale?: Locale;
@@ -401,9 +400,6 @@ const stateOptions = SUPPORTED_STATE_CODES
           </div>
         </div>
       </div>
-
-      <!-- Strategic Affiliate Placements Under Calculation Results -->
-      <PartnerOffers locale={locale} variant="grid" headline={isEs ? "Recursos Recomendados Tras Su Cálculo" : "Recommended Resources For Your Next Move"} />
     </div>
   </section>
 
@@ -608,9 +604,6 @@ const stateOptions = SUPPORTED_STATE_CODES
           {t.certifiedMailNote}
         </p>
       </div>
-
-      <!-- Strategic Affiliate Placements Under Demand Letter Preview -->
-      <PartnerOffers locale={locale} variant="grid" headline={isEs ? "Protección y Opciones de Presentación Legal" : "Protection & Legal Filing Next Steps"} />
     </div>
   </section>
 

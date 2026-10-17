@@ -65,6 +65,58 @@ export async function sendLeadEmail(lead: LeadPayload) {
             </a>
           </div>
 
+          <!-- Verified Partner Recommendations Section -->
+          <div style="border-top: 1px solid #27272a; margin-top: 32px; padding-top: 24px;">
+            <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.08em; color: #38bdf8; text-transform: uppercase; margin-bottom: 4px;">
+              Verified Partner Resources
+            </div>
+            <h4 style="margin: 0 0 16px 0; font-size: 14px; font-weight: 700; color: #ffffff;">
+              Exclusive Tenant Services for Your Next Move & Protection
+            </h4>
+
+            <!-- Partner 1: Moving & Storage -->
+            <div style="background-color: #18181b; border: 1px solid #27272a; border-radius: 8px; padding: 14px 16px; margin-bottom: 12px;">
+              <div style="margin-bottom: 4px;">
+                <strong style="font-size: 13px; color: #ffffff;">PODS / U-Pack Moving &amp; Storage</strong>
+                <span style="font-size: 10px; font-family: monospace; color: #c084fc; background: rgba(192, 132, 252, 0.1); border: 1px solid rgba(192, 132, 252, 0.3); border-radius: 4px; padding: 2px 6px; margin-left: 8px;">Moving &amp; Storage</span>
+              </div>
+              <p style="font-size: 12px; line-height: 1.5; color: #a1a1aa; margin: 0 0 8px 0;">
+                Moving into your next rental? Compare top-rated moving truck, portable container, and secure storage quotes.
+              </p>
+              <a href="https://www.pods.com/?utm_source=depositrescue&amp;utm_medium=affiliate&amp;utm_campaign=deposit_recovery" style="font-size: 12px; font-weight: 600; color: #38bdf8; text-decoration: none;">
+                Compare Free Quotes →
+              </a>
+            </div>
+
+            <!-- Partner 2: Renters Insurance -->
+            <div style="background-color: #18181b; border: 1px solid #27272a; border-radius: 8px; padding: 14px 16px; margin-bottom: 12px;">
+              <div style="margin-bottom: 4px;">
+                <strong style="font-size: 13px; color: #ffffff;">Lemonade Renters Insurance (from $5/mo)</strong>
+                <span style="font-size: 10px; font-family: monospace; color: #60a5fa; background: rgba(96, 165, 250, 0.1); border: 1px solid rgba(96, 165, 250, 0.3); border-radius: 4px; padding: 2px 6px; margin-left: 8px;">Deposit Protection</span>
+              </div>
+              <p style="font-size: 12px; line-height: 1.5; color: #a1a1aa; margin: 0 0 8px 0;">
+                Protect your next security deposit with $100k liability and accidental damage coverage from top-rated carriers.
+              </p>
+              <a href="https://www.lemonade.com/renters?utm_source=depositrescue&amp;utm_medium=affiliate&amp;utm_campaign=deposit_recovery" style="font-size: 12px; font-weight: 600; color: #38bdf8; text-decoration: none;">
+                Get Instant Quote in 90 Seconds →
+              </a>
+            </div>
+
+            <!-- Partner 3: Small Claims Court Filing -->
+            <div style="background-color: #18181b; border: 1px solid #27272a; border-radius: 8px; padding: 14px 16px;">
+              <div style="margin-bottom: 4px;">
+                <strong style="font-size: 13px; color: #ffffff;">Dispute.com Small Claims Automation</strong>
+                <span style="font-size: 10px; font-family: monospace; color: #34d399; background: rgba(52, 211, 153, 0.1); border: 1px solid rgba(52, 211, 153, 0.3); border-radius: 4px; padding: 2px 6px; margin-left: 8px;">Legal Filing</span>
+              </div>
+              <p style="font-size: 12px; line-height: 1.5; color: #a1a1aa; margin: 0 0 8px 0;">
+                If your landlord ignores your demand letter, prepare and file directly in Small Claims Court in 5 minutes.
+              </p>
+              <a href="https://www.dispute.com/?utm_source=depositrescue&amp;utm_medium=affiliate&amp;utm_campaign=deposit_recovery" style="font-size: 12px; font-weight: 600; color: #38bdf8; text-decoration: none;">
+                File Your Claim Online →
+              </a>
+            </div>
+          </div>
+
           <div style="border-top: 1px solid #27272a; padding-top: 20px; margin-top: 28px; font-size: 11px; line-height: 1.6; color: #71717a; text-align: center;">
             DepositRescue is a self-help calculation tool, not a law firm, and does not provide formal legal representation.<br>
             © 2026 DepositRescue. All rights reserved.
