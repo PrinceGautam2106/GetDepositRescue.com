@@ -799,7 +799,7 @@ const stateOptions = SUPPORTED_STATE_CODES
             <span class="text-xs font-semibold text-text-primary uppercase tracking-wider">
               {isEs ? "Dirección del Arrendador (Destinatario)" : "Landlord Mailing Address (Recipient)"}
             </span>
-            <span class="text-[10px] text-danger">*Requerido</span>
+            <span class="text-[10px] text-danger">{isEs ? "*Requerido" : "*Required"}</span>
           </div>
           <div class="space-y-2 text-xs">
             <input
@@ -850,7 +850,7 @@ const stateOptions = SUPPORTED_STATE_CODES
             <span class="text-xs font-semibold text-text-primary uppercase tracking-wider">
               {isEs ? "Su Dirección de Remitente (Inquilino)" : "Your Return Address (Tenant)"}
             </span>
-            <span class="text-[10px] text-danger">*Requerido</span>
+            <span class="text-[10px] text-danger">{isEs ? "*Requerido" : "*Required"}</span>
           </div>
           <div class="space-y-2 text-xs">
             <input
