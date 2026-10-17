@@ -1646,6 +1646,8 @@ const stateOptions = SUPPORTED_STATE_CODES
         }),
       });
 
+      const lsPdfFallback = `https://getdepositrescue.lemonsqueezy.com/checkout/buy/848c89ea-e164-4b3e-b394-18fd1313bd2f?checkout[email]=${encodeURIComponent(tenantEmail)}&checkout[name]=${encodeURIComponent(tenantName)}`;
+
       if (response.ok) {
         const data = await response.json();
         if (data.checkoutUrl) {
@@ -1657,9 +1659,9 @@ const stateOptions = SUPPORTED_STATE_CODES
           return;
         }
       }
-      window.location.href = `/${isEs ? "es/" : ""}success?tier=pdf&state=${encodeURIComponent(state)}`;
+      window.location.href = lsPdfFallback;
     } catch {
-      window.location.href = `/${isEs ? "es/" : ""}success?tier=pdf&state=${encodeURIComponent(state)}`;
+      window.location.href = `https://getdepositrescue.lemonsqueezy.com/checkout/buy/848c89ea-e164-4b3e-b394-18fd1313bd2f?checkout[email]=${encodeURIComponent(tenantEmail)}&checkout[name]=${encodeURIComponent(tenantName)}`;
     } finally {
       if (btnDownloadPdf) btnDownloadPdf.disabled = false;
       if (btnPdfSpinner) btnPdfSpinner.classList.add("hidden");
@@ -1789,6 +1791,8 @@ const stateOptions = SUPPORTED_STATE_CODES
         }),
       });
 
+      const lsMailFallback = `https://getdepositrescue.lemonsqueezy.com/checkout/buy/b421d308-0ac9-4748-b0cd-79d482627366?checkout[email]=${encodeURIComponent(stored?.email || "")}&checkout[name]=${encodeURIComponent(tName || stored?.name || "")}`;
+
       if (response.ok) {
         const data = await response.json();
         if (data.checkoutUrl) {
@@ -1799,6 +1803,9 @@ const stateOptions = SUPPORTED_STATE_CODES
           window.location.href = data.redirectUrl;
           return;
         }
+      } else {
+        window.location.href = lsMailFallback;
+        return;
       }
 
       const orderPayload: CreateOrderRequest = {

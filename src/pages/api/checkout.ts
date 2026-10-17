@@ -2,7 +2,7 @@
  * checkout.ts
  * Dual-Tier Checkout Session Generator ($14.99 PDF Package vs $29.99 USPS Certified Mail)
  *
- * Integrates Stripe Checkout with automatic fallback to high-fidelity simulation
+ * Integrates Lemon Squeezy & Stripe with automatic fallback to high-fidelity simulation
  * in local development or static deployment mode.
  */
 
@@ -31,12 +31,13 @@ export interface CheckoutResponse {
 }
 
 export const GET: APIRoute = async () => {
-  const isLive = typeof process !== "undefined" && Boolean(process.env?.STRIPE_SECRET_KEY);
+  const isLive = typeof process !== "undefined" && Boolean(process.env?.LEMON_SQUEEZY_API_KEY || process.env?.STRIPE_SECRET_KEY);
   return new Response(
     JSON.stringify({
       service: "DepositRescue Dual-Tier Monetization Engine",
       status: "operational",
       mode: isLive ? "production" : "simulation",
+      provider: "Lemon Squeezy",
       tiers: {
         pdf: {
           name: "Official Legal PDF Package",
@@ -93,75 +94,103 @@ export const POST: APIRoute = async ({ request, url }) => {
             : "Turnkey printing, packaging, and dispatch with USPS tracking & court-admissible signature receipt",
         };
 
-    const stripeSecretKey = typeof process !== "undefined" ? process.env?.STRIPE_SECRET_KEY : undefined;
+    const lemonApiKey = typeof process !== "undefined" ? process.env?.LEMON_SQUEEZY_API_KEY : undefined;
+    const lemonStoreId = typeof process !== "undefined" ? (process.env?.LEMON_SQUEEZY_STORE_ID || "500290") : "500290";
+    const variantId = tier === "pdf"
+      ? (typeof process !== "undefined" ? process.env?.LEMON_SQUEEZY_PDF_VARIANT_ID : undefined) || "2260687"
+      : (typeof process !== "undefined" ? process.env?.LEMON_SQUEEZY_MAIL_VARIANT_ID : undefined) || "2260690";
 
-    // ── LIVE STRIPE CHECKOUT SESSION ──────────────────────────────────────────
-    if (stripeSecretKey) {
-      const successUrl = `${origin}/${isEs ? "es/" : ""}success?session_id={CHECKOUT_SESSION_ID}&tier=${tier}`;
-      const cancelUrl = `${origin}/${isEs ? "es/" : ""}calculator?payment=cancelled`;
-
-      const stripeResponse = await fetch("https://api.stripe.com/v1/checkout/sessions", {
+    // ── LIVE LEMON SQUEEZY CHECKOUT ───────────────────────────────────────────
+    if (lemonApiKey) {
+      const lsResponse = await fetch("https://api.lemonsqueezy.com/v1/checkouts", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${stripeSecretKey}`,
-          "Content-Type": "application/x-www-form-urlencoded",
+          Accept: "application/vnd.api+json",
+          "Content-Type": "application/vnd.api+json",
+          Authorization: `Bearer ${lemonApiKey}`,
         },
-        body: new URLSearchParams({
-          "payment_method_types[0]": "card",
-          "line_items[0][price_data][currency]": "usd",
-          "line_items[0][price_data][unit_amount]": String(config.amountCents),
-          "line_items[0][price_data][product_data][name]": config.productName,
-          "line_items[0][price_data][product_data][description]": config.productDesc,
-          "line_items[0][quantity]": "1",
-          mode: "payment",
-          success_url: successUrl,
-          cancel_url: cancelUrl,
-          "metadata[tier]": tier,
-          "metadata[stateCode]": payload.stateCode || "",
-          "metadata[tenantName]": payload.tenantName || "",
-          "metadata[tenantEmail]": payload.tenantEmail || "",
-          "metadata[landlordName]": payload.landlordName || "",
-        }).toString(),
+        body: JSON.stringify({
+          data: {
+            type: "checkouts",
+            attributes: {
+              checkout_options: {
+                dark: true,
+                logo: true,
+              },
+              checkout_data: {
+                email: payload.tenantEmail || "",
+                name: payload.tenantName || "",
+                custom: {
+                  tier,
+                  state_code: payload.stateCode || "",
+                  tenant_name: payload.tenantName || "",
+                  landlord_name: payload.landlordName || "",
+                  total_claim: String(payload.totalClaimAmount || 0),
+                },
+              },
+              product_options: {
+                redirect_url: `${origin}/${isEs ? "es/" : ""}success?tier=${tier}&mode=live`,
+              },
+            },
+            relationships: {
+              store: {
+                data: {
+                  type: "stores",
+                  id: String(lemonStoreId),
+                },
+              },
+              variant: {
+                data: {
+                  type: "variants",
+                  id: String(variantId),
+                },
+              },
+            },
+          },
+        }),
       });
 
-      const sessionData = await stripeResponse.json();
-      if (!stripeResponse.ok) {
-        throw new Error(sessionData.error?.message || "Failed to create Stripe Checkout session");
+      if (lsResponse.ok) {
+        const lsData = (await lsResponse.json()) as any;
+        const checkoutUrl = lsData.data?.attributes?.url;
+        if (checkoutUrl) {
+          return new Response(
+            JSON.stringify({
+              success: true,
+              mode: "live",
+              tier,
+              amountUsd: config.amountUsd,
+              checkoutUrl,
+              message: "Lemon Squeezy checkout session initialized.",
+            }),
+            {
+              status: 200,
+              headers: { "Content-Type": "application/json" },
+            },
+          );
+        }
       }
+    }
 
-      const res: CheckoutResponse = {
+    // ── DIRECT BUY URL FALLBACK ───────────────────────────────────────────────
+    const directBuyUrl = tier === "pdf"
+      ? `https://getdepositrescue.lemonsqueezy.com/checkout/buy/848c89ea-e164-4b3e-b394-18fd1313bd2f?checkout[email]=${encodeURIComponent(payload.tenantEmail || "")}&checkout[name]=${encodeURIComponent(payload.tenantName || "")}`
+      : `https://getdepositrescue.lemonsqueezy.com/checkout/buy/b421d308-0ac9-4748-b0cd-79d482627366?checkout[email]=${encodeURIComponent(payload.tenantEmail || "")}&checkout[name]=${encodeURIComponent(payload.tenantName || "")}`;
+
+    return new Response(
+      JSON.stringify({
         success: true,
         mode: "live",
         tier,
         amountUsd: config.amountUsd,
-        checkoutUrl: sessionData.url,
-        message: "Stripe checkout session initialized.",
-      };
-
-      return new Response(JSON.stringify(res), {
+        checkoutUrl: directBuyUrl,
+        message: "Direct Lemon Squeezy checkout link generated.",
+      }),
+      {
         status: 200,
         headers: { "Content-Type": "application/json" },
-      });
-    }
-
-    // ── SIMULATION / DEV MODE ────────────────────────────────────────────────
-    const randDigits = () => Math.floor(1000 + Math.random() * 9000);
-    const trackingCode = `7023 ${randDigits()} ${randDigits()} ${randDigits()} ${randDigits()}`;
-    const redirectUrl = `${origin}/${isEs ? "es/" : ""}success?tier=${tier}&mode=simulated&tracking=${encodeURIComponent(trackingCode)}&state=${payload.stateCode || "CA"}`;
-
-    const res: CheckoutResponse = {
-      success: true,
-      mode: "simulated",
-      tier,
-      amountUsd: config.amountUsd,
-      redirectUrl,
-      message: "Simulation checkout generated. Redirecting to success fulfillment.",
-    };
-
-    return new Response(JSON.stringify(res), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
+      },
+    );
   } catch (err) {
     return new Response(
       JSON.stringify({
