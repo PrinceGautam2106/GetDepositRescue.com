@@ -318,11 +318,21 @@ const stateOptions = SUPPORTED_STATE_CODES
         </div>
       </div>
 
-      <!-- No Violation Fallback Badge -->
-      <div id="wz-no-violation-badge" class="mt-6 hidden rounded-lg border border-border bg-canvas-alt px-4 py-3">
-        <p class="text-sm text-text-secondary">
-          {t.noViolationBadge}
-        </p>
+      <!-- Active Dispute / No Violation Notification Banner -->
+      <div id="wz-no-violation-badge" class="mt-6 hidden rounded-xl border p-4 sm:p-5 transition-all">
+        <div class="flex items-start gap-3 sm:gap-4">
+          <div id="wz-no-violation-icon" class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border">
+            <!-- Icon dynamically swapped: amber alert or info check -->
+          </div>
+          <div>
+            <p id="wz-no-violation-title" class="text-sm font-bold leading-snug">
+              <!-- Dynamically populated -->
+            </p>
+            <p id="wz-no-violation-text" class="mt-1 text-xs leading-relaxed text-text-secondary">
+              {t.noViolationBadge}
+            </p>
+          </div>
+        </div>
       </div>
 
       <!-- Timeline & Statutory Days Elapsed Grid -->
@@ -1074,6 +1084,9 @@ const stateOptions = SUPPORTED_STATE_CODES
   const violationText = $<HTMLParagraphElement>("wz-violation-text");
   const violationSubtext = $<HTMLParagraphElement>("wz-violation-subtext");
   const noViolationBadge = $<HTMLDivElement>("wz-no-violation-badge");
+  const noViolationIcon = $<HTMLDivElement>("wz-no-violation-icon");
+  const noViolationTitle = $<HTMLParagraphElement>("wz-no-violation-title");
+  const noViolationText = $<HTMLParagraphElement>("wz-no-violation-text");
   const daysEl = $<HTMLParagraphElement>("wz-days-elapsed");
   const daysStatus = $<HTMLSpanElement>("wz-days-status");
   const deadlineEl = $<HTMLParagraphElement>("wz-state-deadline");
@@ -1345,6 +1358,57 @@ const stateOptions = SUPPORTED_STATE_CODES
     } else {
       violationBadge.classList.add("hidden");
       noViolationBadge.classList.remove("hidden");
+
+      const hasDisputedDeductions = result.unreturnedAmount > 0 || result.violationTypes.length > 0;
+      const daysRemaining = Math.max(0, result.statute.deadlineDays - result.daysElapsed);
+
+      if (hasDisputedDeductions) {
+        // Warning banner: Statutory window still open, but deductions are illegal wear-and-tear
+        noViolationBadge.className = "mt-6 rounded-xl border border-amber-500/40 bg-gradient-to-r from-amber-950/30 via-yellow-950/20 to-amber-900/20 p-4 sm:p-5 shadow-lg shadow-amber-500/10";
+        if (noViolationIcon) {
+          noViolationIcon.className = "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-amber-500/40 bg-amber-500/10 text-amber-400";
+          noViolationIcon.innerHTML = `
+            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          `;
+        }
+        if (noViolationTitle) {
+          noViolationTitle.className = "text-sm font-bold text-amber-300 leading-snug";
+          noViolationTitle.textContent = isEs
+            ? "Plazo Legal en Curso — Deducciones Ilegales Impugnables de Inmediato"
+            : "Statutory Return Deadline Still Active — Illegal Deductions Contestable Immediately";
+        }
+        if (noViolationText) {
+          noViolationText.className = "mt-1 text-xs text-amber-200/90 leading-relaxed";
+          noViolationText.textContent = isEs
+            ? `Su arrendador aún está dentro del plazo legal de ${result.statute.deadlineDays} días (${daysRemaining} días restantes). Sin embargo, la ley estatal bajo ${result.statute.legalCodeCitation} prohíbe estrictamente retener fondos por desgaste normal, pintura de retoque o cargos sin recibo detallado. No necesita esperar a que venza el plazo—puede impugnar los ${fmtMoney(result.unreturnedAmount)} en deducciones indebidas de inmediato usando la carta de demanda en el Paso 4.`
+            : `Your landlord is still within the statutory ${result.statute.deadlineDays}-day return window (${daysRemaining} days remaining). However, state law under ${result.statute.legalCodeCitation} strictly forbids deductions for normal wear-and-tear, routine touch-up painting, or unitemized fees. You do not need to wait for the statutory window to expire—you can dispute the ${fmtMoney(result.unreturnedAmount)} in withheld deductions immediately using your demand letter in Step 4.`;
+        }
+      } else {
+        // Neutral clean banner: 100% full return verified
+        noViolationBadge.className = "mt-6 rounded-xl border border-border bg-canvas-alt p-4 sm:p-5";
+        if (noViolationIcon) {
+          noViolationIcon.className = "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-sky-500/30 bg-sky-500/10 text-sky-400";
+          noViolationIcon.innerHTML = `
+            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+          `;
+        }
+        if (noViolationTitle) {
+          noViolationTitle.className = "text-sm font-bold text-text-primary leading-snug";
+          noViolationTitle.textContent = isEs
+            ? "Depósito Devuelto en su Totalidad Dentro del Plazo Legal"
+            : "Full Deposit Returned Within Statutory Window";
+        }
+        if (noViolationText) {
+          noViolationText.className = "mt-1 text-xs text-text-secondary leading-relaxed";
+          noViolationText.textContent = isEs
+            ? "No se detectaron violaciones de plazo ni deducciones disputadas. Su arrendador devolvió su depósito completo dentro del plazo legal. Si su arrendador intenta cobrarle por reparaciones o desgaste normal más adelante, puede volver aquí para generar una notificación formal de disputa."
+            : "No deadline violations or disputed deductions detected. Your landlord returned your security deposit in full within the legal window. If your landlord later attempts to bill you for turnover repairs or damages, you can return here to generate an immediate statutory dispute notice.";
+        }
+      }
     }
 
     // Violations list
@@ -1453,6 +1517,17 @@ const stateOptions = SUPPORTED_STATE_CODES
         </p>
         <p>${statute.demandLetterStatutoryClause[locale]}</p>
       </div>
+
+      ${!r.isPastDeadline && r.unreturnedAmount > 0 ? `
+      <!-- Formal Wear-and-Tear / Deduction Dispute Notice -->
+      <div class="rounded-lg border border-amber-500/40 bg-amber-500/10 p-3.5 my-2 text-xs font-sans text-amber-200">
+        <strong class="text-amber-300 font-bold">${isEs ? "OBJECIÓN FORMAL A DEDUCCIONES INDEBIDAS:" : "FORMAL DISPUTE OF ILLEGITIMATE DEDUCTIONS:"}</strong>
+        <p class="mt-1 leading-relaxed">
+          ${isEs
+            ? `Por medio de la presente se impugna formalmente la retención de ${fmtMoney(r.unreturnedAmount)}. Bajo ${statute.legalCodeCitation}, el arrendador tiene estrictamente prohibido trasladar los costos de pintura de rotación, desgaste normal por uso habitual o cargos sin facturas detalladas al arrendatario. Exijo el reembolso íntegro inmediato de estos fondos retenidos.`
+            : `Please be advised that I am formally contesting the deduction of ${fmtMoney(r.unreturnedAmount)} withheld from my deposit. Under ${statute.legalCodeCitation}, landlords are strictly prohibited from deducting funds for normal wear-and-tear, turnover painting, routine carpet cleaning, or unitemized charges. I demand the immediate refund of these improperly deducted funds.`}
+        </p>
+      </div>` : ""}
 
       <!-- Accounting Summary Table -->
       <div class="overflow-x-auto rounded-lg border border-border bg-card p-3 font-mono text-xs">

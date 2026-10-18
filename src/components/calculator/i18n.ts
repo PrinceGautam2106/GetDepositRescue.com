@@ -49,6 +49,10 @@ export interface WizardStrings {
   deadlineLabel: string;
   violationBadge: string; // "Statutory Deadline Violated! ..."
   noViolationBadge: string;
+  activeDisputeTitle: string;
+  activeDisputeSubtitle: string;
+  fullReturnTitle: string;
+  fullReturnSubtitle: string;
   originalOwed: string;
   penaltyEntitlement: string;
   totalRecovery: string;
@@ -132,7 +136,15 @@ const en: WizardStrings = {
   violationBadge:
     "Statutory Deadline Violated! Your landlord may owe you up to {multiplier} your deposit under {code}.",
   noViolationBadge:
-    "No deadline violation detected. Your landlord returned the deposit within the statutory window.",
+    "Statutory window active. If your landlord withheld illegal deductions for normal wear-and-tear or painting, you can dispute them immediately below.",
+  activeDisputeTitle:
+    "Statutory Return Deadline Still Active — Illegal Deductions Contestable Immediately",
+  activeDisputeSubtitle:
+    "Your landlord is still within the statutory return window. However, deductions for normal wear-and-tear, routine touch-up painting, or unitemized turnover fees are strictly prohibited under state law. You do not need to wait for the deadline to pass—you can dispute these fraudulent deductions immediately using your statutory demand letter below.",
+  fullReturnTitle:
+    "Full Deposit Returned Within Statutory Window",
+  fullReturnSubtitle:
+    "No deadline violations or disputed deductions detected. Your landlord returned your security deposit in full within the legal window. If your landlord later attempts to bill you for turnover repairs or damages, you can return here to generate an immediate statutory dispute notice.",
   originalOwed: "Original Balance Owed",
   penaltyEntitlement: "Statutory Penalty Entitlement",
   totalRecovery: "Total Court Recovery Target",
@@ -218,7 +230,15 @@ const es: WizardStrings = {
   violationBadge:
     "¡Plazo Legal Violado! Su arrendador puede deberle hasta {multiplier} de su depósito bajo {code}.",
   noViolationBadge:
-    "No se detectó violación de plazo. Su arrendador devolvió el depósito dentro del plazo legal.",
+    "Plazo legal en curso. Si su arrendador retuvo deducciones indebidas por desgaste normal o pintura, puede impugnarlas de inmediato a continuación.",
+  activeDisputeTitle:
+    "Plazo Legal en Curso — Deducciones Ilegales Impugnables de Inmediato",
+  activeDisputeSubtitle:
+    "Su arrendador aún está dentro del plazo legal de devolución. Sin embargo, las deducciones por desgaste normal, pintura de retoque rutinaria o cargos sin recibos detallados son estrictamente ilegales bajo la ley estatal. No necesita esperar a que venza el plazo—puede impugnar estas deducciones indebidas de inmediato usando su carta de demanda estatutaria a continuación.",
+  fullReturnTitle:
+    "Depósito Devuelto en su Totalidad Dentro del Plazo Legal",
+  fullReturnSubtitle:
+    "No se detectaron violaciones de plazo ni deducciones disputadas. Su arrendador devolvió su depósito completo dentro del plazo legal. Si su arrendador intenta cobrarle por reparaciones o desgaste normal más adelante, puede volver aquí para generar una notificación formal de disputa.",
   originalOwed: "Saldo Original Adeudado",
   penaltyEntitlement: "Derecho a Penalidad Legal",
   totalRecovery: "Objetivo Total de Recuperación en Corte",

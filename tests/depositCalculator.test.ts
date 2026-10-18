@@ -324,6 +324,26 @@ test("ISO string move-out date works", () => {
   assert.equal(r.statutoryPenaltyAmount, 6_000);
 });
 
+test("tenant moved out 10 days ago (within deadline) with $800 touch-up painting deduction is contestable", () => {
+  const moveOut = daysBeforeDate(TODAY, 10);
+  const r = calculateClaim({
+    stateCode: "CA",
+    depositAmount: 2_000,
+    moveOutDate: moveOut,
+    amountReturned: 1_200, // $800 deducted on day 7
+    disputedDeductions: ["Repainting faded walls"],
+    _testCurrentDate: TODAY,
+  });
+
+  assert.equal(r.daysElapsed, 10);
+  assert.equal(r.isPastDeadline, false); // 10 <= 21
+  assert.equal(r.unreturnedAmount, 800);
+  assert.ok(r.violationTypes.some((v) => v.toLowerCase().includes("painting") || v.toLowerCase().includes("wear")));
+  // Landlord deducted $800 for painting within the 21-day window:
+  // With illegal deduction violation in CA (2x multiplier): 800 + (800 * 2) = $2,400 total claim
+  assert.equal(r.statutoryPenaltyAmount, 2_400);
+});
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Report
 // ─────────────────────────────────────────────────────────────────────────────
