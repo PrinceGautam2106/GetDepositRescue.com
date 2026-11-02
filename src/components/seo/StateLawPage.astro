@@ -31,15 +31,15 @@ const stateName = statute.stateName.en;
 const stateNameEs = statute.stateName.es;
 const activeStateName = isEs ? stateNameEs : stateName;
 
-// Title tags
+// Title tags matching high-intent search queries
 const title = isEs
-  ? `Ley de Depósito de Renta en ${stateNameEs}: Calculadora, Plazos y Carta de Demanda`
-  : `${stateName} Security Deposit Law: Calculator, Deadlines & Demand Letter`;
+  ? `Plazos de Devolución de Depósito en ${stateNameEs} y Plantilla de Carta de Demanda (${currentYear}) — DepositRescue`
+  : `${stateName} Security Deposit Refund Deadline & Demand Letter Template (${currentYear}) — DepositRescue`;
 
 // Meta description
 const description = isEs
-  ? `¿Su arrendador violó el plazo de devolución de ${statute.deadlineDays} días en ${stateNameEs}? Calcule su sanción legal de ${statute.penaltyMultiplierText} y descargue una carta de demanda oficial.`
-  : `Did your landlord violate the ${stateName} ${statute.deadlineDays}-day return deadline? Calculate your ${statute.penaltyMultiplierText} statutory penalty and download an official demand letter.`;
+  ? `¿Su arrendador violó el plazo de devolución de ${statute.deadlineDays} días en ${stateNameEs}? Calcule su sanción legal de ${statute.penaltyMultiplierText}, consulte los límites de la corte y descargue una carta de demanda oficial (${currentYear}).`
+  : `Did your landlord violate the ${stateName} ${statute.deadlineDays}-day refund deadline? Calculate your ${statute.penaltyMultiplierText} statutory penalty, view small claims limits, and generate an official demand letter template (${currentYear}).`;
 
 const siteUrl = getSiteUrl();
 const pagePath = `/${statute.stateCode.toLowerCase()}-security-deposit-law`;
@@ -197,11 +197,11 @@ const legalServiceSchema = {
         </a>
       </div>
 
-      <h1 class="text-3xl font-extrabold tracking-tight sm:text-5xl text-text-primary">
+      <h1 class="text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl text-text-primary leading-tight">
         {isEs ? (
-          <>Ley de Depósito de Renta en <span class="text-white underline decoration-success/60">{stateNameEs}</span></>
+          <>Plazos de Devolución de Depósito en <span class="text-white underline decoration-success/60">{stateNameEs}</span> y Plantilla de Carta de Demanda ({currentYear})</>
         ) : (
-          <><span class="text-white underline decoration-success/60">{stateName}</span> Security Deposit Law</>
+          <><span class="text-white underline decoration-success/60">{stateName}</span> Security Deposit Refund Deadline &amp; Demand Letter Template ({currentYear})</>
         )}
       </h1>
 
@@ -428,6 +428,26 @@ const legalServiceSchema = {
           </details>
         ))}
       </div>
+    </section>
+
+    <!-- ─── Trust & Editorial Methodology Link ────────────────────────────── -->
+    <section class="rounded-xl border border-border bg-card p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div class="space-y-1">
+        <h3 class="text-sm font-semibold text-text-primary">
+          {isEs ? "Rigor Jurídico y Verificación Estatutaria" : "Legal Rigor & Statutory Verification"}
+        </h3>
+        <p class="text-xs text-text-secondary leading-relaxed">
+          {isEs
+            ? "Conozca cómo DepositRescue codifica las leyes de depósito y las normas de las cortes de reclamos menores en los 50 estados."
+            : "Learn how DepositRescue codifies state landlord-tenant statutes, return deadlines, and small claims court procedures."}
+        </p>
+      </div>
+      <a
+        href={isEs ? "/es/about" : "/about"}
+        class="shrink-0 rounded-lg border border-border bg-canvas px-4 py-2 text-xs font-semibold text-text-primary hover:border-emerald-400 hover:text-emerald-400 transition-colors"
+      >
+        {isEs ? "Sobre Nuestra Metodología →" : "About Our Methodology →"}
+      </a>
     </section>
   </article>
 </BaseLayout>

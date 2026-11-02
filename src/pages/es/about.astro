@@ -6,7 +6,7 @@ const aboutSchema = {
   "@type": "AboutPage",
   name: "Sobre Nosotros — DepositRescue | Tecnología Legal de Autoayuda para Inquilinos",
   description:
-    "Conozca la misión de DepositRescue de nivelar las condiciones entre inquilinos y propietarios mediante cálculos estatutarios en los 50 estados y cartas de demanda certificadas por USPS.",
+    "Conozca la misión, rigor legal y metodología de DepositRescue para empoderar a inquilinos en los 50 estados a recuperar depósitos de seguridad ilegalmente retenidos mediante cartas de demanda formalizadas y citaciones estatutarias.",
   url: "https://getdepositrescue.com/es/about",
   mainEntity: {
     "@type": "Organization",
@@ -14,97 +14,285 @@ const aboutSchema = {
     url: "https://getdepositrescue.com/es",
     logo: "https://getdepositrescue.com/favicon.svg",
     foundingDate: "2024",
-    description: "Plataforma de autoayuda legal para inquilinos en Estados Unidos.",
+    description: "Plataforma de autoayuda legal para la defensa y recuperación de depósitos de alquiler en Estados Unidos.",
+    knowsAbout: [
+      "Leyes de depósito de seguridad en los 50 estados de EE.UU.",
+      "Cortes de reclamos menores (Small Claims Court)",
+      "Cartas de demanda formal con apercibimiento de ley",
+      "USPS Certified Mail con Acuse de Recibo Electrónico",
+      "Derechos de inquilinos en California, Texas, Florida, Nueva York e Illinois",
+    ],
   },
 };
+
+const topStates = [
+  { code: "CA", name: "California", stat: "Cal. Civ. Code § 1950.5", days: "21 días", penalty: "Hasta 2x depósito", limit: "$12,500", url: "/es/ca-security-deposit-law" },
+  { code: "TX", name: "Texas", stat: "Tex. Prop. Code § 92.109", days: "30 días", penalty: "3x retención + $100", limit: "$20,000", url: "/es/tx-security-deposit-law" },
+  { code: "FL", name: "Florida", stat: "Fla. Stat. § 83.49", days: "15 a 30 días", penalty: "Pérdida de reclamo + costas", limit: "$8,000", url: "/es/fl-security-deposit-law" },
+  { code: "NY", name: "Nueva York", stat: "NY GOB § 7-108", days: "14 días", penalty: "Hasta 2x depósito completo", limit: "$5,000 - $10,000", url: "/es/ny-security-deposit-law" },
+  { code: "IL", name: "Illinois", stat: "765 ILCS 710", days: "30 a 45 días", penalty: "2x depósito + costas legales", limit: "$10,000", url: "/es/il-security-deposit-law" },
+  { code: "AZ", name: "Arizona", stat: "A.R.S. § 33-1321", days: "14 días hábiles", penalty: "2x monto retenido", limit: "$3,500", url: "/es/az-security-deposit-law" },
+  { code: "CO", name: "Colorado", stat: "C.R.S. § 38-12-103", days: "30 a 60 días", penalty: "3x monto retenido", limit: "$7,500", url: "/es/co-security-deposit-law" },
+];
 ---
 
 <BaseLayout
-  title="Sobre Nosotros — DepositRescue | Tecnología Legal de Autoayuda"
-  description="Conozca la misión de DepositRescue para proteger a los inquilinos en EE.UU., hacer cumplir los plazos legales de depósito y recuperar deducciones injustas."
+  title="Sobre Nosotros — DepositRescue | Tecnología Legal de Autoayuda para Inquilinos"
+  description="Conozca la misión de DepositRescue para proteger a inquilinos en EE.UU., hacer cumplir los plazos legales de depósito de renta y recuperar deducciones arbitrarias sin necesidad de abogados costosos."
   path="/about"
 >
   <slot name="head" slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(aboutSchema)} />
   </slot>
 
-  <article class="mx-auto max-w-3xl px-4 py-12 sm:py-16 space-y-12">
+  <article class="mx-auto max-w-4xl px-4 py-12 sm:py-16 space-y-12">
     <!-- Header -->
     <header class="border-b border-border pb-8 text-center sm:text-left">
       <span class="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs font-mono font-medium text-text-secondary">
         <span class="h-1.5 w-1.5 rounded-full bg-success"></span>
-        Nuestra Misión y Metodología
+        Nuestra Misión y Metodología Jurídica
       </span>
       <h1 class="mt-4 text-3xl font-bold tracking-tight text-text-primary sm:text-4xl">
-        Empoderando a los Inquilinos con Tecnología Legal Abierta
+        Empoderando a los Inquilinos con Tecnología Legal Abierta y Rigor Estatutario
       </h1>
-      <p class="mt-3 text-base text-text-secondary leading-relaxed">
-        DepositRescue nació para resolver una desigualdad histórica en el mercado de alquiler estadounidense: propietarios que retienen los depósitos de seguridad de los inquilinos asumiendo que no tendrán los recursos para defenderse.
+      <p class="mt-3 text-base text-text-secondary leading-relaxed max-w-3xl">
+        DepositRescue nació para resolver una asimetría estructural en el mercado de vivienda en Estados Unidos: propietarios e inmobiliarias que retienen injustamente los depósitos de seguridad asumiendo que los inquilinos, especialmente las familias de habla hispana, carecen del tiempo, dinero o conocimiento procesal para defenderse.
       </p>
     </header>
 
     <!-- El Problema y la Solución -->
     <section class="space-y-6">
-      <h2 class="text-xl font-semibold text-text-primary">El Problema de los $4.5 Mil Millones</h2>
+      <h2 class="text-xl sm:text-2xl font-bold text-text-primary">El Problema de los $4.5 Mil Millones en Retenciones Arbitrarias</h2>
       <p class="text-sm leading-relaxed text-text-secondary">
-        Cada año, millones de inquilinos en EE.UU. pierden injustamente sus depósitos. Los arrendadores cobran habitualmente por pintura básica, limpieza regular y desgaste normal por uso—gastos que los códigos estatales prohíben expresamente deducir del depósito del inquilino.
+        Cada año en Estados Unidos, más de 44 millones de hogares alquilan sus viviendas. Investigaciones del sector inmobiliario estiman que los arrendadores retienen arbitrariamente más de <strong>$4.5 mil millones de dólares</strong> en depósitos en garantía bajo justificaciones espurias como pintura básica, limpieza rutinaria o desgaste ordinario por uso diario.
       </p>
       <p class="text-sm leading-relaxed text-text-secondary">
-        Contratar a un abogado privado para recuperar un depósito de $1,500 a $3,000 resulta inviable económicamente cuando las tarifas iniciales superan los $2,500. Sin herramientas de autorrepresentación accesibles, los inquilinos se ven obligados a renunciar a su dinero.
+        Para un inquilino promedio, recuperar un depósito de $1,500 a $3,500 mediante un abogado particular resulta financieramente imposible: las tarifas de retención inicial de un bufete legal suelen comenzar en $2,000 a $3,500 con costos por hora de $300 o más. Ante esta barrera económica, la mayoría de los inquilinos se ve forzada a absorber la pérdida. En DepositRescue transformamos los códigos civiles estatales en herramientas automatizadas y accesibles que colocan el peso de la ley del lado del arrendatario.
       </p>
 
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-3 pt-2">
-        <div class="rounded-lg border border-border bg-card p-4">
-          <div class="font-mono text-2xl font-bold text-success">50+</div>
-          <div class="mt-1 text-xs text-text-secondary">Leyes Estatales y DC Codificadas</div>
+        <div class="rounded-xl border border-border bg-card p-5">
+          <div class="font-mono text-3xl font-bold text-success">50+</div>
+          <div class="mt-1 text-xs font-medium text-text-primary">Jurisdicciones Estatales y DC</div>
+          <p class="mt-1 text-[11px] text-text-muted">Plazos de devolución, códigos civiles y multiplicadores punitivos auditados periódicamente.</p>
         </div>
-        <div class="rounded-lg border border-border bg-card p-4">
-          <div class="font-mono text-2xl font-bold text-text-primary">Hasta 3&#215;</div>
-          <div class="mt-1 text-xs text-text-secondary">Sanciones Estatutarias por Mala Fe</div>
+        <div class="rounded-xl border border-border bg-card p-5">
+          <div class="font-mono text-3xl font-bold text-text-primary">Hasta 3&#215;</div>
+          <div class="mt-1 text-xs font-medium text-text-primary">Penalidades por Mala Fe</div>
+          <p class="mt-1 text-[11px] text-text-muted">Estatutos que sancionan a propietarios con multas punitivas más el reembolso del depósito retenido.</p>
         </div>
-        <div class="rounded-lg border border-border bg-card p-4">
-          <div class="font-mono text-2xl font-bold text-emerald-400">100%</div>
-          <div class="mt-1 text-xs text-text-secondary">Cálculos Instantáneos Gratuitos</div>
+        <div class="rounded-xl border border-border bg-card p-5">
+          <div class="font-mono text-3xl font-bold text-emerald-400">100%</div>
+          <div class="mt-1 text-xs font-medium text-text-primary">Autoayuda Legal Gratuita</div>
+          <p class="mt-1 text-[11px] text-text-muted">Diagnóstico estatutario instantáneo sin costo para conocer sus derechos procesales exactos.</p>
         </div>
       </div>
     </section>
 
-    <!-- Cómo Funciona -->
+    <!-- Nuestros 4 Pilares Metodológicos -->
     <section class="space-y-6 border-t border-border pt-8">
-      <h2 class="text-xl font-semibold text-text-primary">Cómo Funciona DepositRescue</h2>
-      <div class="space-y-4">
-        <div class="rounded-lg border border-border bg-canvas-alt p-5">
-          <h3 class="text-sm font-semibold text-text-primary">1. Auditoría Estatutaria Codificada</h3>
-          <p class="mt-1 text-xs leading-relaxed text-text-secondary">
-            Nuestro motor de cálculo mantiene un registro verificado de las leyes de inquilinato en los 50 estados y Washington D.C., evaluando plazos legales de devolución (entre 14 y 60 días) y límites para reclamos menores.
+      <div>
+        <h2 class="text-xl sm:text-2xl font-bold text-text-primary">Nuestros Cuatro Pilares Metodológicos</h2>
+        <p class="mt-1 text-xs sm:text-sm text-text-secondary">
+          Cómo garantizamos que cada reclamo cuente con el máximo respaldo fáctico y procesal ante los tribunales.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div class="rounded-xl border border-border bg-canvas-alt p-5 space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/10 text-xs font-mono font-bold text-emerald-400">1</span>
+            <h3 class="text-sm font-semibold text-text-primary">Auditoría Estatutaria Continua</h3>
+          </div>
+          <p class="text-xs leading-relaxed text-text-secondary">
+            Mantenemos un registro verificado de los códigos civiles de inquilinato en los 50 estados. Rastreamos reformas legislativas recientes —como la ley AB 12 de California que limita los depósitos a un mes de renta— para asegurar que los cálculos reflejen exactamente los plazos vigentes (de 14 a 60 días) y los techos de reclamos menores.
           </p>
         </div>
 
-        <div class="rounded-lg border border-border bg-canvas-alt p-5">
-          <h3 class="text-sm font-semibold text-text-primary">2. Cartas de Demanda con Calidad Jurídica</h3>
-          <p class="mt-1 text-xs leading-relaxed text-text-secondary">
-            Los propietarios ignoran los mensajes informales. DepositRescue redacta cartas formales citando artículos de ley exactos y advirtiendo de penalidades punitivas si no reembolsan en 10 días hábiles.
+        <div class="rounded-xl border border-border bg-canvas-alt p-5 space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/10 text-xs font-mono font-bold text-emerald-400">2</span>
+            <h3 class="text-sm font-semibold text-text-primary">Cálculo de Sanciones Punitivas por Mala Fe</h3>
+          </div>
+          <p class="text-xs leading-relaxed text-text-secondary">
+            Muchos inquilinos ignoran que si el arrendador excede el plazo legal sin enviar un desglose con recibos, la ley suele considerar que actuó de "mala fe" (<em>bad faith</em>). Esto activa penalizaciones estatutarias de 2 a 3 veces el monto del depósito, además del reintegro íntegro del dinero.
           </p>
         </div>
 
-        <div class="rounded-lg border border-border bg-canvas-alt p-5">
-          <h3 class="text-sm font-semibold text-text-primary">3. Correo Certificado USPS con Valor Probatorio</h3>
-          <p class="mt-1 text-xs leading-relaxed text-text-secondary">
-            Los jueces de la corte exigen prueba fehaciente de entrega antes de ordenar penalizaciones. Nuestro servicio opcional imprime y despacha su carta por USPS Certified Mail con Acuse de Recibo Electrónico.
+        <div class="rounded-xl border border-border bg-canvas-alt p-5 space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/10 text-xs font-mono font-bold text-emerald-400">3</span>
+            <h3 class="text-sm font-semibold text-text-primary">Cartas de Demanda con Calidad Judicial</h3>
+          </div>
+          <p class="text-xs leading-relaxed text-text-secondary">
+            Los mensajes de texto o quejas telefónicas rara vez mueven a un administrador de fincas. Nuestras cartas de demanda citan artículos exactos de la ley estatal, detallan las deducciones impugnadas y otorgan un plazo perentorio de 10 días hábiles antes de radicar la demanda civil en la corte.
+          </p>
+        </div>
+
+        <div class="rounded-xl border border-border bg-canvas-alt p-5 space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/10 text-xs font-mono font-bold text-emerald-400">4</span>
+            <h3 class="text-sm font-semibold text-text-primary">Prueba Fehaciente con USPS Certified Mail</h3>
+          </div>
+          <p class="text-xs leading-relaxed text-text-secondary">
+            En un tribunal de reclamos menores, los jueces exigen evidencia incuestionable de que el propietario recibió la notificación formal. Nuestro servicio opcional imprime y envía su carta mediante Correo Certificado de USPS con Acuse de Recibo Electrónico (PS Form 3811), eliminando la excusa de "no haber recibido nada".
           </p>
         </div>
       </div>
     </section>
 
-    <!-- Descargo Legal -->
-    <section class="rounded-lg border border-border bg-card p-6 space-y-4">
-      <h2 class="text-base font-semibold text-text-primary">Descargo de Responsabilidad Legal e Independencia</h2>
-      <p class="text-xs leading-relaxed text-text-secondary">
-        DepositRescue es una plataforma tecnológica independiente. No somos un bufete de abogados ni ofrecemos representación legal personalizada. Nuestras herramientas proporcionan orientación informativa y automatización documental de autoayuda según los estatutos públicos vigentes.
+    <!-- Tabla Comparativa de Estados Clave -->
+    <section class="space-y-6 border-t border-border pt-8">
+      <div>
+        <h2 class="text-xl sm:text-2xl font-bold text-text-primary">Marco Comparativo: Plazos Legales y Cortes de Reclamos Menores</h2>
+        <p class="mt-1 text-xs sm:text-sm text-text-secondary">
+          Resumen de leyes estatales clave, plazos máximos de devolución y límites jurisdiccionales para demandar sin abogado (<em>pro se</em>).
+        </p>
+      </div>
+
+      <div class="overflow-x-auto rounded-xl border border-border bg-card">
+        <table class="w-full text-left text-xs">
+          <thead class="border-b border-border bg-canvas-alt text-text-muted font-mono uppercase tracking-wider text-[11px]">
+            <tr>
+              <th class="p-3.5 font-medium">Estado</th>
+              <th class="p-3.5 font-medium">Código Civil</th>
+              <th class="p-3.5 font-medium">Plazo de Devolución</th>
+              <th class="p-3.5 font-medium">Penalidad Máxima</th>
+              <th class="p-3.5 font-medium">Límite Small Claims</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-border">
+            {topStates.map((st) => (
+              <tr class="hover:bg-canvas-alt/50 transition-colors">
+                <td class="p-3.5 font-semibold text-text-primary">
+                  <a href={st.url} class="hover:text-emerald-400 hover:underline">{st.name}</a>
+                </td>
+                <td class="p-3.5 font-mono text-text-secondary">{st.stat}</td>
+                <td class="p-3.5 font-medium text-emerald-400">{st.days}</td>
+                <td class="p-3.5 text-text-secondary">{st.penalty}</td>
+                <td class="p-3.5 font-mono text-text-primary">{st.limit}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="text-[11px] text-text-muted">
+        * En la mayoría de los estados, si el arrendador no remite el desglose formal con recibos dentro del plazo legal fijado, pierde automáticamente el derecho a efectuar cualquier deducción del depósito.
       </p>
-      <div class="pt-2 flex flex-wrap gap-4 text-xs font-medium">
-        <a href="/es/calculator" class="text-text-primary underline hover:text-emerald-400">Iniciar Calculadora Gratuita &rarr;</a>
-        <a href="/es/contact" class="text-text-secondary hover:text-text-primary">Contactar al Equipo &rarr;</a>
+    </section>
+
+    <!-- Desgaste Normal vs Daños Reales -->
+    <section class="space-y-6 border-t border-border pt-8">
+      <div>
+        <h2 class="text-xl sm:text-2xl font-bold text-text-primary">La Distinción Clave: Desgaste Normal vs. Daños Imputables</h2>
+        <p class="mt-1 text-xs sm:text-sm text-text-secondary">
+          La causa número uno de deducciones ilegales es cargar al inquilino con los costos regulares de reacondicionamiento del inmueble.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div class="rounded-xl border border-border bg-card p-5 space-y-3">
+          <h3 class="flex items-center gap-2 text-sm font-semibold text-success">
+            <span>✓</span> Desgaste Normal (Prohibido Deducir)
+          </h3>
+          <ul class="space-y-2 text-xs text-text-secondary leading-relaxed">
+            <li>• Pequeños orificios de clavos o chinchetas utilizados para colgar cuadros decorativos.</li>
+            <li>• Decoloración natural de la pintura en paredes expuestas a la luz solar con el paso de los años.</li>
+            <li>• Desgaste leve o aplastamiento del pelo de la alfombra en áreas de alto tráfico peatonal.</li>
+            <li>• Suelo de madera con desgaste superficial en el barniz tras años de ocupación regular.</li>
+            <li>• Polvo acumulado o limpieza leve que no excede el estado inicial de recepción.</li>
+          </ul>
+        </div>
+
+        <div class="rounded-xl border border-border bg-card p-5 space-y-3">
+          <h3 class="flex items-center gap-2 text-sm font-semibold text-danger">
+            <span>✗</span> Daños Imputables al Inquilino (Deducción Permitida con Recibos)
+          </h3>
+          <ul class="space-y-2 text-xs text-text-secondary leading-relaxed">
+            <li>• Agujeros grandes en paneles de yeso (drywall), puertas pateadas o marcos agrietados.</li>
+            <li>• Pintura en colores oscuros no autorizados o manchas permanentes de adhesivos.</li>
+            <li>• Manchas severas de orina de mascotas, quemaduras de cigarrillo o roturas en alfombras.</li>
+            <li>• Espejos, cristales de ventanas o electrodomésticos rotos por mal uso.</li>
+            <li>• Basura excesiva, acumulación de escombros o grasa extrema que requiera sanitización profesional.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="rounded-lg border border-border bg-canvas-alt p-4 text-xs text-text-secondary leading-relaxed">
+        <strong class="text-text-primary">La regla de la vida útil:</strong> Incluso cuando existe daño en alfombras o pintura, los tribunales exigen aplicar depreciación basada en su vida útil estimada (habitualmente 5 a 7 años para alfombras y 2 a 3 años para pintura). Un propietario jamás puede cobrar el costo de reemplazo nuevo a un inquilino que vivió 4 años en el inmueble.
+      </div>
+    </section>
+
+    <!-- Por Qué Correo Certificado USPS -->
+    <section class="space-y-6 border-t border-border pt-8">
+      <div>
+        <h2 class="text-xl sm:text-2xl font-bold text-text-primary">¿Por Qué el Correo Certificado USPS es el Estándar de Oro en Tribunales?</h2>
+        <p class="mt-1 text-xs sm:text-sm text-text-secondary">
+          La diferencia procesal entre un reclamo ignorado y una victoria rotunda en la corte de reclamos menores.
+        </p>
+      </div>
+
+      <p class="text-sm leading-relaxed text-text-secondary">
+        En las cortes de reclamos menores (<em>Small Claims Court</em> o <em>Justice of the Peace</em>), el juez no evalúa solo quién tiene la razón moral, sino <strong>quién cuenta con las pruebas documentales de entrega conforme a derecho</strong>. 
+      </p>
+      <p class="text-sm leading-relaxed text-text-secondary">
+        Cuando un inquilino envía un correo electrónico o un mensaje por WhatsApp, el propietario puede afirmar en sala: <em>"Ese mensaje cayó en mi carpeta de correo no deseado"</em> o <em>"Ese ya no es mi número telefónico personal"</em>. Estas excusas debilitan la pretensión de mala fe. En contraste, una carta enviada por <strong>USPS Certified Mail con Acuse de Recibo Electrónico (Electronic Return Receipt)</strong> genera un número de rastreo federal de 20 dígitos y un registro oficial con la firma del arrendador o su agente autorizado al momento de la entrega en su dirección fiscal.
+      </p>
+      <p class="text-sm leading-relaxed text-text-secondary">
+        Esta certificación postal constituye prueba irrefutable ante cualquier juez de que el arrendador tuvo conocimiento pleno del reclamo, otorgándole la oportunidad legal de rectificar antes de ser condenado al pago de penalizaciones duplicadas o triplicadas.
+      </p>
+    </section>
+
+    <!-- Guías Estatales de Referencia Rápida -->
+    <section class="space-y-6 border-t border-border pt-8">
+      <div>
+        <h2 class="text-xl sm:text-2xl font-bold text-text-primary">Guías Estatales Detalladas</h2>
+        <p class="mt-1 text-xs sm:text-sm text-text-secondary">
+          Consulte los estatutos completos y requisitos procesales específicos de su estado de residencia:
+        </p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 text-xs font-medium">
+        <a href="/es/ca-security-deposit-law" class="rounded-lg border border-border bg-card p-3 hover:border-emerald-400 hover:text-emerald-400 transition-colors">
+          California (21 días) &rarr;
+        </a>
+        <a href="/es/tx-security-deposit-law" class="rounded-lg border border-border bg-card p-3 hover:border-emerald-400 hover:text-emerald-400 transition-colors">
+          Texas (30 días) &rarr;
+        </a>
+        <a href="/es/fl-security-deposit-law" class="rounded-lg border border-border bg-card p-3 hover:border-emerald-400 hover:text-emerald-400 transition-colors">
+          Florida (15-30 días) &rarr;
+        </a>
+        <a href="/es/ny-security-deposit-law" class="rounded-lg border border-border bg-card p-3 hover:border-emerald-400 hover:text-emerald-400 transition-colors">
+          Nueva York (14 días) &rarr;
+        </a>
+        <a href="/es/il-security-deposit-law" class="rounded-lg border border-border bg-card p-3 hover:border-emerald-400 hover:text-emerald-400 transition-colors">
+          Illinois (30-45 días) &rarr;
+        </a>
+        <a href="/es/az-security-deposit-law" class="rounded-lg border border-border bg-card p-3 hover:border-emerald-400 hover:text-emerald-400 transition-colors">
+          Arizona (14 días hábiles) &rarr;
+        </a>
+        <a href="/es/co-security-deposit-law" class="rounded-lg border border-border bg-card p-3 hover:border-emerald-400 hover:text-emerald-400 transition-colors">
+          Colorado (30-60 días) &rarr;
+        </a>
+        <a href="/es" class="rounded-lg border border-border bg-card p-3 hover:border-emerald-400 hover:text-emerald-400 transition-colors">
+          Ver los 50 Estados &rarr;
+        </a>
+      </div>
+    </section>
+
+    <!-- Descargo Legal e Independencia -->
+    <section class="rounded-xl border border-border bg-card p-6 sm:p-8 space-y-4">
+      <h2 class="text-base sm:text-lg font-semibold text-text-primary">Descargo de Responsabilidad Legal e Independencia Institucional</h2>
+      <p class="text-xs leading-relaxed text-text-secondary">
+        DepositRescue es un proveedor de tecnología de software independiente y no un bufete de abogados. La información aquí presentada, así como las cartas automatizadas y cálculos de plazos estatutarios, se ofrecen con fines exclusivamente educativos y de autoayuda jurídica personal bajo los estatutos públicos de cada estado. DepositRescue no ofrece asesoramiento legal individualizado ni patrocinio letrado en audiencias judiciales. Si su caso involucra montos superiores a los límites de la corte de reclamos menores o litigios complejos por desalojo, le recomendamos consultar a un abogado colegiado en su estado.
+      </p>
+      <div class="pt-2 flex flex-wrap gap-4 text-xs font-semibold">
+        <a href="/es/calculator" class="rounded-md bg-cta-bg px-4 py-2 text-cta-text hover:bg-cta-hover transition-colors">
+          Iniciar Calculadora de Depósito Gratuita &rarr;
+        </a>
+        <a href="/es/contact" class="rounded-md border border-border bg-canvas px-4 py-2 text-text-primary hover:border-border-hover transition-colors">
+          Contactar a Nuestro Equipo &rarr;
+        </a>
       </div>
     </section>
   </article>

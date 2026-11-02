@@ -22,7 +22,11 @@ export default defineConfig({
 
   integrations: [
     sitemap({
-      filter: (page) => !page.includes('/success') && !page.includes('/404') && !page.includes('/500'),
+      filter: (page) =>
+        !page.includes('/success') &&
+        !page.includes('/404') &&
+        !page.includes('/500') &&
+        !page.includes('/api/'),
       xslURL: '/sitemap.xsl',
       lastmod: new Date(),
       i18n: {
@@ -33,27 +37,43 @@ export default defineConfig({
         },
       },
       serialize(item) {
-        const url = item.url;
+        // Enforce strict canonical URL format (clean URL, no .html, no non-root trailing slash)
+        let cleanUrl = item.url.replace(/\.html$/, '');
+        if (cleanUrl !== 'https://getdepositrescue.com/' && cleanUrl.endsWith('/')) {
+          cleanUrl = cleanUrl.replace(/\/+$/, '');
+        }
+        item.url = cleanUrl;
         item.lastmod = new Date();
 
-        if (url === 'https://getdepositrescue.com/' || url === 'https://getdepositrescue.com/es') {
+        if (cleanUrl === 'https://getdepositrescue.com/' || cleanUrl === 'https://getdepositrescue.com/es') {
           item.priority = 1.0;
           item.changefreq = 'daily';
-        } else if (url.includes('/calculator')) {
+        } else if (cleanUrl.includes('/calculator')) {
           item.priority = 0.9;
           item.changefreq = 'weekly';
-        } else if (url.includes('-security-deposit-law')) {
+        } else if (cleanUrl.includes('-security-deposit-law')) {
           item.priority = 0.8;
           item.changefreq = 'weekly';
-        } else if (url.includes('/about') || url.includes('/contact')) {
+        } else if (cleanUrl.includes('/about') || cleanUrl.includes('/contact')) {
           item.priority = 0.6;
           item.changefreq = 'monthly';
-        } else if (url.includes('/privacy') || url.includes('/terms')) {
+        } else if (cleanUrl.includes('/privacy') || cleanUrl.includes('/terms')) {
           item.priority = 0.3;
           item.changefreq = 'yearly';
         } else {
           item.priority = 0.7;
           item.changefreq = 'weekly';
+        }
+
+        // Sanitize hreflang alternate links if populated
+        if (item.links && Array.isArray(item.links)) {
+          item.links = item.links.map((link) => {
+            let lUrl = link.url.replace(/\.html$/, '');
+            if (lUrl !== 'https://getdepositrescue.com/' && lUrl.endsWith('/')) {
+              lUrl = lUrl.replace(/\/+$/, '');
+            }
+            return { ...link, url: lUrl };
+          });
         }
 
         return item;

@@ -24,8 +24,8 @@ export function getCanonicalUrl(pathname: string): string {
     return `${base}/`;
   }
 
-  // Remove trailing slashes for non-root paths per Astro trailingSlash: 'never'
-  const normalizedPath = cleanPath.replace(/\/+$/, "");
+  // Remove .html extension and trailing slashes for clean URLs per Astro trailingSlash: 'never'
+  const normalizedPath = cleanPath.replace(/\.html$/, "").replace(/\/+$/, "");
   return `${base}${normalizedPath}`;
 }
 

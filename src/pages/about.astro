@@ -6,7 +6,7 @@ const aboutSchema = {
   "@type": "AboutPage",
   name: "About DepositRescue — Tenant Advocacy & Legal Self-Help Automation",
   description:
-    "Learn about DepositRescue's mission to level the playing field between tenants and landlords through automated 50-state statutory calculations and court-admissible USPS certified demand letters.",
+    "Learn about DepositRescue's mission, legal rigor, and methodology to empower US tenants across all 50 states to recover wrongfully withheld security deposits using attorney-grade demand notices and statutory citations.",
   url: "https://getdepositrescue.com/about",
   mainEntity: {
     "@type": "Organization",
@@ -15,8 +15,25 @@ const aboutSchema = {
     logo: "https://getdepositrescue.com/favicon.svg",
     foundingDate: "2024",
     description: "Self-help legal automation platform helping US tenants recover withheld security deposits.",
+    knowsAbout: [
+      "US security deposit laws across all 50 states",
+      "Small claims court statutory caps and filing rules",
+      "Statutory demand notices and 10-day cure periods",
+      "USPS Certified Mail Electronic Return Receipt",
+      "Tenant rights in California, Texas, Florida, New York, and Illinois",
+    ],
   },
 };
+
+const topStates = [
+  { code: "CA", name: "California", stat: "Cal. Civ. Code § 1950.5", days: "21 days", penalty: "Up to 2x deposit", limit: "$12,500", url: "/ca-security-deposit-law" },
+  { code: "TX", name: "Texas", stat: "Tex. Prop. Code § 92.109", days: "30 days", penalty: "3x retention + $100", limit: "$20,000", url: "/tx-security-deposit-law" },
+  { code: "FL", name: "Florida", stat: "Fla. Stat. § 83.49", days: "15 to 30 days", penalty: "Forfeiture + court costs", limit: "$8,000", url: "/fl-security-deposit-law" },
+  { code: "NY", name: "New York", stat: "NY GOB § 7-108", days: "14 days", penalty: "Up to 2x full deposit", limit: "$5,000 - $10,000", url: "/ny-security-deposit-law" },
+  { code: "IL", name: "Illinois", stat: "765 ILCS 710", days: "30 to 45 days", penalty: "2x deposit + legal costs", limit: "$10,000", url: "/il-security-deposit-law" },
+  { code: "AZ", name: "Arizona", stat: "A.R.S. § 33-1321", days: "14 business days", penalty: "2x amount withheld", limit: "$3,500", url: "/az-security-deposit-law" },
+  { code: "CO", name: "Colorado", stat: "C.R.S. § 38-12-103", days: "30 to 60 days", penalty: "3x amount withheld", limit: "$7,500", url: "/co-security-deposit-law" },
+];
 ---
 
 <BaseLayout
@@ -28,83 +45,254 @@ const aboutSchema = {
     <script type="application/ld+json" set:html={JSON.stringify(aboutSchema)} />
   </slot>
 
-  <article class="mx-auto max-w-3xl px-4 py-12 sm:py-16 space-y-12">
+  <article class="mx-auto max-w-4xl px-4 py-12 sm:py-16 space-y-12">
     <!-- Header -->
     <header class="border-b border-border pb-8 text-center sm:text-left">
       <span class="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs font-mono font-medium text-text-secondary">
         <span class="h-1.5 w-1.5 rounded-full bg-success"></span>
-        Our Mission &amp; Methodology
+        Our Mission &amp; Legal Methodology
       </span>
       <h1 class="mt-4 text-3xl font-bold tracking-tight text-text-primary sm:text-4xl">
-        Empowering Renters with Open Legal Technology
+        Empowering Renters with Open Legal Technology and Statutory Rigor
       </h1>
-      <p class="mt-3 text-base text-text-secondary leading-relaxed">
-        DepositRescue was created to fix a fundamentally broken power dynamic in American rental housing: landlords withholding hard-earned tenant deposits because they assume renters won't fight back.
+      <p class="mt-3 text-base text-text-secondary leading-relaxed max-w-3xl">
+        DepositRescue was created to fix a fundamentally broken power dynamic in American rental housing: landlords and institutional property managers withholding hard-earned tenant deposits because they assume renters lack the time, capital, or legal resources to fight back.
       </p>
     </header>
 
     <!-- The Problem & Solution -->
     <section class="space-y-6">
-      <h2 class="text-xl font-semibold text-text-primary">The $4.5 Billion Problem</h2>
+      <h2 class="text-xl sm:text-2xl font-bold text-text-primary">The $4.5 Billion Problem in Unlawful Deductions</h2>
       <p class="text-sm leading-relaxed text-text-secondary">
-        Every year, millions of US renters surrender tens of millions of dollars in wrongfully withheld deposits. Landlords routinely charge for routine repainting, vacuuming, and normal wear and tear—expenses that state laws explicitly forbid property owners from deducting.
+        Every year across the United States, more than 44 million renter households face a housing market where security deposit theft is endemic. Housing advocacy data estimates that property managers withhold over <strong>$4.5 billion annually</strong> in unwarranted deductions—charging tenants for routine repainting, normal wear and tear, and unitemized turnover fees explicitly prohibited by state law.
       </p>
       <p class="text-sm leading-relaxed text-text-secondary">
-        Retaining a private attorney to recover a $1,500 to $3,000 security deposit is economically irrational when legal retainers start at $2,500. Without accessible self-representation tools, tenants are forced to walk away from funds that rightfully belong to them.
+        Retaining a private attorney to recover a $1,500 to $3,500 deposit is economically irrational when legal retainers start at $2,500 with hourly rates exceeding $350. Faced with these prohibitive costs, most tenants simply surrender their hard-earned money. DepositRescue codifies public state statutes into free self-help software that shifts statutory leverage back into the tenant's hands.
       </p>
 
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-3 pt-2">
-        <div class="rounded-lg border border-border bg-card p-4">
-          <div class="font-mono text-2xl font-bold text-success">50+</div>
-          <div class="mt-1 text-xs text-text-secondary">US States &amp; DC Codified Statutes</div>
+        <div class="rounded-xl border border-border bg-card p-5">
+          <div class="font-mono text-3xl font-bold text-success">50+</div>
+          <div class="mt-1 text-xs font-medium text-text-primary">US States &amp; DC Codified</div>
+          <p class="mt-1 text-[11px] text-text-muted">Return deadlines, civil codes, and statutory penalty multipliers verified on a rolling quarterly cycle.</p>
         </div>
-        <div class="rounded-lg border border-border bg-card p-4">
-          <div class="font-mono text-2xl font-bold text-text-primary">Up to 3&#215;</div>
-          <div class="mt-1 text-xs text-text-secondary">Statutory Bad-Faith Penalties</div>
+        <div class="rounded-xl border border-border bg-card p-5">
+          <div class="font-mono text-3xl font-bold text-text-primary">Up to 3&#215;</div>
+          <div class="mt-1 text-xs font-medium text-text-primary">Bad-Faith Penalties</div>
+          <p class="mt-1 text-[11px] text-text-muted">Statutory multipliers awarding tenants punitive damages in addition to full deposit recovery.</p>
         </div>
-        <div class="rounded-lg border border-border bg-card p-4">
-          <div class="font-mono text-2xl font-bold text-emerald-400">100%</div>
-          <div class="mt-1 text-xs text-text-secondary">Free Instant Calculations</div>
+        <div class="rounded-xl border border-border bg-card p-5">
+          <div class="font-mono text-3xl font-bold text-emerald-400">100%</div>
+          <div class="mt-1 text-xs font-medium text-text-primary">Free Instant Self-Help</div>
+          <p class="mt-1 text-[11px] text-text-muted">Instant statutory audit to identify deadline violations, illegal deductions, and small claims filing limits.</p>
         </div>
       </div>
     </section>
 
-    <!-- How We Operate -->
+    <!-- Our 4 Methodological Pillars -->
     <section class="space-y-6 border-t border-border pt-8">
-      <h2 class="text-xl font-semibold text-text-primary">How DepositRescue Works</h2>
-      <div class="space-y-4">
-        <div class="rounded-lg border border-border bg-canvas-alt p-5">
-          <h3 class="text-sm font-semibold text-text-primary">1. Codified Statutory Auditing</h3>
-          <p class="mt-1 text-xs leading-relaxed text-text-secondary">
-            Our legal calculation engine maintains a verified registry of landlord-tenant codes across all 50 states plus the District of Columbia. We instantly evaluate move-out timelines against statutory deadlines (ranging from 14 to 60 days) and small claims court filing caps.
+      <div>
+        <h2 class="text-xl sm:text-2xl font-bold text-text-primary">Our Four Methodological Pillars</h2>
+        <p class="mt-1 text-xs sm:text-sm text-text-secondary">
+          How we ensure every generated dispute notice adheres to strict evidentiary and procedural standards in court.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div class="rounded-xl border border-border bg-canvas-alt p-5 space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/10 text-xs font-mono font-bold text-emerald-400">1</span>
+            <h3 class="text-sm font-semibold text-text-primary">Continuous Statutory Auditing</h3>
+          </div>
+          <p class="text-xs leading-relaxed text-text-secondary">
+            Our legal calculation engine maintains a verified registry of landlord-tenant codes across all 50 states plus Washington D.C. We track recent legislative changes—such as California AB 12 capping security deposits at one month's rent—to ensure calculations reflect current return timelines (14 to 60 days) and small claims court limits.
           </p>
         </div>
 
-        <div class="rounded-lg border border-border bg-canvas-alt p-5">
-          <h3 class="text-sm font-semibold text-text-primary">2. Attorney-Grade Demand Notices</h3>
-          <p class="mt-1 text-xs leading-relaxed text-text-secondary">
-            Informal text messages are routinely dismissed by property managers. DepositRescue generates formal, citation-specific demand letters that clearly articulate the civil penalties and court costs landlords risk by failing to settle within 10 business days.
+        <div class="rounded-xl border border-border bg-canvas-alt p-5 space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/10 text-xs font-mono font-bold text-emerald-400">2</span>
+            <h3 class="text-sm font-semibold text-text-primary">Bad-Faith Statutory Multipliers</h3>
+          </div>
+          <p class="text-xs leading-relaxed text-text-secondary">
+            Many renters are unaware that when a landlord fails to return deposits within the legal statutory window or provides arbitrary deductions without itemized receipts, the law often presumes "bad faith." This unlocks statutory penalties ranging from 1x to 3x the original deposit in small claims court.
           </p>
         </div>
 
-        <div class="rounded-lg border border-border bg-canvas-alt p-5">
-          <h3 class="text-sm font-semibold text-text-primary">3. Court-Admissible USPS Certified Mail</h3>
-          <p class="mt-1 text-xs leading-relaxed text-text-secondary">
-            Small claims court judges require verifiable proof of delivery before awarding statutory damages. Our optional one-click fulfillment prints, inserts, and dispatches your letter via USPS Certified Mail with Electronic Return Receipt.
+        <div class="rounded-xl border border-border bg-canvas-alt p-5 space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/10 text-xs font-mono font-bold text-emerald-400">3</span>
+            <h3 class="text-sm font-semibold text-text-primary">Court-Admissible Demand Notices</h3>
+          </div>
+          <p class="text-xs leading-relaxed text-text-secondary">
+            Informal text messages and emails are routinely ignored by corporate landlords. DepositRescue generates formal pre-litigation demand notices citing specific statutory code sections, demanding an itemized accounting, and setting a mandatory 10 business day cure period before filing suit.
+          </p>
+        </div>
+
+        <div class="rounded-xl border border-border bg-canvas-alt p-5 space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/10 text-xs font-mono font-bold text-emerald-400">4</span>
+            <h3 class="text-sm font-semibold text-text-primary">USPS Certified Mail Proof of Service</h3>
+          </div>
+          <p class="text-xs leading-relaxed text-text-secondary">
+            In small claims court, judges require verifiable proof of delivery before awarding statutory bad-faith damages. Our optional one-click service prints and dispatches your letter via USPS Certified Mail with Electronic Return Receipt (PS Form 3811), creating definitive federal proof of legal delivery.
           </p>
         </div>
       </div>
     </section>
 
-    <!-- Editorial & Independence Standards -->
-    <section class="rounded-lg border border-border bg-card p-6 space-y-4">
-      <h2 class="text-base font-semibold text-text-primary">Legal Disclaimer &amp; Independence</h2>
-      <p class="text-xs leading-relaxed text-text-secondary">
-        DepositRescue is an independent technology platform. We are not an attorney, law firm, or legal referral service, and we do not provide legal representation or tailored legal advice. Our automated calculations and generated demand letters provide informative self-help resources under applicable state public statutes.
+    <!-- Comparative Table of Key States -->
+    <section class="space-y-6 border-t border-border pt-8">
+      <div>
+        <h2 class="text-xl sm:text-2xl font-bold text-text-primary">Comparative Framework: Statutory Deadlines &amp; Small Claims Caps</h2>
+        <p class="mt-1 text-xs sm:text-sm text-text-secondary">
+          Summary of benchmark state landlord-tenant statutes, statutory return deadlines, and small claims court filing limits for self-represented tenants.
+        </p>
+      </div>
+
+      <div class="overflow-x-auto rounded-xl border border-border bg-card">
+        <table class="w-full text-left text-xs">
+          <thead class="border-b border-border bg-canvas-alt text-text-muted font-mono uppercase tracking-wider text-[11px]">
+            <tr>
+              <th class="p-3.5 font-medium">State</th>
+              <th class="p-3.5 font-medium">Civil Statute</th>
+              <th class="p-3.5 font-medium">Return Window</th>
+              <th class="p-3.5 font-medium">Bad-Faith Penalty</th>
+              <th class="p-3.5 font-medium">Small Claims Limit</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-border">
+            {topStates.map((st) => (
+              <tr class="hover:bg-canvas-alt/50 transition-colors">
+                <td class="p-3.5 font-semibold text-text-primary">
+                  <a href={st.url} class="hover:text-emerald-400 hover:underline">{st.name}</a>
+                </td>
+                <td class="p-3.5 font-mono text-text-secondary">{st.stat}</td>
+                <td class="p-3.5 font-medium text-emerald-400">{st.days}</td>
+                <td class="p-3.5 text-text-secondary">{st.penalty}</td>
+                <td class="p-3.5 font-mono text-text-primary">{st.limit}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="text-[11px] text-text-muted">
+        * In most jurisdictions, a landlord's failure to provide an itemized statement with receipts within the statutory window waives their legal right to retain any portion of the deposit.
       </p>
-      <div class="pt-2 flex flex-wrap gap-4 text-xs font-medium">
-        <a href="/calculator" class="text-text-primary underline hover:text-emerald-400">Launch Free Calculator &rarr;</a>
-        <a href="/contact" class="text-text-secondary hover:text-text-primary">Contact the Team &rarr;</a>
+    </section>
+
+    <!-- Normal Wear and Tear vs Tenant Damage -->
+    <section class="space-y-6 border-t border-border pt-8">
+      <div>
+        <h2 class="text-xl sm:text-2xl font-bold text-text-primary">The Crucial Distinction: Normal Wear &amp; Tear vs. Actionable Damage</h2>
+        <p class="mt-1 text-xs sm:text-sm text-text-secondary">
+          The number one cause of unlawful deductions is billing tenants for normal unit turnover repairs.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div class="rounded-xl border border-border bg-card p-5 space-y-3">
+          <h3 class="flex items-center gap-2 text-sm font-semibold text-success">
+            <span>✓</span> Normal Wear &amp; Tear (Illegal to Deduct)
+          </h3>
+          <ul class="space-y-2 text-xs text-text-secondary leading-relaxed">
+            <li>• Small picture nail holes, thumbtack marks, or hairline drywall settling cracks.</li>
+            <li>• Paint fading or yellowing due to natural sun exposure over years of tenancy.</li>
+            <li>• Carpet matting or subtle traffic wear patterns in hallways and living spaces.</li>
+            <li>• Worn finish on hardwood flooring resulting from routine foot traffic.</li>
+            <li>• Minor dust or surface smudges that reflect standard broom-clean move-out condition.</li>
+          </ul>
+        </div>
+
+        <div class="rounded-xl border border-border bg-card p-5 space-y-3">
+          <h3 class="flex items-center gap-2 text-sm font-semibold text-danger">
+            <span>✗</span> Tenant Damage (Lawful Deduction with Receipts)
+          </h3>
+          <ul class="space-y-2 text-xs text-text-secondary leading-relaxed">
+            <li>• Large drywall holes, broken interior doors, or kicked-in trim boards.</li>
+            <li>• Unauthorized dark wall paint or unapproved peeling adhesive wallpaper.</li>
+            <li>• Severe pet urine stains, cigarette burns, or ripped carpet seams.</li>
+            <li>• Shattered window panes, cracked mirrors, or broken appliance handles.</li>
+            <li>• Excessive garbage accumulation or heavy grease requiring professional biohazard remediation.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="rounded-lg border border-border bg-canvas-alt p-4 text-xs text-text-secondary leading-relaxed">
+        <strong class="text-text-primary">The Useful Life Rule:</strong> Even when genuine damage exists, courts require landlords to apply depreciation based on an asset's useful life (typically 5 to 7 years for carpets and 2 to 3 years for interior paint). A landlord cannot charge the replacement cost of brand-new carpet to a tenant who lived in the unit for four years.
+      </div>
+    </section>
+
+    <!-- Why USPS Certified Mail -->
+    <section class="space-y-6 border-t border-border pt-8">
+      <div>
+        <h2 class="text-xl sm:text-2xl font-bold text-text-primary">Why USPS Certified Mail is the Gold Standard in Court</h2>
+        <p class="mt-1 text-xs sm:text-sm text-text-secondary">
+          The procedural difference between an ignored complaint and a decisive victory in small claims court.
+        </p>
+      </div>
+
+      <p class="text-sm leading-relaxed text-text-secondary">
+        In small claims court, judges rule based on strict evidentiary proof of delivery. When a tenant sends a demand via standard email or text message, landlords frequently claim in court: <em>"The email landed in my spam filter"</em> or <em>"I no longer monitor that telephone number."</em> These defenses create factual ambiguity and often prevent judges from finding bad faith.
+      </p>
+      <p class="text-sm leading-relaxed text-text-secondary">
+        By contrast, <strong>USPS Certified Mail with Electronic Return Receipt (PS Form 3811)</strong> creates an official 20-digit federal tracking record and captures the signature of the landlord or their registered agent upon delivery at their physical business address.
+      </p>
+      <p class="text-sm leading-relaxed text-text-secondary">
+        This federal postal record provides court-admissible proof that the property owner received timely legal notice and had a reasonable opportunity to comply before small claims litigation commenced.
+      </p>
+    </section>
+
+    <!-- State Directory Quick Links -->
+    <section class="space-y-6 border-t border-border pt-8">
+      <div>
+        <h2 class="text-xl sm:text-2xl font-bold text-text-primary">Detailed State Legal Guides</h2>
+        <p class="mt-1 text-xs sm:text-sm text-text-secondary">
+          Explore complete statutes, mandatory notice periods, and small claims procedures for your jurisdiction:
+        </p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 text-xs font-medium">
+        <a href="/ca-security-deposit-law" class="rounded-lg border border-border bg-card p-3 hover:border-emerald-400 hover:text-emerald-400 transition-colors">
+          California (21 days) &rarr;
+        </a>
+        <a href="/tx-security-deposit-law" class="rounded-lg border border-border bg-card p-3 hover:border-emerald-400 hover:text-emerald-400 transition-colors">
+          Texas (30 days) &rarr;
+        </a>
+        <a href="/fl-security-deposit-law" class="rounded-lg border border-border bg-card p-3 hover:border-emerald-400 hover:text-emerald-400 transition-colors">
+          Florida (15-30 days) &rarr;
+        </a>
+        <a href="/ny-security-deposit-law" class="rounded-lg border border-border bg-card p-3 hover:border-emerald-400 hover:text-emerald-400 transition-colors">
+          New York (14 days) &rarr;
+        </a>
+        <a href="/il-security-deposit-law" class="rounded-lg border border-border bg-card p-3 hover:border-emerald-400 hover:text-emerald-400 transition-colors">
+          Illinois (30-45 days) &rarr;
+        </a>
+        <a href="/az-security-deposit-law" class="rounded-lg border border-border bg-card p-3 hover:border-emerald-400 hover:text-emerald-400 transition-colors">
+          Arizona (14 business days) &rarr;
+        </a>
+        <a href="/co-security-deposit-law" class="rounded-lg border border-border bg-card p-3 hover:border-emerald-400 hover:text-emerald-400 transition-colors">
+          Colorado (30-60 days) &rarr;
+        </a>
+        <a href="/" class="rounded-lg border border-border bg-card p-3 hover:border-emerald-400 hover:text-emerald-400 transition-colors">
+          View All 50 States &rarr;
+        </a>
+      </div>
+    </section>
+
+    <!-- Editorial Standards & Legal Disclaimer -->
+    <section class="rounded-xl border border-border bg-card p-6 sm:p-8 space-y-4">
+      <h2 class="text-base sm:text-lg font-semibold text-text-primary">Legal Disclaimer &amp; Editorial Standards</h2>
+      <p class="text-xs leading-relaxed text-text-secondary">
+        DepositRescue is an independent technology platform, not an attorney, law firm, or legal referral agency. The information, statutory penalty calculations, and automated demand letters provided on this site are self-help resources prepared under publicly codified state civil statutes. We do not provide individualized legal advice or court representation. If your claim exceeds small claims court statutory limits or involves complex commercial eviction proceedings, we recommend consulting a licensed attorney in your state.
+      </p>
+      <div class="pt-2 flex flex-wrap gap-4 text-xs font-semibold">
+        <a href="/calculator" class="rounded-md bg-cta-bg px-4 py-2 text-cta-text hover:bg-cta-hover transition-colors">
+          Launch Free Calculator &rarr;
+        </a>
+        <a href="/contact" class="rounded-md border border-border bg-canvas px-4 py-2 text-text-primary hover:border-border-hover transition-colors">
+          Contact Our Team &rarr;
+        </a>
       </div>
     </section>
   </article>

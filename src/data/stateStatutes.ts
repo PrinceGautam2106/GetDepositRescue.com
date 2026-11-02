@@ -1613,3 +1613,8 @@ export function getStatute(stateCode: string): StateStatute {
 
 /** All supported state codes (excludes DEFAULT). */
 export const SUPPORTED_STATE_CODES = Object.keys(STATE_STATUTES);
+
+/** All supported state statutes sorted alphabetically by English name. */
+export const allStates = SUPPORTED_STATE_CODES.map((code) => STATE_STATUTES[code]).sort((a, b) =>
+  a.stateName.en.localeCompare(b.stateName.en),
+);

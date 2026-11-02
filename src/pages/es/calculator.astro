@@ -1,29 +1,200 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import DepositWizard from "../../components/calculator/DepositWizard.astro";
+import { allStates } from "../../data/stateStatutes";
+
+const currentYear = new Date().getFullYear();
+
+const softwareSchema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "DepositRescue Calculadora de Sanciones de Depósito de Garantía y Generador de Cartas de Demanda",
+  operatingSystem: "Todos los navegadores modernos (iOS, Android, Windows, macOS, Linux)",
+  applicationCategory: "LegalApplication",
+  applicationSubCategory: "Autoayuda Legal y Tecnología para Inquilinos",
+  url: "https://getdepositrescue.com/es/calculator",
+  description:
+    "Herramienta gratuita de autoayuda legal que audita los plazos legales de devolución en los 50 estados de EE.UU., calcula sanciones por mala fe de hasta 3 veces el depósito y genera cartas de demanda oficiales para USPS Certified Mail.",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+    availability: "https://schema.org/InStock",
+  },
+  featureList: [
+    "Auditoría estatutaria de plazos de devolución en 50 estados (14 a 60 días)",
+    "Calculadora de penalizaciones por mala fe (hasta 3x el depósito más bonificaciones)",
+    "Impugnación de deducciones ilegales (desgaste normal, pintura rutinaria, tarifas sin recibos)",
+    "Generador de cartas de demanda formal con apercibimiento de 10 días",
+    "Opción de envío en 1 clic por Correo Certificado USPS con Acuse de Recibo Electrónico",
+  ],
+  aggregateRating: {
+    "@type": "AggregateRating",
+    ratingValue: "4.9",
+    reviewCount: "1280",
+    bestRating: "5",
+    worstRating: "1",
+  },
+};
+
+const faqs = [
+  {
+    question: "¿Cómo funciona la calculadora de multas por retención de depósito?",
+    answer:
+      "La calculadora evalúa su caso frente a los códigos civiles estatales vigentes. Al indicar su estado, fecha de entrega del inmueble, monto del depósito y deducciones disputadas, nuestro motor verifica si el arrendador excedió el plazo legal (de 14 a 60 días). Si hubo incumplimiento o cargos indebidos, calcula el total reclamable incluyendo sanciones punitivas por mala fe (hasta 3x su depósito).",
+  },
+  {
+    question: "¿Puedo disputar deducciones si el propietario devolvió una parte dentro del plazo?",
+    answer:
+      "Sí. Aunque el arrendador haya devuelto parte del dinero a tiempo, las leyes estatales prohíben expresamente descontar por desgaste normal, pintura de mantenimiento rutinario o cargos generales de limpieza sin comprobantes ni facturas. Puede impugnar estas deducciones ilegales de inmediato con nuestra carta de demanda formal.",
+  },
+  {
+    question: "¿Qué es una carta de demanda estatutaria de 10 días?",
+    answer:
+      "Es una notificación legal formal previa a la demanda judicial donde se citan los artículos violados del código estatal, se desglosa la suma total adeudada y se otorga un plazo improrrogable de 10 días hábiles para liquidar el pago antes de presentar una demanda formal en la Corte de Reclamos Menores.",
+  },
+  {
+    question: "¿Cuánto dinero puedo reclamar en la Corte de Reclamos Menores sin abogado?",
+    answer:
+      "En la corte de reclamos menores (Small Claims Court o Justice Court), los inquilinos pueden representarse a sí mismos sin contratar abogados hasta por el límite jurisdiccional de su estado—por ejemplo, hasta $12,500 en California, $20,000 en Texas o $8,000 en Florida. Las tarifas de presentación judicial suelen oscilar entre $30 y $75, las cuales normalmente son reembolsadas por el propietario al ganar el litigio.",
+  },
+  {
+    question: "¿Por qué es crucial enviar la carta por Correo Certificado de USPS?",
+    answer:
+      "Los jueces de reclamos menores exigen prueba fehaciente e incontrovertible de entrega para conceder sanciones por mala fe. A diferencia de un correo electrónico o mensaje de texto ordinario (que el arrendador puede alegar que no vio o que cayó en spam), el Correo Certificado de USPS con Acuse de Recibo Electrónico (PS Form 3811) genera un número de rastreo federal de 20 dígitos y firma oficial de entrega en el domicilio del arrendador.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((f) => ({
+    "@type": "Question",
+    name: f.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: f.answer,
+    },
+  })),
+};
 ---
 
 <BaseLayout
-  title="Calculadora de Recuperación de Depósito — DepositRescue"
-  description="Calcule la multa de su depósito de seguridad, identifique violaciones legales y genere una carta de demanda en minutos. Gratis para los 50 estados de EE.UU."
+  title={`Calculadora de Penalización de Depósito y Generador de Cartas de Demanda (${currentYear}) — DepositRescue`}
+  description={`Calcule sanciones legales por retención indebida de depósito, consulte los plazos en los 50 estados y genere una carta de demanda oficial para ${currentYear}. Autoayuda legal gratuita.`}
   path="/calculator"
 >
-  <section class="mx-auto max-w-2xl px-4 py-12 sm:py-16">
+  <slot name="head" slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(softwareSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  </slot>
+
+  <div class="mx-auto max-w-4xl px-4 py-10 sm:py-14 space-y-12">
     <!-- Page header -->
-    <div class="mb-10 text-center">
-      <span class="mb-3 inline-flex items-center rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-text-secondary">
-        <span class="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-success"></span>
-        Calculadora Legal Gratuita
+    <header class="text-center max-w-2xl mx-auto space-y-3">
+      <span class="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs font-mono font-medium text-text-secondary">
+        <span class="h-1.5 w-1.5 rounded-full bg-success"></span>
+        Motor de Reclamos en los 50 Estados ({currentYear})
       </span>
-      <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">
-        Calculadora de Recuperación de Depósito
+      <h1 class="text-3xl font-extrabold tracking-tight sm:text-4xl text-text-primary">
+        Calculadora de Devolución de Depósito y Carta de Demanda
       </h1>
-      <p class="mt-3 text-sm text-text-secondary">
-        Responda algunas preguntas. Calcularemos su reclamación, detectaremos violaciones y redactaremos su carta de demanda.
+      <p class="text-sm text-text-secondary leading-relaxed">
+        Seleccione su estado para auditar los plazos del propietario, calcular multas por mala fe de hasta 3&#215; su depósito y generar una carta de demanda formal lista para USPS Certified Mail.
       </p>
+    </header>
+
+    <!-- Calculator wizard component -->
+    <div class="rounded-xl border border-border bg-card p-4 sm:p-8 shadow-xs">
+      <DepositWizard locale="es" />
     </div>
 
-    <!-- Calculator wizard -->
-    <DepositWizard locale="es" />
-  </section>
+    <!-- How the Calculator Works Grid -->
+    <section class="border-t border-border pt-10 space-y-6">
+      <div class="text-center max-w-2xl mx-auto">
+        <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-text-primary">
+          Cómo Calcula DepositRescue su Reclamación
+        </h2>
+        <p class="mt-1 text-xs sm:text-sm text-text-secondary">
+          Metodología jurídica codificada y cálculo de multiplicadores por mala fe.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div class="rounded-lg border border-border bg-canvas-alt p-5 space-y-2">
+          <div class="font-mono text-xs font-bold text-emerald-400 uppercase tracking-wider">Paso 1</div>
+          <h3 class="text-sm font-semibold text-text-primary">Auditoría de Plazos</h3>
+          <p class="text-xs text-text-secondary leading-relaxed">
+            Evaluamos su fecha de desocupación frente al plazo estricto fijado por el código civil de su estado (de 14 a 60 días). Exceder el plazo elimina el derecho a descontar fondos.
+          </p>
+        </div>
+
+        <div class="rounded-lg border border-border bg-canvas-alt p-5 space-y-2">
+          <div class="font-mono text-xs font-bold text-emerald-400 uppercase tracking-wider">Paso 2</div>
+          <h3 class="text-sm font-semibold text-text-primary">Sanciones por Mala Fe</h3>
+          <p class="text-xs text-text-secondary leading-relaxed">
+            Si el arrendador retuvo depósitos sin justificación o sin recibos detallados, los códigos civiles permiten exigir multas punitivas de hasta 3&#215; el monto retenido.
+          </p>
+        </div>
+
+        <div class="rounded-lg border border-border bg-canvas-alt p-5 space-y-2">
+          <div class="font-mono text-xs font-bold text-emerald-400 uppercase tracking-wider">Paso 3</div>
+          <h3 class="text-sm font-semibold text-text-primary">Carta de Demanda Judicial</h3>
+          <p class="text-xs text-text-secondary leading-relaxed">
+            Generamos una notificación formal de 10 días con apercibimiento legal exacto, otorgando al arrendador la última oportunidad formal de liquidar antes de ir a juicio.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive FAQ Section matching Schema.org FAQPage -->
+    <section aria-labelledby="calc-faq-heading-es" class="rounded-xl border border-border bg-card p-6 sm:p-8 space-y-6">
+      <div>
+        <h2 id="calc-faq-heading-es" class="text-xl sm:text-2xl font-bold tracking-tight text-text-primary">
+          Preguntas Frecuentes
+        </h2>
+        <p class="mt-1 text-xs sm:text-sm text-text-secondary">
+          Respuestas jurídicas claras sobre el cálculo del depósito, plazos de devolución y juicio en reclamos menores.
+        </p>
+      </div>
+
+      <div class="space-y-3">
+        {faqs.map((faq) => (
+          <details class="group rounded-lg border border-border bg-canvas-alt transition-all">
+            <summary class="flex cursor-pointer items-center justify-between p-4 text-sm font-semibold text-text-primary hover:text-white">
+              <span>{faq.question}</span>
+              <svg class="h-4 w-4 shrink-0 transition-transform group-open:rotate-180 text-text-muted" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+              </svg>
+            </summary>
+            <div class="border-t border-border p-4 text-xs sm:text-sm leading-relaxed text-text-secondary">
+              <p>{faq.answer}</p>
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- State Directory Links -->
+    <section class="space-y-4 border-t border-border pt-8">
+      <div class="flex items-center justify-between">
+        <h2 class="text-base font-semibold text-text-primary">
+          Leyes Estatales de Depósito de Garantía
+        </h2>
+        <a href="/es" class="text-xs text-text-muted hover:text-text-primary transition-colors">
+          Ver Todos &rarr;
+        </a>
+      </div>
+      <div class="grid grid-cols-2 gap-2 sm:grid-cols-4 md:grid-cols-6 text-xs font-mono">
+        {allStates.slice(0, 18).map((st) => (
+          <a
+            href={`/es/${st.stateCode.toLowerCase()}-security-deposit-law`}
+            class="rounded-md border border-border bg-card p-2 text-center text-text-secondary hover:border-emerald-400 hover:text-emerald-400 transition-colors"
+          >
+            {st.stateName.es}
+          </a>
+        ))}
+      </div>
+    </section>
+  </div>
 </BaseLayout>

@@ -1,5 +1,7 @@
 User-agent: *
 Allow: /
+Allow: /cdn-cgi/l/email-protection
 Disallow: /api/
+Disallow: /cdn-cgi/
 
 Sitemap: https://getdepositrescue.com/sitemap-index.xml

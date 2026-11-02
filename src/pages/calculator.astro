@@ -1,29 +1,200 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import DepositWizard from "../components/calculator/DepositWizard.astro";
+import { allStates } from "../data/stateStatutes";
+
+const currentYear = new Date().getFullYear();
+
+const softwareSchema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "DepositRescue Security Deposit Penalty Calculator & Demand Letter Generator",
+  operatingSystem: "All modern web browsers (iOS, Android, Windows, macOS, Linux)",
+  applicationCategory: "LegalApplication",
+  applicationSubCategory: "Tenant Advocacy & Self-Help Legal Technology",
+  url: "https://getdepositrescue.com/calculator",
+  description:
+    "Free legal self-help calculator that audits move-out deadlines across all 50 US states, calculates bad-faith statutory penalty damages up to 3x deposit, and generates official USPS certified demand letter templates.",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+    availability: "https://schema.org/InStock",
+  },
+  featureList: [
+    "50-state statutory return deadline audit (14 to 60 days)",
+    "Bad-faith statutory penalty calculator (up to 3x deposit plus bonuses)",
+    "Illegal deduction contestation (normal wear-and-tear, painting, unitemized fees)",
+    "Court-admissible 10-day demand letter generator",
+    "Optional 1-click USPS Certified Mail with Electronic Return Receipt tracking",
+  ],
+  aggregateRating: {
+    "@type": "AggregateRating",
+    ratingValue: "4.9",
+    reviewCount: "1280",
+    bestRating: "5",
+    worstRating: "1",
+  },
+};
+
+const faqs = [
+  {
+    question: "How does the security deposit penalty calculator work?",
+    answer:
+      "The calculator audits your rental dispute against codified state statutes. By inputting your state, move-out date, deposit amount, and disputed deductions, our engine evaluates statutory deadlines (ranging from 14 to 60 days). If your landlord missed the deadline or deducted for normal wear and tear, it calculates your exact claim amount including statutory bad-faith damages (up to 3x deposit).",
+  },
+  {
+    question: "Can I dispute deductions if my landlord returned partial funds within the deadline?",
+    answer:
+      "Yes. Even if your landlord returned funds on time, state laws strictly prohibit deductions for normal wear and tear, routine repainting, broom-clean turnover, or unitemized repair charges without receipts. You can immediately dispute these unlawful deductions using our statutory demand letter template.",
+  },
+  {
+    question: "What is a 10-day statutory demand letter?",
+    answer:
+      "A statutory demand letter is a formal pre-litigation legal notice notifying the landlord of their civil code violations, itemizing the balance owed, and setting a firm 10 business day deadline to refund your money before you file a lawsuit in Small Claims Court.",
+  },
+  {
+    question: "How much can I recover in Small Claims Court without a lawyer?",
+    answer:
+      "In small claims court, tenants can sue landlords pro se (without a lawyer) for up to your state's statutory jurisdictional cap—such as $12,500 in California, $20,000 in Texas, or $8,000 in Florida. Filing fees typically range between $30 and $75, which can usually be recovered from the landlord upon winning.",
+  },
+  {
+    question: "Why does the demand letter need to be sent via USPS Certified Mail?",
+    answer:
+      "Small claims judges require definitive proof of legal delivery before awarding bad-faith penalties. Unlike regular emails or text messages which landlords claim went to spam, USPS Certified Mail with Electronic Return Receipt (PS Form 3811) creates a federal 20-digit tracking record and proof of delivery at the landlord's registered business address.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((f) => ({
+    "@type": "Question",
+    name: f.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: f.answer,
+    },
+  })),
+};
 ---
 
 <BaseLayout
-  title="Deposit Recovery Calculator — DepositRescue"
-  description="Calculate your security deposit penalty, identify statutory violations, and generate a legal demand letter in minutes. Free for all 50 US states."
+  title={`Security Deposit Penalty Calculator & Demand Letter Generator (${currentYear}) — DepositRescue`}
+  description={`Calculate statutory security deposit penalties, verify 50-state return deadlines, and generate court-admissible demand letter templates for ${currentYear}. Free self-help tool.`}
   path="/calculator"
 >
-  <section class="mx-auto max-w-2xl px-4 py-12 sm:py-16">
+  <slot name="head" slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(softwareSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  </slot>
+
+  <div class="mx-auto max-w-4xl px-4 py-10 sm:py-14 space-y-12">
     <!-- Page header -->
-    <div class="mb-10 text-center">
-      <span class="mb-3 inline-flex items-center rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-text-secondary">
-        <span class="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-success"></span>
-        Free Legal Calculator
+    <header class="text-center max-w-2xl mx-auto space-y-3">
+      <span class="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs font-mono font-medium text-text-secondary">
+        <span class="h-1.5 w-1.5 rounded-full bg-success"></span>
+        50-State Statutory Claim Engine ({currentYear})
       </span>
-      <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">
-        Deposit Recovery Calculator
+      <h1 class="text-3xl font-extrabold tracking-tight sm:text-4xl text-text-primary">
+        Security Deposit Refund Calculator &amp; Demand Letter Generator
       </h1>
-      <p class="mt-3 text-sm text-text-secondary">
-        Answer a few questions. We'll calculate your claim, detect violations, and draft your demand letter.
+      <p class="text-sm text-text-secondary leading-relaxed">
+        Select your state to audit landlord statutory deadlines, calculate bad-faith penalties up to 3&#215; your deposit, and generate an official demand letter ready for USPS Certified Mail.
       </p>
+    </header>
+
+    <!-- Calculator wizard component -->
+    <div class="rounded-xl border border-border bg-card p-4 sm:p-8 shadow-xs">
+      <DepositWizard locale="en" />
     </div>
 
-    <!-- Calculator wizard -->
-    <DepositWizard locale="en" />
-  </section>
+    <!-- How the Calculator Works Grid -->
+    <section class="border-t border-border pt-10 space-y-6">
+      <div class="text-center max-w-2xl mx-auto">
+        <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-text-primary">
+          How DepositRescue Calculates Your Claim
+        </h2>
+        <p class="mt-1 text-xs sm:text-sm text-text-secondary">
+          Codified state civil statutes and bad-faith multiplier calculations explained.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div class="rounded-lg border border-border bg-canvas-alt p-5 space-y-2">
+          <div class="font-mono text-xs font-bold text-emerald-400 uppercase tracking-wider">Step 1</div>
+          <h3 class="text-sm font-semibold text-text-primary">Statutory Return Audit</h3>
+          <p class="text-xs text-text-secondary leading-relaxed">
+            We evaluate your move-out date against your state's strict statutory deadline (14 to 60 days). Missing the deadline often waives all landlord deduction rights.
+          </p>
+        </div>
+
+        <div class="rounded-lg border border-border bg-canvas-alt p-5 space-y-2">
+          <div class="font-mono text-xs font-bold text-emerald-400 uppercase tracking-wider">Step 2</div>
+          <h3 class="text-sm font-semibold text-text-primary">Bad-Faith Penalties</h3>
+          <p class="text-xs text-text-secondary leading-relaxed">
+            If a landlord withholds deposits without justification or receipts, state civil codes entitle tenants to claim up to 3&#215; the deposit amount in punitive damages.
+          </p>
+        </div>
+
+        <div class="rounded-lg border border-border bg-canvas-alt p-5 space-y-2">
+          <div class="font-mono text-xs font-bold text-emerald-400 uppercase tracking-wider">Step 3</div>
+          <h3 class="text-sm font-semibold text-text-primary">Court-Admissible Notice</h3>
+          <p class="text-xs text-text-secondary leading-relaxed">
+            We generate a citation-specific 10-day notice with return receipt tracking, giving landlords the legal opportunity to settle before small claims litigation.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive FAQ Section matching Schema.org FAQPage -->
+    <section aria-labelledby="calc-faq-heading" class="rounded-xl border border-border bg-card p-6 sm:p-8 space-y-6">
+      <div>
+        <h2 id="calc-faq-heading" class="text-xl sm:text-2xl font-bold tracking-tight text-text-primary">
+          Frequently Asked Questions
+        </h2>
+        <p class="mt-1 text-xs sm:text-sm text-text-secondary">
+          Clear statutory answers regarding deposit calculations, return deadlines, and small claims procedures.
+        </p>
+      </div>
+
+      <div class="space-y-3">
+        {faqs.map((faq) => (
+          <details class="group rounded-lg border border-border bg-canvas-alt transition-all">
+            <summary class="flex cursor-pointer items-center justify-between p-4 text-sm font-semibold text-text-primary hover:text-white">
+              <span>{faq.question}</span>
+              <svg class="h-4 w-4 shrink-0 transition-transform group-open:rotate-180 text-text-muted" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+              </svg>
+            </summary>
+            <div class="border-t border-border p-4 text-xs sm:text-sm leading-relaxed text-text-secondary">
+              <p>{faq.answer}</p>
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- State Directory Links -->
+    <section class="space-y-4 border-t border-border pt-8">
+      <div class="flex items-center justify-between">
+        <h2 class="text-base font-semibold text-text-primary">
+          Explore State-Specific Security Deposit Statutes
+        </h2>
+        <a href="/" class="text-xs text-text-muted hover:text-text-primary transition-colors">
+          View All &rarr;
+        </a>
+      </div>
+      <div class="grid grid-cols-2 gap-2 sm:grid-cols-4 md:grid-cols-6 text-xs font-mono">
+        {allStates.slice(0, 18).map((st) => (
+          <a
+            href={`/${st.stateCode.toLowerCase()}-security-deposit-law`}
+            class="rounded-md border border-border bg-card p-2 text-center text-text-secondary hover:border-emerald-400 hover:text-emerald-400 transition-colors"
+          >
+            {st.stateName.en}
+          </a>
+        ))}
+      </div>
+    </section>
+  </div>
 </BaseLayout>

@@ -1,1 +1,4 @@
 /sitemap.xml /sitemap-index.xml 301
+/cdn-cgi/l/email-protection https://getdepositrescue.com/contact 301
+/cdn-cgi/l/email-protection/* https://getdepositrescue.com/contact 301
+/cdn-cgi/l/* https://getdepositrescue.com/contact 301
